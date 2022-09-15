@@ -25,7 +25,7 @@
 }
 
 .navBar a:hover {
-    color: #fddb3a;
+    color: green;
 }
 .author-sibebar-container {
     width: 30%;
@@ -53,4 +53,15 @@
     flex-basis: 0;
     flex-grow: 999;
     background-color: #545454
+}
+
+/* List Page Content  */
+
+.listed-container {
+    border: #272727;
+    padding: 5px;
+    background-color: #619B8A;
+}
+body{
+    background-color: aqua;
 }
