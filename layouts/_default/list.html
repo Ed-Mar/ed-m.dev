@@ -1,0 +1,24 @@
+{{ define "main" }}
+<div class="content-with-sidebar-container">
+    <div class="the-content-container-with-sidebar ">
+        {{ .Content }}
+
+        {{ $.Scratch.Set "counter" 0 }}
+        {{range site.Pages.ByDate.Reverse }}
+            {{if .IsPage}}
+                {{ $.Scratch.Set "counter" (add ($.Scratch.Get "counter") 1) }}
+                {{if lt ($.Scratch.Get "counter") 6}}
+                    <div class="listed-container">
+                        <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+                        <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
+                    </div>
+                {{ else }}
+                <!-- Do nothing if not less than 5 -->
+                {{ end }}
+            {{ end }}
+        {{ end }}
+
+    </div>
+    {{ partial "author-info.html" . }}
+</div>
+{{ end }}
