@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+
+.navBar {
+    font-family: "Montserrat", sans-serif;
+    background: #272727;
+}
+.navBar a {
+    color: #f6f4e6;
+    text-decoration: none;
+    font-size: 1.em;
+    text-transform: uppercase;
+    font-weight: 515;
+    display: inline-block;    
+    
+    padding: 11px;
+}
+
+.navBar a:hover {
+    color: #fddb3a;
+}
+.author-sibebar-container {
+    width: 30%;
+    height: auto;
+    float: right;
+}
+
+
+/* I know this naming is ass, but I thought it would be easiest way */
+
+.content-with-sidebar-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.the-sidebar-container-with-content {
+    flex-basis: 10rem;
+    flex-grow: 1;
+    background-color: #619B8A;
+    height: 100%;
+}
+
+
+.the-content-container-with-sidebar {
+    flex-basis: 0;
+    flex-grow: 999;
+    background-color: #545454
+}
