@@ -1,0 +1,9 @@
+baseURL: https://ed-m.dev
+languageCode: en-us
+title: Ed M dev notes
+enableEmoji: false
+enableGitInfo: true
+params:
+  css: "css/style.css"
+
+

@@ -1,0 +1,19 @@
+main: 
+  - identifier: ed-m
+    name: Ed-M@Dev
+    url: /
+    weight: -616
+  - identifier: notes 
+    name: Notes 
+    url: /notes 
+    weight: 100 
+  - identifier: projects 
+    name: Projects
+    url: /notes/projects
+    parent: notes 
+  - identifier: about 
+    name: About 
+    url: /about
+    weight: 200
+footer:
+  - identifier: info
