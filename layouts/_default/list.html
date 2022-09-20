@@ -15,12 +15,12 @@
                 {{ $.Scratch.Set "counter" (add ($.Scratch.Get "counter") 1) }}
                 {{if lt ($.Scratch.Get "counter") 6}}
                     <div class="listed-element-container">
-                        <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+                        <h3><a href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
                         <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
                         <div class="tags-container">
                             
-                                {{ range .Params.tags }}
-                                  <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . }}</a> </li>
+                                {{ range .Params.tags }}                                    
+                                  <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . }}</a>  </li>
                                 {{ end }}
                             
                             
