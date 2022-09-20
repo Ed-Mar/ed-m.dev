@@ -1,21 +1,25 @@
-
-
 <div class="the-sidebar-container-with-content">
-  <div class="author-avatar">
+  <div class="sidebar-inner-content-container">
+    <br/>
+    <div class="author-avatar">
 
-    {{ $asset := resources.Get "/images/ed-m-avatar.png" }}
-    {{ $img := $asset.Fit "300x200" }}
-    <figure class="image profile">
-      <img alt="Ed" src="{{ $img.RelPermalink }}" />
-    </figure>
+      {{ $asset := resources.Get "/images/ed-m-avatar.png" }}
+      {{ $img := $asset.Fit "300x200" }}
+      <figure class="image profile">
+        <img alt="Ed" src="{{ $img.RelPermalink }}" />
+      </figure>
 
-  </div>
-  <div class="author-info">
-    Name: {{.Site.Author.authorinfo.name }}
+    </div>
     <br />
-    Location: {{.Site.Author.authorinfo.location }}
+    <hr />
+    <div class="author-info">    
     <br />
-    Employment Status: {{.Site.Author.authorinfo.employmentStatus }}
+      Name: {{.Site.Author.authorinfo.name }}
+      <br />
+      Location: {{.Site.Author.authorinfo.location }}
+      <br />
+      Employment Status: {{.Site.Author.authorinfo.employmentStatus }}
+      <br />
+    </div>
   </div>
-
 </div>
