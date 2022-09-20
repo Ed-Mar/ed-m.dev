@@ -1,0 +1,24 @@
+
+{{ define "main" }}        
+<br />
+<div class="content">
+    
+
+    {{ .Content }}
+</div>
+
+<div class="tags-container">
+    {{ range $key, $value := .Site.Taxonomies.tags }}
+        <div class="tags-key">
+            <h2>{{ humanize $key }}</h2>
+        </div>
+        <div class="tag-pages-list">
+            {{ range $value.Pages }}
+                <a href="{{ .Permalink}}"> {{ .LinkTitle }} </a> 
+            {{end}}   
+        </div>       
+        <br />
+    {{ end }}
+</div>
+{{ end }}
+
