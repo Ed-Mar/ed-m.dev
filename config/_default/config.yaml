@@ -1,6 +1,6 @@
 baseURL: https://ed-m.dev
 languageCode: en-us
-title: Ed M dev notes
+title: Ed-M.dev
 enableEmoji: false
 enableGitInfo: true
 params:

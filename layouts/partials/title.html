@@ -1,0 +1,27 @@
+<!--So of instead of checking for which kind of page I am on I just not filling in Title and Subtitle -->
+<!--This was done to just limit the amount of logic needed for this -->
+<!--I don't entend to make this a template or anything so I just need to makesure I remember not poplate those feilds for home and list pages -->
+
+{{$holdthis := newScratch}}
+<!--Checks most detailed frist -->
+
+<!--Checks for Subtitle-->
+{{with .Param "subtitle"}}
+    {{$holdthis.Add "title" .}}
+    <!--adds a dilimeter-->
+    {{$holdthis.Add "title" " | "}}
+    <!--Add the Pages Title if it is set-->
+    {{with $.Param "title" }}
+        {{$holdthis.Add "title" .}}
+    {{end}}
+<!--If Subtitle doesn't exist adds the Page Title and Site Title Instead -->    
+{{else}}
+    {{with $.Param "title" }}
+        {{$holdthis.Add "title" .}}
+        {{$holdthis.Add "title" " | "}}
+        {{$holdthis.Add "title" site.Title }}
+    {{else}}
+        {{$holdthis.Add "title" site.Title }}
+    {{end}}
+{{end}}
+{{return $holdthis.Get "title"}}
