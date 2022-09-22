@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
-
+@import 'fonts.css';
 * {
     margin: 0;
     padding: 0;
@@ -14,15 +13,14 @@ a:hover{
 }
 
 .navBar {
-    font-family: "Montserrat", sans-serif;
+    font-family: 'Montserrat';
     background: #272727;
 }
 .navBar a {
     color: #f6f4e6;
     text-decoration: none;
-    font-size: 1.em;
     text-transform: uppercase;
-    font-weight: 515;
+    font-weight: 500;
     display: inline-block;    
     
     padding: 11px;
@@ -124,6 +122,7 @@ a:hover{
 
 .listed-element-container a:hover{
     color: #427643;
+    text-decoration: underline;
 }
 
 .listed-element-container time {
@@ -133,10 +132,24 @@ a:hover{
     
 }
 
-.tags-container{    
-    margin-top: 1%;
-    margin-left: 1%; 
+.tags-container{ 
+    font-family: "Montserrat", sans-serif;    
+
+    display: flex;
+    flex-wrap: wrap;       
+    margin-left: .5%; 
 }
+.tags-list-item {
+    margin-left: 10px; 
+}
+.tags-list-item a{
+    color: #427643;
+    text-decoration: none;  
+}
+.tags-list-item a:hover{
+    text-decoration: underline;  
+}
+/*--Starts Tags Page--*/
 .tags-key h2{
     font-family: "Montserrat", sans-serif;    
     color: #E6F2E3;    
@@ -150,3 +163,79 @@ a:hover{
 .tag-pages-list a:hover{
     color: #427643;
 }
+/*-- END Tags Page--*/
+
+/*--Starts Single Page--*/
+.single-page{
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 900px;   
+}
+
+.single-page-header{
+    flex-basis: 0;
+    flex-grow: 500;
+    background-color: #272727;
+    margin-top: 1%;
+
+
+    
+    padding: 5px;    
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+
+}
+.single-page-header h2 {
+    color: #E6F2E3;    
+    font-family: "Montserrat", sans-serif;    
+}
+.single-page-header h3 a {    
+    font-family: "Montserrat", sans-serif;    
+    text-decoration: none;
+    color: #427643;
+
+}
+.single-page-header h3 a:hover {    
+    font-family: "Montserrat", sans-serif;    
+    text-decoration: underline;
+    color: #427643;
+
+}
+
+.single-page-header time {
+    font-family: "Montserrat", sans-serif;    
+    color: rgb(197, 197, 197);    
+    text-decoration:wavy;
+}
+.single-page-content{
+    font-family: 'JetBrains Mono';
+    color: #E6F2E3;    
+    text-align: left;
+
+
+
+    flex-basis: 1;
+    flex-grow: 499;
+    background-color: #272727;
+    margin-top: 1%;
+    
+    padding: 5px;    
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+
+
+}
+.single-page-content a{
+    color: #427643;
+}
+.single-page-content p{
+    font-size-adjust: 0.5;
+    display: block;
+    line-height: calc(1ex / 0.32);
+    text-align: justify;
+    hyphens: auto;
+
+}
+/*-- END Single Page --*/

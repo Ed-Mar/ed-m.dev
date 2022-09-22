@@ -1,0 +1,48 @@
+@font-face {
+    font-family: 'JetBrains Mono';    
+    src: url('../fonts/jetbrains-mono-v13-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/jetbrains-mono-v13-latin-regular.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/jetbrains-mono-v13-latin-regular.ttf') format('truetype'); /* Safari, Android, iOS */
+   
+}
+/* montserrat-regular - latin */
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;    
+    src: local('Montserrat'),         
+         url('../fonts/montserrat-v25-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/montserrat-v25-latin-regular.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/montserrat-v25-latin-regular.ttf') format('truetype'); /* Safari, Android, iOS */         
+  }
+  /* montserrat-500 - latin */
+  @font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;    
+    src: local('Montserrat'),         
+         url('../fonts/montserrat-v25-latin-500.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/montserrat-v25-latin-500.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/montserrat-v25-latin-500.ttf') format('truetype'); /* Safari, Android, iOS */         
+  }
+  /* montserrat-600 - latin */
+  @font-face {
+    font-family: 'Montserrat6';
+    font-style: normal;
+    font-weight: 600;    
+    src: local('Montserrat'),         
+         url('../fonts/montserrat-v25-latin-600.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/montserrat-v25-latin-600.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/montserrat-v25-latin-600.ttf') format('truetype'); /* Safari, Android, iOS */
+         
+  }
+  /* montserrat-700 - latin */
+  @font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;    
+    src: local('Montserrat'),         
+         url('../fonts/montserrat-v25-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/montserrat-v25-latin-700.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/montserrat-v25-latin-700.ttf') format('truetype'); /* Safari, Android, iOS */        
+  }
