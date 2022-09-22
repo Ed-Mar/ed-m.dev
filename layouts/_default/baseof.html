@@ -11,6 +11,8 @@
     {{ if (fileExists "static/css/style.css")}}
     <link rel="stylesheet" href="{{ "/css/style.css" | absURL }}">    
     {{ end }}
+    {{ block "addational-css" . }}
+    {{ end }}
 
     <title>{{partial "title.html" .}}</title>    
 </head>
