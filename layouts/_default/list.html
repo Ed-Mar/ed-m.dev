@@ -17,13 +17,12 @@
                     <div class="listed-element-container">
                         <h3><a href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
                         <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
-                        <div class="tags-container">
-                            
-                                {{ range .Params.tags }}                                    
-                                  <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . }}</a>  </li>
-                                {{ end }}
-                            
-                            
+                        <div class="tags-container">                            
+                            {{ range .Params.tags }}                                    
+                                <div class="tags-list-item">
+                                    <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>                                  
+                                </div>
+                                {{ end }}                            
                         </div>
                         <br/>
                         <span>{{.Summary}} ...</span>                        
