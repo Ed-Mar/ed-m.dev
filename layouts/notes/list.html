@@ -15,34 +15,45 @@
             </div>
         </div>
         <div class="notes-index-content-container">
-           <!--Notes notes/projects/*--->  
-            {{$notes := .CurrentSection }}
+            <!-- Loop all thur all pages with "type:project" in its Parms --> 
             {{range where .Site.Pages "Params.type" "project"}}
                 <div class="notes-index-project-item-container">
+                    <!-- If projectName is set then use it Link to that project's List Page -->
+                    <!-- Note that the Project name and directory name need to be same -->
                     {{with .Param "projectName" }}
                         <div class="notes-index-project-item-header">
                             <h3><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h3>
                         </div>
-                    {{end}}                    
+                    {{end}}
+                    <!-- If there is a "projectAltName: <Anything>" then display it -->
                     {{with .Param "projectAltName"}}
                         <div class="subtitle">
                             {{.}}
                         </div>
-                    {{end}}                    
-                    {{with .Param "projectName" }}                            
+                    {{end}}
+                    <!-- Just a check to make sure the project name of the project is set before use I really don't think needed but I just had to -->
+                    {{with .Param "projectName" }}
+                        <!-- Set the Current Project Name that we will looking for it's Pages--> 
                         {{$projectname := .}}                        
-                        <div class="notes-index-project-item-tags-containe">                            
+                        <div class="notes-index-project-item-tags-containe">
+                        <!-- Intilize an empty slice to collect the tags of every page of the given project -->  
                         {{$listOfCurrentTags := slice}}
+                        <!-- Loop over each of the Pages matching the given projectname --> 
                         {{range where site.Pages "Params.project" $projectname}}
+                            <!-- Loop over each of the tags for a given Page --> 
                             {{ range .Params.tags }}
+                                <!-- Check to see if the tag is already in the slice of tags for whole project and if not add it to the slice --> 
                                 {{ if in $listOfCurrentTags .}}
-                                <!-- this was quicker than trying to learn how to NOT in this funky lang -->
+                                <!-- Note: this was quicker than trying to learn how to NOT in this funky lang -->
                                 <!-- Do nothing if tag is already in the slice  --> 
                                 {{else}}
+                                    <!-- Add the non-included tag to the list of the Tags for the given project --> 
                                     {{$listOfCurrentTags = append . $listOfCurrentTags}}
                                 {{end}}
                             {{end}}                            
                         {{end}}
+                        <!-- Once all the pages have been iterated aswell as all the tags of each of them for a given project 
+                            iterate over the slice of tags for the given project and put them in a link and display them. --> 
                         {{range $listOfCurrentTags}}
                             <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>
                         {{end}}
