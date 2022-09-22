@@ -1,0 +1,8 @@
+{{$content := .Content}}
+{{$lep := findRE "</p>" $content}}
+
+{{ if $lep }}    
+    {{$content = $content | replaceRE "</p>" "</p><br/>" }}
+{{ end }}
+<!--This does work(kinda), but it wrappes it in a "" making not rednering into HTML, but just fuck off big string -->
+{{return $content}}
