@@ -1,0 +1,7 @@
+:root{
+    --project-div-flexgrow: 50
+}
+
+.notes-index-project-item-container{
+    flex-grow: var(--project-div-flexgrow);
+}

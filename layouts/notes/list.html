@@ -15,11 +15,41 @@
             </div>
         </div>
         <div class="notes-index-content-container">
-            
-
+           <!--Notes notes/projects/*--->  
+            {{$notes := .CurrentSection }}
+            {{range where .Site.Pages "Params.type" "project"}}
+                <div class="notes-index-project-item-container">
+                    {{with .Param "projectName" }}
+                        <div class="notes-index-project-item-header">
+                            <h3><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h3>
+                        </div>
+                    {{end}}                    
+                    {{with .Param "projectAltName"}}
+                        <div class="subtitle">
+                            {{.}}
+                        </div>
+                    {{end}}                    
+                    {{with .Param "projectName" }}                            
+                        {{$projectname := .}}                        
+                        <div class="notes-index-project-item-tags-containe">                            
+                        {{$listOfCurrentTags := slice}}
+                        {{range where site.Pages "Params.project" $projectname}}
+                            {{ range .Params.tags }}
+                                {{ if in $listOfCurrentTags .}}
+                                <!-- this was quicker than trying to learn how to NOT in this funky lang -->
+                                <!-- Do nothing if tag is already in the slice  --> 
+                                {{else}}
+                                    {{$listOfCurrentTags = append . $listOfCurrentTags}}
+                                {{end}}
+                            {{end}}                            
+                        {{end}}
+                        {{range $listOfCurrentTags}}
+                            <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>
+                        {{end}}
+                        </div>
+                    {{end}}
+                </div>
+            {{end}}
         </div>
-        
-        
-    
     </div>
 {{ end }}
