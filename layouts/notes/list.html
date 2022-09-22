@@ -1,7 +1,25 @@
+{{ define "addational-css" }}
+    {{ if (fileExists "static/css/notes-index.css")}}
+        <link rel="stylesheet" href="{{ "/css/notes-index.css" | absURL }}">    
+    {{ end }}
+{{ end }}
+
 
 {{ define "main" }}
+    <div class="main container">
+        <div class="header">
+            <h2 class="header title"> Notes & Projects </h2>
+            <h4 class="header subtitle"> Notes Collection broken down by Projects  </h4>
+            <div class="header info">
+                Basic project information, with a few of the latest post from those projects with non projest related notes below everything else.
+            </div>
+        </div>
+        <div class="notes-index-content-container">
+            {{range}}
 
-
-{{ .Content }}
-
+        </div>
+        
+        
+    
+    </div>
 {{ end }}

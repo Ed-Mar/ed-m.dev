@@ -29,8 +29,41 @@ a:hover{
 .navBar a:hover {
     color: #427643;
 }
+.main.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center
+}
+.header{
+    background-color: #272727;
 
+    margin-top: .5rem;
 
+    order: 0;       
+
+    border-radius:3px;
+    -moz-border-radius:3px;
+
+    font-family: "Montserrat", sans-serif;    
+    color: #E6F2E3;    
+
+}
+
+.header.title {
+    font-weight: 500;
+    
+}
+.header.subtitle {    
+    margin-left: 1em;
+    font-weight: 500;
+}
+.header.info{
+    color: #818181;    
+
+}
+.notes-index-content-container{
+    
+}
 /* I know this naming is ass, but I thought it would be easiest way */
 
 .content-with-sidebar-container {
