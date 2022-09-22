@@ -1,7 +1,7 @@
 ---
-title: title: "{{ replace .Name "-" " " | title }}"
+title: "{{ replace .Name "-" " " | title }}"
 subtitle: 
-date: 2022-08-26T10:36:18-04:00
+date: {{ .Date }}
 project: conduit
 draft: true
 tags:
