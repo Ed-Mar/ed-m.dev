@@ -1,3 +1,25 @@
+
 {{ define "main" }}
-    {{ .Content }}
+<div class="single-page">
+    <div class="single-page-header">
+        <h2>{{partial "title.html" .}}</h2>
+        <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
+        {{with $.Param "project" }}
+        <div class="single-page-project">
+            <h3><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> Project - {{humanize .}}</a></h3>
+        </div>
+        <div class="tags-container">            
+            {{ range $.Param "tags" }}                                    
+                <div class="tags-list-item">
+                    <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>              
+                </div>        
+            {{ end }}
+        </div>
+        {{end}}
+    </div>
+    <br/>
+    <div class="single-page-content">
+        {{.Content}}    
+    </div>
+</div>
 {{ end }}
