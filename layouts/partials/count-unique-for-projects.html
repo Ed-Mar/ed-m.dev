@@ -1,0 +1,22 @@
+<!-- Expected input project name -->
+
+{{with .Param "projectName" }}
+{{$projectname := .}}                        
+<!-- Intilize an empty slice to collect the tags of every page of the given project -->  
+{{$listOfCurrentTags := slice}}
+<!-- Loop over each of the Pages matching the given projectname --> 
+{{range where site.Pages "Params.project" $projectname}}
+    <!-- Loop over each of the tags for a given Page --> 
+    {{ range .Params.tags }}
+        <!-- Check to see if the tag is already in the slice of tags for whole project and if not add it to the slice --> 
+        {{ if in $listOfCurrentTags .}}
+        <!-- Note: this was quicker than trying to learn how to NOT in this funky lang -->
+        <!-- Do nothing if tag is already in the slice  --> 
+        {{else}}
+            <!-- Add the non-included tag to the list of the Tags for the given project --> 
+            {{$listOfCurrentTags = append . $listOfCurrentTags}}
+        {{end}}
+    {{end}}
+{{end}}
+{{len $listOfCurrentTags}}
+{{ end }}  
