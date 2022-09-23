@@ -7,4 +7,4 @@ github: https://github.com/Ed-Mar/ed-m.dev
 Status: Active Devlopment
 ---
 
-
+I make a vanity site for my poor notes
