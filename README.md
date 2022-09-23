@@ -2,7 +2,7 @@
 
 ### A HUGO CMS site. 
 
-https://ed-m.dev **Note the site still pending.**
+https://ed-m.dev **Note the site is not live yet.**
 
 A static website for my collection of dev notes. 
 
