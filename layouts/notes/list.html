@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="notes-index-sub-header">
-            <h3>Projects </h3> 
+            <h2>Projects </h2> 
         </div>
         <div class="notes-index-content-container">
             <!-- Loop all thur all pages with "type:project" in its Parms --> 
@@ -25,15 +25,9 @@
                     <!-- Note that the Project name and directory name need to be same -->
                     {{with .Param "projectName" }}
                         <div class="notes-index-project-item-header">
-                            <h3><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h3>                            
+                            <h3><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h3>
+                        </div>
                     {{end}}
-                    <!--If there is github in the project index front matter then makes pull the github svg and put in the link to the projects base github--> 
-                    {{with .Param "github"}}
-                        {{ $githubAsset := resources.Get "/svgs/github.svg" }}
-                        <a class="github-svg" href={{.}}>
-                            <img src="{{ $githubAsset.RelPermalink }}" />
-                        </a>
-                    {{end}}                    
                     <!-- If there is a "projectAltName: <Anything>" then display it -->
                     {{with .Param "projectAltName"}}
                         <div class="subtitle">
@@ -41,13 +35,51 @@
                         </div>
                     {{end}}
 
+                    <br/>
+                    <div class="project-item-information-container">
 
-                    
+                        <div class="project-item-information-inner" >
+                            <!--If there is github in the project index front matter then makes pull the github svg and put in the link to the projects base github--> 
+                            {{with .Param "github"}}
+                            {{ $githubAsset := resources.Get "/svgs/github.svg" }}
+                                <a class="github-svg" href={{.}}> 
+                                    <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
+                                    {{ partial "github-svg.html" (dict "width" 30 "height" 30 ) }}                                    
+                                </a>
+                            {{end}}
+                            Project Information
+                            <div class="project-item-information-inner-content">
+                                {{.Content}}
+                            </div>
+                        </div>
+                        <div class="project-item-information-inner">
+                            Project Stats
+                            <br/>
+                            Number of post
+                            {{partial "num-post-for-project.html" .}}
+                            <br/>
+                            {{with .Param "status"}}
+                                Project Status: {{.}}
+                            {{end}}
+                            <br/>
+                            Number Unque Tags
+                            {{ partial "count-unique-for-projects.html" . }}
+                            <br/>
+                            Last Post for this Project
+                            <br/>
+                            Project Start Date
+                            <br/>
+                            {{partial "last-date-of-post-for-project" .}}
+                        </div>
+                        <div class="project-item-information-inner-end">
+                            Projects Latest Post                  
+                        </div>
+                    </div>
+                    <br/>
                     <!-- Just a check to make sure the project name of the project is set before use I really don't think needed but I just had to -->
                     {{with .Param "projectName" }}
                         <!-- Set the Current Project Name that we will looking for it's Pages--> 
-                        {{$projectname := .}}                        
-                        <div class="notes-index-project-item-tags-containe">
+                        {{$projectname := .}}
                         <!-- Intilize an empty slice to collect the tags of every page of the given project -->  
                         {{$listOfCurrentTags := slice}}
                         <!-- Loop over each of the Pages matching the given projectname --> 
@@ -74,7 +106,6 @@
                             {{range $listOfCurrentTags}}
                                 <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>
                             {{end}}
-                        </div>
                         </div>
                     {{end}} 
                 </div>
