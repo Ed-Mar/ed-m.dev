@@ -4,4 +4,27 @@
 
 .notes-index-project-item-container{
     flex-grow: var(--project-div-flexgrow);
+    background-color: #272727;
+    margin-top: 1%;
+}
+
+.notes-index-project-item-container h3 a{
+    font-family: "Montserrat", sans-serif;    
+    color: #E6F2E3;    
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.notes-index-project-item-container a:hover{
+    color: #427643;
+    text-decoration: underline;
+}
+.notes-index-project-tag-container a{
+    font-family: "Montserrat", sans-serif;    
+    font-weight: 500;
+    color: #427643;
+    text-decoration: none;
+}
+.notes-index-project-tag-container a:hover{
+    text-decoration: underline;
 }
