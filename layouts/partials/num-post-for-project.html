@@ -1,0 +1,13 @@
+<!-- Expected in put project name --> 
+{{with .Param "projectName" }}
+    <!-- Set the Current Project Name that we will looking for it's Pages--> 
+    {{$projectname := .}}
+    <!-- Had to use Scratch to count for us cause I could'nt get the index to work with where-->
+    {{ $.Scratch.Set "betterIndex" 0 }}    
+    {{range where site.Pages "Params.project" $projectname}}
+        {{ $.Scratch.Set "betterIndex" (add ($.Scratch.Get "betterIndex") 1) }}
+    {{end}}
+    <!--Displays the Total number Post for the given project --> 
+    {{$.Scratch.Get "betterIndex"}}
+{{end}}
+
