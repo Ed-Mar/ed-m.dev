@@ -14,6 +14,9 @@
                 Basic project information, with a few of the latest post from those projects with non projest related notes below everything else.
             </div>
         </div>
+        <div class="notes-index-sub-header">
+            <h3>Projects </h3> 
+        </div>
         <div class="notes-index-content-container">
             <!-- Loop all thur all pages with "type:project" in its Parms --> 
             {{range where .Site.Pages "Params.type" "project"}}
@@ -22,15 +25,24 @@
                     <!-- Note that the Project name and directory name need to be same -->
                     {{with .Param "projectName" }}
                         <div class="notes-index-project-item-header">
-                            <h3><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h3>
-                        </div>
+                            <h3><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h3>                            
                     {{end}}
+                    <!--If there is github in the project index front matter then makes pull the github svg and put in the link to the projects base github--> 
+                    {{with .Param "github"}}
+                        {{ $githubAsset := resources.Get "/svgs/github.svg" }}
+                        <a class="github-svg" href={{.}}>
+                            <img src="{{ $githubAsset.RelPermalink }}" />
+                        </a>
+                    {{end}}                    
                     <!-- If there is a "projectAltName: <Anything>" then display it -->
                     {{with .Param "projectAltName"}}
                         <div class="subtitle">
                             {{.}}
                         </div>
                     {{end}}
+
+
+                    
                     <!-- Just a check to make sure the project name of the project is set before use I really don't think needed but I just had to -->
                     {{with .Param "projectName" }}
                         <!-- Set the Current Project Name that we will looking for it's Pages--> 
@@ -54,13 +66,20 @@
                         {{end}}
                         <!-- Once all the pages have been iterated aswell as all the tags of each of them for a given project 
                             iterate over the slice of tags for the given project and put them in a link and display them. --> 
-                        {{range $listOfCurrentTags}}
-                            <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>
-                        {{end}}
+                        <div class="notes-index-project-tag-container">
+                            <hr/>
+                            <div class="">
+                                Project Tags
+                            </div>                            
+                            {{range $listOfCurrentTags}}
+                                <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>
+                            {{end}}
                         </div>
-                    {{end}}
+                        </div>
+                    {{end}} 
                 </div>
             {{end}}
         </div>
+
     </div>
 {{ end }}
