@@ -1,4 +1,4 @@
-# Ed-m.Dev
+# Ed-m.dev
 
 ### A HUGO CMS site. 
 
