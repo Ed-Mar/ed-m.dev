@@ -1,9 +1,6 @@
-:root{
-    --project-div-flexgrow: 50
-}
 
-.notes-index-project-item-container{
-    flex-grow: var(--project-div-flexgrow);
+
+.notes-index-project-item-container{    
     background-color: #272727;
     margin-top: 1%;
 }
@@ -27,4 +24,24 @@
 }
 .notes-index-project-tag-container a:hover{
     text-decoration: underline;
+}
+.project-item-information-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+.project-item-information-inner{
+    border-right-width:0.1rem;
+    border-right-style: solid; 
+    border-right-color: #E6F2E3; 
+    flex-basis:  20%;
+    flex-grow: 1; 
+}
+.project-item-information-inner-end{
+    flex-grow: 3;
+    flex-basis: 40%;    
+}
+.github-svg{
+    fill: #427643;   
 }
