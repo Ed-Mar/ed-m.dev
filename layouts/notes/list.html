@@ -72,7 +72,8 @@
                             {{partial "last-date-of-post-for-project" .}}
                         </div>
                         <div class="project-item-information-inner-end">
-                            Projects Latest Post                  
+                            Projects Latest Post 
+                            {{partial "notes-index-projects-latest-post.html" .}}      
                         </div>
                     </div>
                     <br/>
@@ -110,6 +111,10 @@
                     {{end}} 
                 </div>
             {{end}}
+        </div>
+        <div class="notes-index-non-project-container">
+            <h2>Non-Project Notes</h2>
+            {{partial "notes-index-get-unrelated.html" . }}
         </div>
 
     </div>
