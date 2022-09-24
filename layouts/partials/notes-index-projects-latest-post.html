@@ -1,0 +1,13 @@
+{{with .Param "projectName" }}
+<!-- Set the Current Project Name that we will looking for it's Pages-->
+{{ $.Scratch.Set "index" 0 }}
+{{$projectname := .}}
+    {{range where site.Pages.ByDate "Params.project" $projectname}}
+        {{ $.Scratch.Set "index" (add ($.Scratch.Get "index") 1) }}
+        {{if lt ($.Scratch.Get "index") 4}}
+        <h3><a href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
+        <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
+        {{end}}
+    {{end}}
+    
+{{end }}
