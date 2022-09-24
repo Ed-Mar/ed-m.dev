@@ -3,6 +3,7 @@ title: Useful Links
 date: 2022-08-27T8:58:18-04:00
 tags: 
   - kubernetes
+nonProject: true
 
 ---
 ### 220827
