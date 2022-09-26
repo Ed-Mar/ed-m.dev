@@ -13,20 +13,19 @@
             <div class="header info">
                 Basic project information, with a few of the latest post from those projects with non projest related notes below everything else.
             </div>
-        </div>
-        <div class="notes-index-sub-header">
-            <h2>Projects </h2> 
-        </div>
-        <div class="notes-index-content-container">
+        </div>        
+        
+        <h2 class="header content-divider">Projects </h2>            
+        
+        <div class="projects main-container">
             <!-- Loop all thur all pages with "type:project" in its Parms --> 
             {{range where .Site.Pages "Params.type" "project"}}
-                <div class="notes-index-project-item-container">
+            
+                <div class="individual-project-container">
                     <!-- If projectName is set then use it Link to that project's List Page -->
                     <!-- Note that the Project name and directory name need to be same -->
-                    {{with .Param "projectName" }}
-                        <div class="notes-index-project-item-header">
-                            <h3><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h3>
-                        </div>
+                    {{with .Param "projectName" }}                        
+                            <h2><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h2>                        
                     {{end}}
                     <!-- If there is a "projectAltName: <Anything>" then display it -->
                     {{with .Param "projectAltName"}}
@@ -34,45 +33,37 @@
                             {{.}}
                         </div>
                     {{end}}
-
+                    {{with .Param "github"}}
+                    {{ $githubAsset := resources.Get "/svgs/github.svg" }}
+                        <div class="github-icon-container">
+                            <a class="github-svg" href={{.}}> 
+                                <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
+                                {{ partial "github-svg.html" (dict "width" 30 "height" 30 ) }}                            
+                            </a>
+                            <a href={{.}}>Github</a>
+                        </div>
+                    {{end}}  
                     <br/>
-                    <div class="project-item-information-container">
+                    <div class="project-information-panel-container">
 
-                        <div class="project-item-information-inner" >
+                        <div class="project-information-panel-1" >
                             <!--If there is github in the project index front matter then makes pull the github svg and put in the link to the projects base github--> 
-                            {{with .Param "github"}}
-                            {{ $githubAsset := resources.Get "/svgs/github.svg" }}
-                                <a class="github-svg" href={{.}}> 
-                                    <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
-                                    {{ partial "github-svg.html" (dict "width" 30 "height" 30 ) }}                                    
-                                </a>
-                            {{end}}
-                            Project Information
-                            <div class="project-item-information-inner-content">
+                                                    
+                            <div class="project-item-project-info">
                                 {{.Content}}
                             </div>
                         </div>
-                        <div class="project-item-information-inner">
-                            Project Stats
-                            <br/>
-                            Number of post
-                            {{partial "num-post-for-project.html" .}}
-                            <br/>
+                        <div class="project-information-panel-2">                            
+                            <div>Number of post: {{partial "num-post-for-project.html" .}}</div>
                             {{with .Param "status"}}
-                                Project Status: {{.}}
-                            {{end}}
-                            <br/>
-                            Number Unque Tags
-                            {{ partial "count-unique-for-projects.html" . }}
-                            <br/>
-                            Last Post for this Project
-                            <br/>
-                            Project Start Date
-                            <br/>
-                            {{partial "last-date-of-post-for-project" .}}
+                                <div>Project Status: {{.}}</div>
+                            {{end}}                            
+                            <div>Number Unque Tags:{{ partial "count-unique-for-projects.html" . }}</div>                            
+                            <div>Last Post:  {{partial "last-date-of-post-for-project" .}}</div>                            
+                            <div>Project Start Date: {{partial "frist-post-date-for-project.html" .}}</div>                           
                         </div>
-                        <div class="project-item-information-inner-end">
-                            Projects Latest Post 
+                        <div class="project-information-panel-3">
+                                <h3>Projects Latest Post</h3>
                             {{partial "notes-index-projects-latest-post.html" .}}      
                         </div>
                     </div>
@@ -101,19 +92,22 @@
                             iterate over the slice of tags for the given project and put them in a link and display them. --> 
                         <div class="notes-index-project-tag-container">
                             <hr/>
-                            <div class="">
-                                Project Tags
-                            </div>                            
-                            {{range $listOfCurrentTags}}
-                                <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>
-                            {{end}}
+                            <div class="tags-container">
+                                <span>Project Tags:</span>                                                       
+                                {{range $listOfCurrentTags}}
+                                    <div class="tag-list-item">
+                                        <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>
+                                    </div>
+                                {{end}}
+                            </div> 
                         </div>
                     {{end}} 
                 </div>
+            
             {{end}}
         </div>
         <div class="notes-index-non-project-container">
-            <h2>Non-Project Notes</h2>
+            <h2 class="header">Non-Project Notes</h2>
             {{partial "notes-index-get-unrelated.html" . }}
         </div>
 

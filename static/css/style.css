@@ -1,4 +1,6 @@
 @import 'fonts.css';
+@import 'navbar.css';
+@import 'homepage.css';
 * {
     margin: 0;
     padding: 0;
@@ -11,35 +13,13 @@ body{
 a:hover{
     color: #427643;
 }
-
-.navBar {
-    font-family: 'Montserrat';
-    background: #272727;
-}
-.navBar a {
-    color: #f6f4e6;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-weight: 500;
-    display: inline-block;    
-    
-    padding: 11px;
-}
-
-.navBar a:hover {
-    color: #427643;
-}
 .main.container{
     display: flex;
     flex-direction: column;
     justify-content: center
 }
 .header{
-    background-color: #272727;
-
-    margin-top: .5rem;
-
-    order: 0;       
+    background-color: #272727;    
 
     border-radius:3px;
     -moz-border-radius:3px;
@@ -47,82 +27,66 @@ a:hover{
     font-family: "Montserrat", sans-serif;    
     color: #E6F2E3;    
 
+    font-weight: 500;
+    margin-top: .5rem;
 }
 
 .header.title {
-    font-weight: 500;
+    
+    margin-top: .5rem;
     
 }
 .header.subtitle {    
     margin-left: 1em;
-    font-weight: 500;
+    
 }
 .header.info{
     color: #818181;    
-
 }
-.notes-index-content-container{
-    
-}
-/* I know this naming is ass, but I thought it would be easiest way */
-
-.content-with-sidebar-container {
-    display: flex;
-    flex-wrap: wrap;
-      
-
+.header.content-divider{
+     margin-top: .6rem;
+     font-weight: 500;
+     margin-top: .3rem;
+     margin-bottom: .3rem;
 }
 
-.the-sidebar-container-with-content {    
-    flex-basis: 20rem;
-    flex-grow: 1;    
-    
-    align-items: stretch; /*Used this to make the child strech to the bottom on the parent */ 
-    
-}
-.sidebar-inner-content-container{
-    margin: auto;
-    margin-top: 6%;    
-    margin-left: 3%;
-    margin-right: 3%;
-    background-color: #272727;
-    padding: 5px;
-    
-    border-radius:3px;
-
-    -moz-border-radius:3px;
-}
-.author-avatar{
-    margin-left: 10%;
-    margin-right: 10%;    
-}
-.author-avatar img{
-    margin-left: 10%;
-    margin-right: 10%;    
-}
-.author-info{
-    margin-left: 3%;
-    font-family: "Montserrat", sans-serif;    
-    color: #ddd;    
+hr {
+    border: none;
+    border-top: 3px double #202020;
+    color: #202020;
+    overflow: visible;
+    text-align: center;
+    height: 5px;
+    margin-top: .3rem;
+    margin-bottom: .3rem;
 }
 
-
-.the-content-container-with-sidebar {
-    flex-basis: 0;
-    flex-grow: 500;
-    
-    
+hr:after {
+    color: #427643;
+    content: '♖';
+    padding: 0 4px;
+    position: relative;
+    top: -13px;
 }
+
 .content{
-    background-color: #272727;
-    padding: 8px;
-    font-size: 1.em;
-    border-radius:3px;
-
-    -moz-border-radius:3px;
+    background-color: #272727;   
+    padding-left: 10px;
+    width: 97%;
+    margin-left: 1% ;    
+    border-radius:3px;    
     font-family: "Montserrat", sans-serif;    
     color: #E6F2E3;    
 }
+
+#summary  {
+    font-family: 'Courier New', Courier, monospace;
+    color: rgb(148, 148, 148);
+    font-size-adjust: 0.5;
+}
+
+
+
 /* List Page Content  */
 .list-container{
     font-family: "Montserrat", sans-serif;    
@@ -134,18 +98,15 @@ a:hover{
     
 }
 .listed-element-container {
-    background-color: #272727;
-    
+    background-color: #272727;    
     padding: 5px;    
     border-radius:3px;
     -moz-border-radius:3px;
     -webkit-border-radius:3px;
+    margin-top: .5%;
 }
 
-.listed-element-container span {
-    font-family: 'Courier New', Courier, monospace;
-    color: rgb(148, 148, 148);
-}
+
 
 .listed-element-container a {
     font-family: "Montserrat", sans-serif;    
@@ -160,22 +121,24 @@ a:hover{
 
 .listed-element-container time {
     font-family: "Montserrat", sans-serif;    
-    color: rgb(197, 197, 197);    
+    color: rgb(197, 197, 197);     
     text-decoration:wavy;
     
 }
 
 .tags-container{ 
-    font-family: "Montserrat", sans-serif;    
-
+    font-family: "Montserrat", sans-serif;
     display: flex;
     flex-wrap: wrap;       
     margin-left: .5%; 
 }
-.tags-list-item {
-    margin-left: 10px; 
+.tags-container span{ 
+    color: #E6F2E3;
 }
-.tags-list-item a{
+.tag-list-item {
+    margin-left: 6px; 
+}
+.tag-list-item a{
     color: #427643;
     text-decoration: none;  
 }
@@ -188,87 +151,30 @@ a:hover{
     color: #E6F2E3;    
     text-decoration: none;     
 }
-.tag-pages-list a{
+.github-icon-container{
+    margin-top: .4rem;
     font-family: "Montserrat", sans-serif;    
-    color: #E6F2E3;    
-    text-decoration: none;        
+
 }
-.tag-pages-list a:hover{
+.github-icon-container a{    
     color: #427643;
+    text-decoration: none;
+    vertical-align: middle;
 }
+.github-icon-container a:hover{
+    text-decoration: underline;
+}
+.github-svg{
+    fill: #427643;        
+}
+.github-svg:hover{
+    fill: #818181;        
+    text-decoration: none;
+}
+   
+
+
+
 /*-- END Tags Page--*/
 
-/*--Starts Single Page--*/
-.single-page{
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 900px;   
-}
 
-.single-page-header{
-    flex-basis: 0;
-    flex-grow: 500;
-    background-color: #272727;
-    margin-top: 1%;
-
-
-    
-    padding: 5px;    
-    border-radius:3px;
-    -moz-border-radius:3px;
-    -webkit-border-radius:3px;
-
-}
-.single-page-header h2 {
-    color: #E6F2E3;    
-    font-family: "Montserrat", sans-serif;    
-}
-.single-page-header h3 a {    
-    font-family: "Montserrat", sans-serif;    
-    text-decoration: none;
-    color: #427643;
-
-}
-.single-page-header h3 a:hover {    
-    font-family: "Montserrat", sans-serif;    
-    text-decoration: underline;
-    color: #427643;
-
-}
-
-.single-page-header time {
-    font-family: "Montserrat", sans-serif;    
-    color: rgb(197, 197, 197);    
-    text-decoration:wavy;
-}
-.single-page-content{
-    font-family: 'JetBrains Mono';
-    color: #E6F2E3;    
-    text-align: left;
-
-
-
-    flex-basis: 1;
-    flex-grow: 499;
-    background-color: #272727;
-    margin-top: 1%;
-    
-    padding: 5px;    
-    border-radius:3px;
-    -moz-border-radius:3px;
-    -webkit-border-radius:3px;
-
-
-}
-.single-page-content a{
-    color: #427643;
-}
-.single-page-content p{
-    font-size-adjust: 0.5;
-    display: block;
-    line-height: calc(1ex / 0.32);
-    text-align: justify;
-    hyphens: auto;
-
-}
-/*-- END Single Page --*/
