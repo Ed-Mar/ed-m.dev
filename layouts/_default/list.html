@@ -1,41 +1,48 @@
 {{ define "main" }}
-<div class="content-with-sidebar-container">
-    <div class="the-content-container-with-sidebar ">
+<div id="main-container-with-sidebar">
+    <div id="main-content">
         <br />
-        <div class="content">
+
+        <div id="site-desc">
             <br />
-        {{ .Content }}
-        <br />
+            {{ .Content }}
+            <br />
         </div>
+
         <div class="list-container">
-        <h1>Latest Post</h1>
-        {{ $.Scratch.Set "counter" 0 }}
-        {{range site.Pages.ByDate.Reverse }}
-            {{if .IsPage}}
-                {{ $.Scratch.Set "counter" (add ($.Scratch.Get "counter") 1) }}
-                {{if lt ($.Scratch.Get "counter") 6}}
-                    <div class="listed-element-container">
-                        <h3><a href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
-                        <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
-                        <div class="tags-container">                            
-                            {{ range .Params.tags }}                                    
-                                <div class="tags-list-item">
-                                    <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>                                  
-                                </div>
-                            {{ end }}                            
+            <h1>Latest Post</h1>
+            {{ $.Scratch.Set "counter" 0 }}
+            {{range site.Pages.ByDate.Reverse }}
+                {{if .IsPage}}
+                    {{ $.Scratch.Set "counter" (add ($.Scratch.Get "counter") 1) }}
+                    {{if lt ($.Scratch.Get "counter") 6}}
+                        <div class="listed-element-container">
+                            <h3><a href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
+                            <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
+                            <div class="tags-container">                            
+                                {{ range .Params.tags }}                                    
+                                    <div class="tag-list-item">
+                                        <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>                                  
+                                    </div>
+                                {{ end }}                            
+                            </div>
+                            <br/>
+                            <div id="summary">
+                                <span>{{.Summary}} ...</span>
+                            </div>
                         </div>
                         <br/>
-                        <span>{{.Summary}} ...</span>                        
-                    </div>                
-                    <br/>
-                {{ else }}
-                <!-- Do nothing if not less than 5 -->
-                {{ end }}
-            {{ end }}
-        {{ end }}
-    </div>
+                    {{else}}
+                    <!-- Do nothing if not less than 5 -->
+                {{end}}                
+            {{end}}            
+        {{end}}
+        
+        </div>
 
     </div>
-    {{ partial "author-info.html" . }}
+    <div id="side-bar">
+        {{ partial "author-info.html" . }}
+    </div>
 </div>
 {{ end }}

@@ -1,0 +1,68 @@
+/* Main Container - The Parent of the flex */
+/* Main with info from https://every-layout.dev/layouts/sidebar/ */
+#main-container-with-sidebar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+}
+/* Main Container | Main-Content - The Child of the flex */
+#main-content {
+    flex-basis: 0;
+    flex-grow: 666;
+    min-inline-size: 50% 
+}
+/* Main Container | Side-Bar - The Child of the flex */
+#side-bar {
+    flex-basis: 20rem;
+    flex-grow: 1;    
+    
+    align-items: stretch; /*Used this to make the child strech to the bottom on the parent */ 
+}
+#site-desc{    
+    background-color: #272727;
+    
+    padding: 4px;
+    padding-left: 10px;
+    width: 97%;
+
+    font-family: "Montserrat", sans-serif;    
+    color: #E6F2E3;    
+    font-size-adjust: 0.5;
+    display: block;
+    line-height: calc(1ex / 0.32);
+    text-align: justify;
+    hyphens: auto;
+}
+
+.sidebar-inner-content-container{
+    margin: auto;
+    margin-top: 6%;    
+    margin-left: 3%;
+    margin-right: 3%;
+    background-color: #272727;
+    padding: 5px;
+    
+    border-radius:3px;
+
+    -moz-border-radius:3px;
+}
+.author-avatar{
+    margin-left: 10%;
+    margin-right: 10%;    
+}
+.author-avatar img{
+    margin-left: 10%;
+    margin-right: 10%;    
+}
+.author-info{
+    margin-left: 3%;
+    font-family: "Montserrat", sans-serif;    
+    color: #ddd;    
+}
+.author-icons-container{    
+    margin: auto;
+    margin-top: .5rem;
+    width: 95%;
+    text-align: center;
+}
