@@ -3,7 +3,7 @@ type: project
 projectName: conduit
 website: <undefined>
 github: https://github.com/Ed-Mar/appalachian-bastion/tree/master/conduit
-status: Initial Devlopment in progress
+status: Devlopment Pasued
 ---
 
 ### Conduit | Appalachian-bastion
