@@ -5,14 +5,13 @@
     <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
     <div class="tags-container">                            
         {{ range .Params.tags }}                                    
-            <div class="tags-list-item">
+            <div class="tag-list-item">
                 <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>                                  
             </div>
         {{ end }}                            
-    </div>
-    <br/>
-    <span>{{.Summary}} ...</span>                        
+    </div>    
+    <span id="summary">{{.Summary}} ...</span>                        
 </div>                
-<br/>
+
 {{end}}
 
