@@ -1,4 +1,4 @@
-<div class="the-sidebar-container-with-content">
+
   <div class="sidebar-inner-content-container">
     <br/>
     <div class="author-avatar">
@@ -21,5 +21,11 @@
       Employment Status: {{.Site.Author.authorinfo.employmentStatus }}
       <br />
     </div>
+    <div class="author-icons-container">
+      <a class="github-svg" href="https://github.com/Ed-Mar"> 
+        <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
+        {{ partial "github-svg.html" (dict "width" 40 "height" 40 ) }}                                  
+      </a>
+      
+    </div>
   </div>
-</div>
