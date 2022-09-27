@@ -1,9 +1,10 @@
 ---
 type: project
 projectName: conduit
-website: <undefined>
+website:
 github: https://github.com/Ed-Mar/appalachian-bastion/tree/master/conduit
-status: Devlopment Pasued
+status: Devlopment Paused
+shortDescription: Group Messaging Golang/Fullstack Study
 ---
 
 ### Conduit | Appalachian-bastion
