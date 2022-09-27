@@ -114,6 +114,10 @@ hr:after {
     text-decoration: none;        
 }
 
+.listed-element-container h1,h2,h3,h4,h5 {
+    font-weight: 500;
+}
+
 .listed-element-container a:hover{
     color: #427643;
     text-decoration: underline;
@@ -172,9 +176,22 @@ hr:after {
     text-decoration: none;
 }
    
+footer{
+  
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  margin-top: 2%;
 
-
-
-/*-- END Tags Page--*/
-
-
+  font-family: "Montserrat", sans-serif;
+  color: #818181;
+}
+footer a{
+    color: #427643;
+    text-decoration: none;
+}
+footer a:hover{
+    color: #427643;
+    text-decoration: underline;
+}
