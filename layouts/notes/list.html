@@ -2,6 +2,13 @@
     {{ if (fileExists "static/css/notes-index.css")}}
         <link rel="stylesheet" href="{{ "/css/notes-index.css" | absURL }}">    
     {{ end }}
+    {{if .Section}}
+        {{if (.IsDescendant (site.GetPage "/notes/projects/"))}}
+            {{ if (fileExists "static/css/individual-Project-Index.css")}}
+                <link rel="stylesheet" href="{{ "/css/individual-Project-Index.css" | absURL }}">    
+            {{ end }}
+        {{end}}
+    {{end}}
 {{ end }}
 
 
@@ -9,15 +16,15 @@
     {{if .Section}}
         <!-- If a sub-section of "notes/projects/*/_index.md" -->
         {{if (.IsDescendant (site.GetPage "/notes/projects/"))}}    
-            {{block "individualProjectIndexLayout" .}}
+            {{block "individualProjectIndexLayout" .}}                
             {{end}}
         <!-- If a sub-section of "notes/*/_index.md" -->
         {{else if (.IsDescendant (site.GetPage "/notes/"))}}
-            {{block "projectIndexLayout" .}}
+            {{block "projectIndexLayout" .}}                
             {{end}}
         {{else }}
         <!-- If a sub-section of "notes/_index.md" -->
-            {{block "notesIndexLayout" .}}
+            {{block "notesIndexLayout" .}}                
             {{end}}
         {{end}}        
     {{end}} 
@@ -232,6 +239,7 @@
     <div class="main container">
         <div class="header">
             <h2 class="header title"> {{.Param "projectName" | humanize}} </h2>
+            {{$projectName := .Param "projectName" | humanize}}
             {{with .Param "website"}}
                 <h4 class="header subtitle"><a href={{.}}>{{.}}</a></h4>
             {{end}}
@@ -241,13 +249,97 @@
                 </div>
             {{end}}         
         </div> 
-    
-        <div class="individual-project-container">       
-            <div class="project-item-project-info">
-                <h3>Project Decription </h3>
+            
+        <div class="individual-project panels container">       
+            <div class="project panel info">               
                 {{.Content}}
+                {{with .Param "github"}}
+                {{ $githubAsset := resources.Get "/svgs/github.svg" }}
+                    <div class="github-icon-container">
+                        <a class="github-svg" href={{.}}> 
+                            <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
+                            {{ partial "github-svg.html" (dict "width" 30 "height" 30 ) }}                            
+                        </a>
+                        <a href={{.}}>{{$projectName}}'s Github</a>
+                    </div>
+                {{end}}
             </div>
-          
-    
+             <div class="project panel stats">
+                <div class="question">Number of post: <span class="question answer">{{ partial "num-post-for-project.html" .}}</span></div>
+                {{with .Param "status"}}
+                    <div class="question">Project Status: <span class="question answer">{{.}}</span></div>
+                {{end}}                            
+                <div class="question">Number Unque Tags: <span class="question answer">{{ partial "count-unique-for-projects.html" . }}</span></div>                            
+                <div class="question">Last Post:   <span class="question answer">{{partial "last-date-of-post-for-project" .}}</span></div>                            
+                <div class="question">Project Start Date:  <span class="question answer">{{partial "frist-post-date-for-project.html" .}}</span></div>                           
+            </div>
+        </div>
+        <div class="project all-tags container">
+            {{with .Param "projectName" }}
+            <!-- Set the Current Project Name that we will looking for it's Pages--> 
+            {{$projectname := .}}            
+            <!-- Intilize a newScratch to hold the collections of maps of tags them self and number of times they appear in the project's notes -->  
+            {{$projectTagsCollection:= newScratch}}
+            <!--These 2 need to be Intilized and set or you'll get some nil errors--> 
+            {{$projectTagsCollection.SetInMap  "projectTags" "DELETE-ME"  "Once Done - Use me and throw me away" }}
+            {{$tempMap := dict "Just-Need-To-Initialize-This" 666 }}
+
+            <!-- Loop over each of the Pages matching the given projectname --> 
+            {{range where site.Pages "Params.project" $projectname}}
+                <!-- Loop over each of the tags for a given Page --> 
+                {{ range .Params.tags }}
+                    <!--Set tempMap to the "projectTags" from inside projectTagsCollection-->
+                    {{$tempMap = $projectTagsCollection.Get "projectTags"}}                    
+                    <!-- Check to see if Tag is in the collection of maps--> 
+                    {{if (index $tempMap .)}}
+                        <!-- If the current Tag is already in the Collection of maps Key-->
+                        <!-- We take the value at that tag and add one to it and set it to a temp-->
+                        {{$plusOne := add (index $tempMap .) 1}}
+                        <!-- Then the new couter value is overwritten at the current tags key value in the collection of project tags  --> 
+                        {{$projectTagsCollection.SetInMap "projectTags" . $plusOne}}
+                    {{else}}
+                        <!-- If the current Tag is NOT in the Collection of maps Key-->
+                        <!-- Then we add to the collection with value of 1 -->
+                        {{$projectTagsCollection.SetInMap "projectTags" . 1}}
+                        <!-- I want to limit the exposer place holder DeleteMe so I delete it as soon as there is another key inserted -->
+                        <!-- Yes I am aware that its a waste to keep this here for every new tag-->
+                        {{$projectTagsCollection.DeleteInMap "projectTags" "DELETE-ME"}}
+
+                    {{end}}                               
+                {{end}}                                            
+            {{end}}            
+            {{range $key, $value := ($projectTagsCollection.Get "projectTags")}}                    
+                <a href="{{ "/tags/" | relLangURL }}{{ $key | urlize }}">{{ $key | humanize}}
+                    <!-- If the Tags Occures more than once it get the super script-->
+                    {{if gt $value 1}}               
+                        <sup>{{$value}}</sup>                        
+                    {{end}}                        
+                </a>                                         
+            {{end}}
+            {{end}} <!-- end of with Param "projectName" -->
+        </div><!--End project.all-tags.container div--> 
+        <div class="notes listing container">
+            {{$paginator := .Paginate (where site.Pages.ByDate.Reverse "Params.project" ($.Param "projectName")) }}               
+            {{ range $paginator.Pages }}
+                <div class="post preview">
+                    <h3><a class="title-link" href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
+                    <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
+                    <div class="tags-container">                            
+                        {{ range .Params.tags }}                                    
+                            <div class="tag-list-item">
+                                <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>                                  
+                            </div>
+                        {{ end }}                            
+                    </div>                
+                    <span id="summary">{{.Summary}} </span>
+                    {{ if .Truncated }}                                        
+                        <a id="read-more" href="{{ .RelPermalink }}">Read More…</a>                        
+                    {{end}}
+                </div>      
+            {{end}}
+            {{ template "_internal/pagination.html" . }}
+                
+        </div>
+              
     </div> <!--end of main container -->
 {{end}}
