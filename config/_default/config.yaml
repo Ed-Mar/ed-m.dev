@@ -20,6 +20,7 @@ markup:
     style: native
     tabWidth: 4
 
+summaryLength: 30
 
 
 
