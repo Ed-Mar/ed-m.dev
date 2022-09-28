@@ -12,6 +12,7 @@ body{
 }
 a:hover{
     color: #427643;
+    text-decoration: underline;
 }
 .main.container{
     display: flex;
