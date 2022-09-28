@@ -90,3 +90,10 @@
 .non-project-container{
     margin-top: 1rem;
 }
+
+.question{
+    color: #818181;
+}
+.question.answer{
+    color: #E6F2E3;
+}
