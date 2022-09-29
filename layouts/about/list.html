@@ -1,7 +1,34 @@
+{{ define "addational-css" }}
+    {{ if (fileExists "static/css/about.css")}}
+        <link rel="stylesheet" href="{{ "/css/about.css" | absURL }}">    
+    {{ end }}
+{{ end }}
+
 
 {{ define "main" }}
+<div class="main container">
+    <div class="author single-panel" >
+        <div class="rook">♖</div>
+        
+        <div class="icon container">
+        <a class="svg" href="https://github.com/Ed-Mar"> 
+            <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
+            {{ partial "github-svg.html" (dict "width" 33 "height" 33 ) }}                                  
+        </a>
+        <a class="svg" href="https://linkedin.com/in/ed-marable"> 
+            <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
+            {{ partial "linkedin-svg.html" (dict "width" 33 "height" 33 ) }}                                  
+        </a>        
+        </div>
+    </div>
+    <div class="content">
+        {{.Content}}       
+    </div>
+
+     
+</div>
 
 
-{{ .Content }}
+
 
 {{ end }}
