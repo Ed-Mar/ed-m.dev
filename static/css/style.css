@@ -169,10 +169,10 @@ hr:after {
 .github-icon-container a:hover{
     text-decoration: underline;
 }
-.github-svg{
+.svg{
     fill: #427643;        
 }
-.github-svg:hover{
+.svg:hover{
     fill: #818181;        
     text-decoration: none;
 }
