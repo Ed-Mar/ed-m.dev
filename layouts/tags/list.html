@@ -1,24 +1,67 @@
+{{ define "addational-css" }}
+    {{ if (fileExists "static/css/notes-index.css")}}
+        <link rel="stylesheet" href="{{ "/css/notes-index.css" | absURL }}">    
+    {{end}}
+{{ end }}
 
-{{ define "main" }}        
-<br />
-<div class="content">
-    
+{{ define "main" }}
+    {{range where .Site.Pages "Params.type" "project"}}
+        {{with .Param "projectName" }}                        
+            <h2><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h2>            
+            {{$projectname := .}}
+            <!-- Intilize an empty slice to collect the tags of every page of the given project -->  
+            {{$projectTagsCollection:= newScratch}}
 
-    {{ .Content }}
-</div>
+            <!--This needs to be Intilized and set or you'll get some nil errors--> 
+            <!--"ProjectName - Tag Name - Slice(ofPagesThatContainThatTag)" -->
+            {{$projectTagsCollection.SetInMap  $projectname "DELETE-ME" slice }}
 
-<div class="tags-container">
-    {{ range $key, $value := .Site.Taxonomies.tags }}
-        <div class="tags-key">
-            <h2>{{ humanize $key }}</h2>
-        </div>
-        <div class="tag-pages-list">
-            {{ range $value.Pages }}
-                <a href="{{ .Permalink}}"> {{ .LinkTitle }} </a> 
-            {{end}}   
-        </div>       
-        <br />
-    {{ end }}
-</div>
+            <!-- Flag is used to the Delete the intilizer var-->            
+            {{$fristTagFlag := false}}
+            <!-- Range over all the sites pages with param of the current project name--> 
+            {{range where site.Pages "Params.project" $projectname}}
+                <!-- While in this scope set to var to the current page to added to the slice of pages-->                
+                {{$currentPage := .}}
+                <!--Var is used to save some time in call it-->
+                {{$mapOfCurrentProjectTags := $projectTagsCollection.Get $projectname}}                            
+                <!-- Iterates over the current pages Tags-->
+                {{ range .Params.tags }}
+                    <!-- Checks to see if the Tag has been added yet --> 
+                    {{if index $mapOfCurrentProjectTags .}}
+                    <!-- IF Yes the tag has been added then we need to add the current page to that tag --> 
+                        <!-- Set a var at the current Tag which gets us the slice of pages for it -->
+                        {{$tagPagesSlice := index $mapOfCurrentProjectTags . }}
+                        <!-- append the slice of pages with the curretn pages -->                        
+                        {{$tagPagesSlice = append $currentPage $tagPagesSlice}}
+                        <!-- Write the new slice over the current slice -->
+                        {{$projectTagsCollection.SetInMap $projectname . $tagPagesSlice}}                                                
+                    {{else}}
+                    <!-- IF NO the tag has Not been added, then we add it with the current page to the new tag --> 
+                        <!-- It's expecting a slice, so add the current page to a new slice --> 
+                        {{$tempSlice := slice $currentPage}}
+                        <!--add the new tag and its page to the collection --> 
+                        {{$projectTagsCollection.SetInMap $projectname . $tempSlice}}
+                        <!-- Since a tag has been added we can flag for the temp intilzer to be deleted -->
+                        {{$fristTagFlag = true}}                    
+                    {{end}}                                        
+                    {{if $fristTagFlag}}
+                        <!-- Removeal of the intailizer var--> 
+                        {{$projectTagsCollection.DeleteInMap $projectname "DELETE-ME"}}
+                    {{end}}                   
+                {{end}}            
+            {{end}}
+            <!-- Output of our tags and its collection of Pages-->
+            {{$OutputMap := $projectTagsCollection.Get $projectname}}
+            {{range $tagName, $sliceOfPages := $OutputMap}}
+                {{ $tagName }}
+                <br/>
+                {{range $sliceOfPages }}
+                    <a href={{.RelPermalink}}>{{ partial "title.html" .}}</a> | 
+                {{end}}                
+                <br/>
+            {{end}}
+        {{end}}        
+    {{end}}
+
 {{ end }}
 
