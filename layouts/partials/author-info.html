@@ -2,30 +2,23 @@
   <div class="sidebar-inner-content-container">
     <br/>
     <div class="author-avatar">
-
-      {{ $asset := resources.Get "/images/ed-m-avatar.png" }}
-      {{ $img := $asset.Fit "300x200" }}
-      <figure class="image profile">
-        <img alt="Ed" src="{{ $img.RelPermalink }}" />
-      </figure>
-
+      <div class="rook">♖</div>
     </div>
     <br />
     <hr />
     <div class="author-info">    
-    <br />
-      Name: {{.Site.Author.authorinfo.name }}
-      <br />
-      Location: {{.Site.Author.authorinfo.location }}
-      <br />
-      Employment Status: {{.Site.Author.authorinfo.employmentStatus }}
-      <br />
+    <br />       
+        <span class="key">Name: </span> {{.Site.Author.authorinfo.name }}
+        <br/>
+        <span class="key">Location: </span> {{.Site.Author.authorinfo.location }}
+        <br/>
+        <span class="key">{{.Site.Author.authorinfo.employmentStatus }}</span>
     </div>
     <div class="author-icons-container">
-      <a class="github-svg" href="https://github.com/Ed-Mar"> 
+      <a class="svg" href="https://github.com/Ed-Mar"> 
         <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
-        {{ partial "github-svg.html" (dict "width" 40 "height" 40 ) }}                                  
-      </a>
+        {{ partial "github-svg.html" (dict "width" 37 "height" 37 ) }}                                  
+    </a>
       
     </div>
   </div>
