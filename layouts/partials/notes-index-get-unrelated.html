@@ -1,7 +1,7 @@
 {{range where site.Pages.ByDate.Reverse "Params.nonProject" true}}
 
-<div class="listed-element-container">
-    <h3><a href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
+<div class="list element">
+    <h3 ><a class="list element title" href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
     <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
     <div class="tags-container">                            
         {{ range .Params.tags }}                                    
@@ -9,8 +9,13 @@
                 <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>                                  
             </div>
         {{ end }}                            
-    </div>    
-    <span id="summary">{{.Summary}} ...</span>                        
+    </div> 
+    <div class="summary">
+        {{.Summary}}
+        {{ if .Truncated }}                                        
+            <a id="read-more" href="{{ .RelPermalink }}">Read More…</a>                        
+        {{end}}
+    </div>  
 </div>                
 
 {{end}}
