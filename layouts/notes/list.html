@@ -104,13 +104,14 @@
                     {{range where site.Pages "Params.project" $projectname}}
                         <!-- Loop over each of the tags for a given Page --> 
                         {{ range .Params.tags }}
+                            {{$currentTag := upper .}}
                             <!-- Check to see if the tag is already in the slice of tags for whole project and if not add it to the slice --> 
-                            {{ if in $listOfCurrentTags .}}
+                            {{ if in $listOfCurrentTags $currentTag}}
                             <!-- Note: this was quicker than trying to learn how to NOT in this funky lang -->
                             <!-- Do nothing if tag is already in the slice  --> 
                             {{else}}
                                 <!-- Add the non-included tag to the list of the Tags for the given project --> 
-                                {{$listOfCurrentTags = append . $listOfCurrentTags}}
+                                {{$listOfCurrentTags = append $currentTag $listOfCurrentTags}}
                             {{end}}
                         {{end}}                            
                     {{end}}
@@ -285,19 +286,22 @@
             {{range where site.Pages "Params.project" $projectname}}
                 <!-- Loop over each of the tags for a given Page --> 
                 {{ range .Params.tags }}
+                    <!--To account for case issues -->
+                    {{$currentTag := upper . }}
                     <!--Set tempMap to the "projectTags" from inside projectTagsCollection-->
                     {{$tempMap = $projectTagsCollection.Get "projectTags"}}                    
                     <!-- Check to see if Tag is in the collection of maps--> 
-                    {{if (index $tempMap .)}}
+                    
+                    {{if (index $tempMap $currentTag )}}
                         <!-- If the current Tag is already in the Collection of maps Key-->
-                        <!-- We take the value at that tag and add one to it and set it to a temp-->
-                        {{$plusOne := add (index $tempMap .) 1}}
+                        <!-- We take the value at that tag and add one to it and set it to a temp-->                        
+                        {{$plusOne := add (index $tempMap $currentTag) 1}}
                         <!-- Then the new couter value is overwritten at the current tags key value in the collection of project tags  --> 
-                        {{$projectTagsCollection.SetInMap "projectTags" . $plusOne}}
+                        {{$projectTagsCollection.SetInMap "projectTags" $currentTag $plusOne}}
                     {{else}}
                         <!-- If the current Tag is NOT in the Collection of maps Key-->
                         <!-- Then we add to the collection with value of 1 -->
-                        {{$projectTagsCollection.SetInMap "projectTags" . 1}}
+                        {{$projectTagsCollection.SetInMap "projectTags" $currentTag 1}}
                         <!-- I want to limit the exposer place holder DeleteMe so I delete it as soon as there is another key inserted -->
                         <!-- Yes I am aware that its a waste to keep this here for every new tag-->
                         {{$projectTagsCollection.DeleteInMap "projectTags" "DELETE-ME"}}

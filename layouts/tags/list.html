@@ -32,21 +32,22 @@
                 {{$mapOfCurrentProjectTags := $projectTagsCollection.Get $projectname}}                            
                 <!-- Iterates over the current pages Tags-->
                 {{ range .Params.tags }}
+                    {{$currentTag := upper .}}
                     <!-- Checks to see if the Tag has been added yet --> 
-                    {{if index $mapOfCurrentProjectTags .}}
+                    {{if index $mapOfCurrentProjectTags $currentTag}}
                     <!-- IF Yes the tag has been added then we need to add the current page to that tag --> 
                         <!-- Set a var at the current Tag which gets us the slice of pages for it -->
-                        {{$tagPagesSlice := index $mapOfCurrentProjectTags . }}
+                        {{$tagPagesSlice := index $mapOfCurrentProjectTags $currentTag }}
                         <!-- append the slice of pages with the curretn pages -->                        
                         {{$tagPagesSlice = append $currentPage $tagPagesSlice}}
                         <!-- Write the new slice over the current slice -->
-                        {{$projectTagsCollection.SetInMap $projectname . $tagPagesSlice}}                                                
+                        {{$projectTagsCollection.SetInMap $projectname $currentTag $tagPagesSlice}}                                                
                     {{else}}
                     <!-- IF NO the tag has Not been added, then we add it with the current page to the new tag --> 
                         <!-- It's expecting a slice, so add the current page to a new slice --> 
                         {{$tempSlice := slice $currentPage}}
                         <!--add the new tag and its page to the collection --> 
-                        {{$projectTagsCollection.SetInMap $projectname . $tempSlice}}
+                        {{$projectTagsCollection.SetInMap $projectname $currentTag $tempSlice}}
                         <!-- Since a tag has been added we can flag for the temp intilzer to be deleted -->
                         {{$fristTagFlag = true}}                    
                     {{end}}                                        
