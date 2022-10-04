@@ -44,6 +44,7 @@
 margin-top: 1rem;
 }
 .list{
+    font-family: "Montserrat", sans-serif;    
     border-radius:4px;
     -moz-border-radius:4px;
 }
@@ -67,7 +68,11 @@ margin-top: 1rem;
     padding-left: .6rem;}
 
 .list.element.title {
-    color: #E6F2E3;   
+    color: #E6F2E3;
+    text-decoration: none;
+}
+.list.element.title:hover{
+    text-decoration: underline;
 }
 .header.latestpost{
     background-color: #202020;
