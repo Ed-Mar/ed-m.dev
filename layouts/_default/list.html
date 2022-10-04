@@ -1,23 +1,18 @@
 {{ define "main" }}
-<div id="main-container-with-sidebar">
-    <div id="main-content">
-        <br />
-
-        <div id="site-desc">
-            <br />
-            {{ .Content }}
-            <br />
-        </div>
-
-        <div class="list-container">
-            <h1>Latest Post</h1>
-            {{ $.Scratch.Set "counter" 0 }}
-            {{range site.Pages.ByDate.Reverse }}
-                {{if .IsPage}}
+<div class="main container landing-page">    
+    <div class="main container with-sidebar">
+        <div class="main content">
+            <div class="homepage content">    
+                {{ .Content }}
+            </div>
+            <div class="list container">
+                <h1 class="header latestpost">Latest Post</h1>
+                {{ $.Scratch.Set "counter" 0 }}
+                {{range  site.RegularPages.ByDate.Reverse }}                
                     {{ $.Scratch.Set "counter" (add ($.Scratch.Get "counter") 1) }}
                     {{if lt ($.Scratch.Get "counter") 6}}
-                        <div class="listed-element-container">
-                            <h3><a href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
+                        <div class="list element">
+                            <h3><a class="list element title" href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
                             <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
                             <div class="tags-container">                            
                                 {{ range .Params.tags }}                                    
@@ -25,24 +20,21 @@
                                         <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>                                  
                                     </div>
                                 {{ end }}                            
-                            </div>
-                            <br/>
-                            <div id="summary">
-                                <span>{{.Summary}} ...</span>
+                            </div>                            
+                            <div class="summary">
+                            {{.Summary}}
+                            {{ if .Truncated }}                                        
+                                <a id="read-more" href="{{ .RelPermalink }}">Read More…</a>                        
+                            {{end}}
                             </div>
                         </div>
-                        <br/>
-                    {{else}}
-                    <!-- Do nothing if not less than 5 -->
-                {{end}}                
-            {{end}}            
-        {{end}}
-        
+                    {{end}}
+                {{end}}        
+            </div>
         </div>
-
-    </div>
-    <div id="side-bar">
-        {{ partial "author-info.html" . }}
+        <div class="side-bar">
+            {{ partial "author-info.html" . }}
+        </div>
     </div>
 </div>
 {{ end }}

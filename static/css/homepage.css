@@ -1,24 +1,82 @@
-/* Main Container - The Parent of the flex */
-/* Main with info from https://every-layout.dev/layouts/sidebar/ */
-#main-container-with-sidebar {
+.main.container.landing-page{    
+    display: block;
+    justify-content: baseline;
+}
+.main.container.with-sidebar {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-
+    gap: .7rem;
+    
+    flex-direction:unset;
+    margin-top: .7rem;
 }
-/* Main Container | Main-Content - The Child of the flex */
-#main-content {
+
+.main.content {
     flex-basis: 0;
     flex-grow: 666;
-    min-inline-size: 50% 
-}
-/* Main Container | Side-Bar - The Child of the flex */
-#side-bar {
-    flex-basis: 20rem;
-    flex-grow: 1;    
+    min-inline-size: 60%;
+    background-color: #202020;
     
-    align-items: stretch; /*Used this to make the child strech to the bottom on the parent */ 
 }
+.side-bar {
+    flex-basis: 20rem;
+    flex-grow: 1;      
+    align-items: stretch; 
+    background-color: #202020;
+}
+
+.homepage.content{
+    width: unset;
+    margin-left: unset;
+    background-color: #272727;
+    
+
+    text-align: justify;
+    hyphens: auto;    
+
+    padding: 10px;
+
+    margin-top: .7rem;
+    border-radius:4px;
+    -moz-border-radius:4px;    
+}
+.homepage.content p{
+margin-top: 1rem;
+}
+.list{
+    border-radius:4px;
+    -moz-border-radius:4px;
+}
+.list h1,h2,h3,h4{
+    font-weight: 500; 
+ 
+}
+
+.list.container{
+    margin-top: 1rem;
+    background-color: unset;    
+}
+.list.element{
+    background-color: #272727;
+    margin-top: .7rem;
+    padding-left: .2rem;
+    padding-right: .4rem;
+}
+.list.element time{
+    color: #818181;
+    padding-left: .6rem;}
+
+.list.element.title {
+    color: #E6F2E3;   
+}
+.header.latestpost{
+    background-color: #202020;
+}
+.list.element.title:hover {
+    color: #427643;
+}
+
+
 #site-desc{    
     background-color: #272727;
     
@@ -43,9 +101,7 @@
     background-color: #272727;
     padding: 5px;
     
-    border-radius:3px;
-
-    -moz-border-radius:3px;
+    
 }
 .author-avatar{
     margin-left: 10%;
@@ -65,4 +121,13 @@
     margin-top: .5rem;
     width: 95%;
     text-align: center;
+}
+
+
+.tag-list-item a{
+    color: #427643;
+    text-decoration: none;  
+}
+.tags-list-item a:hover{
+    text-decoration: underline;  
 }
