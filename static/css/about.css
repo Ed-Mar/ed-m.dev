@@ -23,15 +23,6 @@
 .icon.container a:hover{
     fill: #818181;
 }
-
-.rook{
-    
-    text-shadow: #272727;
-    font-size: 200px;
-    color: #427643;
-    text-align: center;    
-    margin: auto;
-}
 .content{
     order: 5;
     margin-top: .8rem;

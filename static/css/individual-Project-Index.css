@@ -56,6 +56,7 @@
     flex-basis:  20%;
     flex-grow: 1; 
 
+    
     padding-left: .5rem;
     padding-top: .5rem;
     padding-bottom: .5rem;
@@ -94,11 +95,3 @@
     text-decoration: none;   
 }
 
-#read-more {
-    color: #427643;
-    text-decoration: none;
-    
-}
-#read-more:hover{
-    text-decoration: underline;
-}
