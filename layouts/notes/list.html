@@ -60,12 +60,11 @@
                         {{.}}
                     </div>
                 {{end}}
-                {{with .Param "github"}}
-                {{ $githubAsset := resources.Get "/svgs/github.svg" }}
+                {{with .Param "github"}}                
                     <div class="github-icon-container">
-                        <a class="github-svg" href={{.}}> 
+                        <a class="svg" href={{.}}> 
                             <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
-                            {{ partial "github-svg.html" (dict "width" 30 "height" 30 ) }}                            
+                            {{ partial "github-svg.html" (dict "width" 38 "height" 38 ) }}                            
                         </a>
                         <a href={{.}}>Github</a>
                     </div>
@@ -81,13 +80,13 @@
                         </div>
                     </div>
                     <div class="project-information-panel-2">                            
-                        <div>Number of post: {{partial "num-post-for-project.html" .}}</div>
+                        <div class="question">Number of post: <span class="question answer">{{partial "num-post-for-project.html" .}}</span></div>
                         {{with .Param "status"}}
-                            <div>Project Status: {{.}}</div>
+                            <div class="question">Project Status: <span class="question answer">{{.}}</span></div>
                         {{end}}                            
-                        <div>Number Unque Tags:{{ partial "count-unique-for-projects.html" . }}</div>                            
-                        <div>Last Post:  {{partial "last-date-of-post-for-project" .}}</div>                            
-                        <div>Project Start Date: {{partial "frist-post-date-for-project.html" .}}</div>                           
+                        <div class="question">Number Unque Tags: <span class="question answer">{{ partial "count-unique-for-projects.html" . }}</span></div>                            
+                        <div class="question">Last Post:  <span class="question answer">{{partial "last-date-of-post-for-project" .}}</span></div>                            
+                        <div class="question">Project Start Date: <span class="question answer">{{partial "frist-post-date-for-project.html" .}}</span></div>                           
                     </div>
                     <div class="project-information-panel-3">
                             <h3>Projects Latest Post</h3>
@@ -134,7 +133,7 @@
         {{end}}
     </div>
     <div class="notes-index-non-project-container">
-        <h2 class="header">Non-Project Notes</h2>
+        <h2 class="header content-divider">Non-Project Notes</h2>
         {{partial "notes-index-get-unrelated.html" . }}
     </div>
     </div>
@@ -160,12 +159,11 @@
                         {{.}}
                     </div>
                 {{end}}
-                {{with .Param "github"}}
-                {{ $githubAsset := resources.Get "/svgs/github.svg" }}
+                {{with .Param "github"}}                
                     <div class="github-icon-container">
-                        <a class="github-svg" href={{.}}> 
+                        <a class="svg" href={{.}}> 
                             <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
-                            {{ partial "github-svg.html" (dict "width" 30 "height" 30 ) }}                            
+                            {{ partial "github-svg.html" (dict "width" 38 "height" 38 ) }}                            
                         </a>
                         <a href={{.}}>Github</a>
                     </div>
@@ -181,13 +179,13 @@
                         </div>
                     </div>
                     <div class="project-information-panel-2">                            
-                        <div>Number of post: {{partial "num-post-for-project.html" .}}</div>
+                        <div class="question">Number of post: {{partial "num-post-for-project.html" .}}</div>
                         {{with .Param "status"}}
-                            <div>Project Status: {{.}}</div>
+                            <div class="question">Project Status: {{.}}</div>
                         {{end}}                            
-                        <div>Number Unque Tags:{{ partial "count-unique-for-projects.html" . }}</div>                            
-                        <div>Last Post:  {{partial "last-date-of-post-for-project" .}}</div>                            
-                        <div>Project Start Date: {{partial "frist-post-date-for-project.html" .}}</div>                           
+                        <div class="question">Number Unque Tags:{{ partial "count-unique-for-projects.html" . }}</div>                            
+                        <div class="question">Last Post:  {{partial "last-date-of-post-for-project" .}}</div>                            
+                        <div class="question">Project Start Date: {{partial "frist-post-date-for-project.html" .}}</div>                           
                     </div>
                     <div class="project-information-panel-3">
                             <h3>Projects Latest Post</h3>
@@ -253,12 +251,11 @@
         <div class="individual-project panels container">       
             <div class="project panel info">               
                 {{.Content}}
-                {{with .Param "github"}}
-                {{ $githubAsset := resources.Get "/svgs/github.svg" }}
+                {{with .Param "github"}}                
                     <div class="github-icon-container">
-                        <a class="github-svg" href={{.}}> 
+                        <a class="svg" href={{.}}> 
                             <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
-                            {{ partial "github-svg.html" (dict "width" 30 "height" 30 ) }}                            
+                            {{ partial "github-svg.html" (dict "width" 38 "height" 38 ) }}                            
                         </a>
                         <a href={{.}}>{{$projectName}}'s Github</a>
                     </div>
