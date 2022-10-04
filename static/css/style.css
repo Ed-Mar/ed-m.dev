@@ -30,7 +30,8 @@ blockquote{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width:99%
+    width:99%;
+    margin: auto;
 }
 .header{
     background-color: #272727;    
@@ -42,14 +43,9 @@ blockquote{
     color: #E6F2E3;    
 
     font-weight: 500;
-    margin-top: .5rem;
+    margin-top: .7rem;
 }
 
-.header.title {
-    
-    margin-top: .5rem;
-    
-}
 .header.subtitle {    
     margin-left: 1em;
     
@@ -58,10 +54,10 @@ blockquote{
     color: #818181;    
 }
 .header.content-divider{
-     margin-top: .6rem;
+    background-color: #202020;
      font-weight: 500;
-     margin-top: .3rem;
-     margin-bottom: .3rem;
+     
+     
 }
 
 hr {
