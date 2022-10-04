@@ -229,3 +229,43 @@ footer a:hover{
 .key{
     color: #818181;
 }
+
+
+.pagination.pagination-default{    
+    list-style-type: none;
+    text-align: center;
+    margin-top: .7rem;
+    font-family: 'JetBrains Mono';
+    
+}
+.page-item a{
+    color: #427643;
+}
+.page-item {
+    text-align: center;
+    display: inline;
+    
+    padding: .2rem;
+
+    background-color: #272727;
+    
+    margin-left: .3rem;
+    margin-right: .3rem;
+    
+
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;   
+}
+
+.page-item.disabled a{
+    color: #444444;
+}
+.page-item.active  a{
+    color: #E6F2E3;    
+}
+.page-link{
+    text-decoration: none;
+}
+
+
