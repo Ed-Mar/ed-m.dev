@@ -1,7 +1,7 @@
 {{with .Param "projectName" }}
     {{$projectname := .}}
     {{$WTFisABreakStatement := true}}
-    {{range where site.Pages.ByDate "Params.project" $projectname }}
+    {{range where site.Pages.ByDate.Reverse "Params.project" $projectname }}
         {{if $WTFisABreakStatement}}
             <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
         {{else}}
