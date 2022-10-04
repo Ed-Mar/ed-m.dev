@@ -2,7 +2,7 @@
 title: "{{ replace .Name "-" " " | title }}"
 subtitle: 
 date: {{ .Date }}
-project: ed-m.dev
+project: ed-m
 draft: true
 tags:
   - 
