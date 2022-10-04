@@ -1,13 +1,19 @@
 {{ define "addational-css" }}
-    {{ if (fileExists "static/css/notes-index.css")}}
-        <link rel="stylesheet" href="{{ "/css/notes-index.css" | absURL }}">    
+    {{ if (fileExists "static/css/tags.css")}}
+        <link rel="stylesheet" href="{{ "/css/tags.css" | absURL }}">    
     {{end}}
 {{ end }}
 
 {{ define "main" }}
+<div class="main container">
+    <div class="header">
+        <h2 class="header title">Project Tags</h2>
+        <h4 class="header info">Tags broken down by project</h4>
+    </div>
     {{range where .Site.Pages "Params.type" "project"}}
-        {{with .Param "projectName" }}                        
-            <h2><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h2>            
+        {{with .Param "projectName" }}
+            <div class="project-tags container">
+            <h2><a id="project-index-projectname" href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h2>            
             {{$projectname := .}}
             <!-- Intilize an empty slice to collect the tags of every page of the given project -->  
             {{$projectTagsCollection:= newScratch}}
@@ -53,15 +59,40 @@
             <!-- Output of our tags and its collection of Pages-->
             {{$OutputMap := $projectTagsCollection.Get $projectname}}
             {{range $tagName, $sliceOfPages := $OutputMap}}
-                {{ $tagName }}
-                <br/>
+                
+                
+                <div class="tags-index tag-container">                
+                    <h3 >{{$tagName | humanize}}</h3>                    
                 {{range $sliceOfPages }}
-                    <a href={{.RelPermalink}}>{{ partial "title.html" .}}</a> | 
+                    {{$hoverTitle := partial "title.html" .}}
+                    <a title={{$hoverTitle}} href={{.RelPermalink}}>{{.Title}}</a> 
                 {{end}}                
-                <br/>
+                </div>
+                
             {{end}}
+        </div>
         {{end}}        
     {{end}}
+    
+    <div class="header">
+        <h2 class="header title">All Tags</h2>        
+    </div>
+    
+    <div class="all-tags container">
+        {{ range $key, $value := .Site.Taxonomies.tags }}
+            <div class="tags-key">
+                <h3>{{ humanize $key }}</h3>
+            </div>
+            <div class="list-of-pages">
+                {{ range $value.Pages }}
+                    {{$hoverTitle := partial "title.html" .}}
+                    <a title={{$hoverTitle}} style="margin-left: .3rem" href="{{ .Permalink}}"> {{ .LinkTitle }} </a> 
+                {{end}}   
+            </div>       
+            <br />
+        {{ end }}
+    </div>
 
+</div>
 {{ end }}
 
