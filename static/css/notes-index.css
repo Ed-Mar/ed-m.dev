@@ -15,7 +15,7 @@
 
 .individual-project-container{    
     background-color: #272727;
-    margin-top: .5rem;
+    margin-top: .7rem;
 }
 .individual-project-container h2 a{ 
     font-family: "Montserrat", sans-serif;    
@@ -88,7 +88,7 @@
 }
 
 .non-project-container{
-    margin-top: 1rem;
+    margin-top: .7rem;
 }
 
 .question{
