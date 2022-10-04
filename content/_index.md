@@ -1,8 +1,9 @@
 ---
 date: 2022-09-13T18:22:18-04:00
 ---
-A collection of notes to myself and about what I learn or thought I learned while doing personal devlopment projects. 
+>Q: What is this.?
 
-Most of these notes here are related to web delopment and ajecent feilds. The notes are products of my current understadning of that subject matter at the time of writting them.  
+Answer:
+A collection of developer notes pertaining usually to web development and adjacent fields.
 
-
+At minimum these are notes directed toward myself for future recollection. I am usually learning something so some notes may contain partial incorrect information. I do not claim to be an expert on anything and that any code here should not be used for production nor is best practice.  
