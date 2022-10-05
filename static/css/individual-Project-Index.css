@@ -64,34 +64,5 @@
     color: #E6F2E3;
 }
 
-.project.all-tags.container{
-    color: #E6F2E3;
-    text-align: center;
-    margin-top: .4rem;
-    margin-bottom: .4rem;
-    
-}
-.project.all-tags.container a {
-    color: #427643;
-    text-decoration: none;
-}
-.project.all-tags.container a:hover {
-    color: #427643;
-    text-decoration: underline;
-    
-}
-.post.preview{
-    background-color: #272727;
-    margin-top: .7rem;
-}
-.post.preview time{
-    background-color: #272727;
-    margin-top: .7rem;
-    color: #818181;
 
-}
-.title-link{
-    color: #E6F2E3;
-    text-decoration: none;   
-}
 
