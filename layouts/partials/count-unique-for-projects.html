@@ -5,7 +5,7 @@
 <!-- Intilize an empty slice to collect the tags of every page of the given project -->  
 {{$listOfCurrentTags := slice}}
 <!-- Loop over each of the Pages matching the given projectname --> 
-{{range where site.Pages "Params.project" $projectname}}
+{{range where site.RegularPages "Params.project" $projectname}}
     <!-- Loop over each of the tags for a given Page --> 
     {{ range .Params.tags }}
         <!-- Check to see if the tag is already in the slice of tags for whole project and if not add it to the slice --> 
