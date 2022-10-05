@@ -3,6 +3,7 @@
 .navBar {
     font-family: 'Montserrat';
     background: #272727;
+    min-width: 100%;
 }
 .navBar a {
     color: #f6f4e6;
