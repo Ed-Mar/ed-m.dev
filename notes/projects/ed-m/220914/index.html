@@ -1,8 +1,65 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Site Progression Week One | 220914</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Site Progression Week One | 220914</h2><time>Wed, Sep 14, 2022</time><div class=single-page-project><h3><a href=/notes/projects/ed-m>Project - Ed m</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/hugo>Hugo</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h1 id=220914>220914</h1><p>_2214</p><h2 id=hugo-progression>Hugo Progression</h2><p>So I have been working trying to understand the Hugo. Its something al-right. I am making progress</p><p><img src=https://i.imgur.com/qXx9S6t.png alt="early screen shot of local dev"></p><p>So I am chugging along with this and came across something I thought was kinda nutty. I am sure there is a good reason for it somewhere, but I don&rsquo;t know it.</p><p>When you think on how to count in an slice/array or any collection when iterating over them how would one do that in hugo?</p><p>Did you think just use a for loop and grab the index value or just add a variable then add to that each iteration of the loop.</p><p>It&rsquo;s not, it make another set then add an item to each time you make an iteration then get the size of that. ( I think the more I look at it the more werid it gets</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{{ $.Scratch.Set &#34;counter&#34; 0 }}
-</span></span><span style=display:flex><span>{{range sort .Params.employees}}
-</span></span><span style=display:flex><span>{{ $.Scratch.Set &#34;counter&#34; (add ($.Scratch.Get &#34;counter&#34;) 1) }}
-</span></span><span style=display:flex><span> I am the number {{$.Scratch.Get &#34;counter&#34;}} in loop!
-</span></span><span style=display:flex><span>{{end}}
-</span></span></code></pre></div><p>here is the link to the forum post <a href=https://discourse.gohugo.io/t/how-counting-up-a-variable-in-range/586/8?>link</a> where I found out how to do this.</p><hr><p>working with hugo is not really all that fun. I feel like knowing how to do things in other &rsquo;languages&rsquo; is just slowing me down, but getting something to work is nice cause it feel like I just discovered how to do something with some forbidding magic or something.</p><p><img src=https://i.imgur.com/vun1aTh.png alt="location of the disable cache"></p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>Site Progression Week One | 220914</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>Site Progression Week One | 220914</h2>
+<time>Wed, Sep 14, 2022</time>
+<div class=single-page-project>
+<h3><a href=/notes/projects/ed-m> Project - Ed m</a></h3>
+</div>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/hugo>Hugo</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+</div>
+<br>
+<div class=single-page-content>
+<h1 id=220914>220914</h1>
+<p>_2214</p>
+<h2 id=hugo-progression>Hugo Progression</h2>
+<p>So I have been working trying to understand the Hugo. Its something al-right. I am making progress</p>
+<p><img src=https://i.imgur.com/qXx9S6t.png alt="early screen shot of local dev"></p>
+<p>So I am chugging along with this and came across something I thought was kinda nutty. I am sure there is a good reason for it somewhere, but I don&rsquo;t know it.</p>
+<p>When you think on how to count in an slice/array or any collection when iterating over them how would one do that in hugo?</p>
+<p>Did you think just use a for loop and grab the index value or just add a variable then add to that each iteration of the loop.</p>
+<p>It&rsquo;s not, it make another set then add an item to each time you make an iteration then get the size of that. ( I think the more I look at it the more werid it gets</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>{{ $.Scratch.Set &#34;counter&#34; 0 }}
+{{range sort .Params.employees}}
+{{ $.Scratch.Set &#34;counter&#34; (add ($.Scratch.Get &#34;counter&#34;) 1) }}
+ I am the number {{$.Scratch.Get &#34;counter&#34;}} in loop!
+{{end}}
+</code></pre></div><p>here is the link to the forum post <a href=https://discourse.gohugo.io/t/how-counting-up-a-variable-in-range/586/8?>link</a> where I found out how to do this.</p>
+<hr>
+<p>working with hugo is not really all that fun. I feel like knowing how to do things in other &lsquo;languages&rsquo; is just slowing me down, but getting something to work is nice cause it feel like I just discovered how to do something with some forbidding magic or something.</p>
+<p><img src=https://i.imgur.com/vun1aTh.png alt="location of the disable cache"></p>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

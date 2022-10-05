@@ -1,30 +1,113 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Channel Service Update | 220707</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Channel Service Update | 220707</h2><time>Thu, Jul 7, 2022</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/rest>Rest</a></div><div class=tag-list-item><a href=/tags/api>API</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h1 id=220707>220707</h1><h2 id=channel-service-update>Channel Service update</h2><p><em>-0703-</em>
-I Got the Get to were I want it to be about now. I just finished the PUT It works, but took some messing about with. I spread the GET to different functions inside the handler for the separate Parm options. I really just need to read the docs for the REST standard cause technically its own service, but data structure wise it connected to the server. I mean at this level I one could argue that I should have just left them together, but I plan on making the channel more complex and that one could argue it should be its own service. I really don&rsquo;t know I go back on forth every time I look at it. I assume its semantics, but I am probably wrong when I did this professionally I did not have think about just copy what the architect put. I mean I asked a few of them which came down that&rsquo;s just how we do it. I also think about how long this taking me which is just sad, but then I don&rsquo;t already have a huge code base to just look at see what&rsquo;s right or anyone to tell me what they want cause it just me. Its Odd feeling one of some joy and aimlessness. Whatever that was odd tangent</p><p><em>2036</em>
-Okay I have lookup the name conventions <a href=https://restfulapi.net/resource-naming/>Resource Naming - Restful API</a></p><blockquote><p>Divide the <strong>resource archetypes</strong> into four categories (document, collection, store, and controller).</p></blockquote><blockquote><p><strong>Document</strong>
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>Channel Service Update | 220707</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>Channel Service Update | 220707</h2>
+<time>Thu, Jul 7, 2022</time>
+<div class=single-page-project>
+<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
+</div>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/rest>Rest</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/api>API</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+</div>
+<br>
+<div class=single-page-content>
+<h1 id=220707>220707</h1>
+<h2 id=channel-service-update>Channel Service update</h2>
+<p><em>-0703-</em>
+I Got the Get to were I want it to be about now. I just finished the PUT It works, but took some messing about with. I spread the GET to different functions inside the handler for the separate Parm options. I really just need to read the docs for the REST standard cause technically its own service, but data structure wise it connected to the server. I mean at this level I one could argue that I should have just left them together, but I plan on making the channel more complex and that one could argue it should be its own service. I really don&rsquo;t know I go back on forth every time I look at it. I assume its semantics, but I am probably wrong when I did this professionally I did not have think about just copy what the architect put. I mean I asked a few of them which came down that&rsquo;s just how we do it. I also think about how long this taking me which is just sad, but then I don&rsquo;t already have a huge code base to just look at see what&rsquo;s right or anyone to tell me what they want cause it just me. Its Odd feeling one of some joy and aimlessness. Whatever that was odd tangent</p>
+<p><em>2036</em>
+Okay I have lookup the name conventions <a href=https://restfulapi.net/resource-naming/>Resource Naming - Restful API</a></p>
+<blockquote>
+<p>Divide the <strong>resource archetypes</strong> into four categories (document, collection, store, and controller).</p>
+</blockquote>
+<blockquote>
+<p><strong>Document</strong>
 A document resource is a singular concept that is akin to an object instance or database record.
-Use “singular” name to denote document resource archetype.</p></blockquote><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>http://api.example.com/device-management/managed-devices/{device-id}
-</span></span><span style=display:flex><span>http://api.example.com/user-management/users/{id}
-</span></span><span style=display:flex><span>http://api.example.com/user-management/users/admin
-</span></span></code></pre></div><blockquote><p><strong>Collection</strong>
+Use “singular” name to denote document resource archetype.</p>
+</blockquote>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>http://api.example.com/device-management/managed-devices/{device-id}
+http://api.example.com/user-management/users/{id}
+http://api.example.com/user-management/users/admin
+</code></pre></div><blockquote>
+<p><strong>Collection</strong>
 Use the “plural” name to denote the collection resource archetype.
-A collection resource is a server-managed directory of resources.</p></blockquote><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>http://api.example.com/device-management/managed-devices
-</span></span><span style=display:flex><span>http://api.example.com/user-management/users
-</span></span><span style=display:flex><span>http://api.example.com/user-management/users/{id}/accounts
-</span></span></code></pre></div><blockquote><p><strong>Store</strong>
+A collection resource is a server-managed directory of resources.</p>
+</blockquote>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>http://api.example.com/device-management/managed-devices
+http://api.example.com/user-management/users
+http://api.example.com/user-management/users/{id}/accounts
+</code></pre></div><blockquote>
+<p><strong>Store</strong>
 A store is a client-managed resource repository. A store resource lets an API client put resources in, get them back out, and decide when to delete them.
 A store never generates new URIs. Instead, each stored resource has a URI. The URI was chosen by a client when the resource initially put it into the store.
-Use “plural” name to denote store resource archetype.</p></blockquote><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>http://api.example.com/song-management/users/{id}/playlists
-</span></span></code></pre></div><blockquote><p><strong>Controller</strong>
+Use “plural” name to denote store resource archetype.</p>
+</blockquote>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>http://api.example.com/song-management/users/{id}/playlists
+</code></pre></div><blockquote>
+<p><strong>Controller</strong>
 A controller resource models a procedural concept. Controller resources are like executable functions, with parameters and return values, inputs, and outputs.
-Use “verb” to denote controller archetype</p></blockquote><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>http://api.example.com/cart-management/users/{id}/cart/checkout
-</span></span><span style=display:flex><span>http://api.example.com/song-management/users/{id}/playlist/play 
-</span></span></code></pre></div><p>** <em>Apparently</em> Consistency is Key **</p><blockquote><p>The forward-slash (/) character is used in the path portion of the URI to indicate a hierarchical relationship between resources.</p></blockquote><p>Hyphens can used to improve readability - this is one I really did not know about</p><p>Never use CRUD function names in the URI</p><blockquote><p>Use query component to filter URI collection Often, you will encounter requirements where you will need a collection of resources sorted, filtered, or limited based on some specific resource attribute. For this requirement, do not create new APIs – instead, enable sorting, filtering, and pagination capabilities in resource collection API and pass the input parameters as query parameters. e.g.</p></blockquote><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>http://api.example.com/device-management/managed-devices
-</span></span><span style=display:flex><span>http://api.example.com/device-management/managed-devices?region=USA
-</span></span><span style=display:flex><span>http://api.example.com/device-management/managed-devices?region=USA&amp;brand=XYZ
-</span></span><span style=display:flex><span>http://api.example.com/device-management/managed-devices?region=USA&amp;brand=XYZ&amp;sort=installation-date
-</span></span></code></pre></div><p>Okay that makes sense and this site what I was looking for I remembering learning most of this after reading, which mean I really did not know it kek.</p><p>_
+Use “verb” to denote controller archetype</p>
+</blockquote>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>http://api.example.com/cart-management/users/{id}/cart/checkout
+http://api.example.com/song-management/users/{id}/playlist/play 
+</code></pre></div><p>** <em>Apparently</em> Consistency is Key **</p>
+<blockquote>
+<p>The forward-slash (/) character is used in the path portion of the URI to indicate a hierarchical relationship between resources.</p>
+</blockquote>
+<p>Hyphens can used to improve readability - this is one I really did not know about</p>
+<p>Never use CRUD function names in the URI</p>
+<blockquote>
+<p>Use query component to filter URI collection Often, you will encounter requirements where you will need a collection of resources sorted, filtered, or limited based on some specific resource attribute. For this requirement, do not create new APIs – instead, enable sorting, filtering, and pagination capabilities in resource collection API and pass the input parameters as query parameters. e.g.</p>
+</blockquote>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>http://api.example.com/device-management/managed-devices
+http://api.example.com/device-management/managed-devices?region=USA
+http://api.example.com/device-management/managed-devices?region=USA&amp;brand=XYZ
+http://api.example.com/device-management/managed-devices?region=USA&amp;brand=XYZ&amp;sort=installation-date
+</code></pre></div><p>Okay that makes sense and this site what I was looking for I remembering learning most of this after reading, which mean I really did not know it kek.</p>
+<p>_
 <em>220708_0044</em>
-Okay got the basic functionally CRUD operations for the channel service complete. Will have to come back for better Error handling, error messages, robustness, code Consistency, Cleaner code. but from basic test happy path seems to work.</p><p><em>220708_0608</em>
-Alright I am looking at the Kafka integration again.</p><p>found this. <a href=https://gist.github.com/savaki/a19dcc1e72cb5d621118fbee1db4e61f>Performance Test between confluent-kafka-go vs sarama-cluster</a></p><p>Granted I have no plan on using the confluent anything, but I did overlook sarama. Sarama was mention in the <a href=https://github.com/segmentio/kafka-go>Kafka-go</a> documentation.</p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+Okay got the basic functionally CRUD operations for the channel service complete. Will have to come back for better Error handling, error messages, robustness, code Consistency, Cleaner code. but from basic test happy path seems to work.</p>
+<p><em>220708_0608</em>
+Alright I am looking at the Kafka integration again.</p>
+<p>found this. <a href=https://gist.github.com/savaki/a19dcc1e72cb5d621118fbee1db4e61f>Performance Test between confluent-kafka-go vs sarama-cluster</a></p>
+<p>Granted I have no plan on using the confluent anything, but I did overlook sarama. Sarama was mention in the <a href=https://github.com/segmentio/kafka-go>Kafka-go</a> documentation.</p>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

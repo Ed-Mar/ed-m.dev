@@ -1,8 +1,105 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Docker SMTP | 211111</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Docker SMTP | 211111</h2><time>Thu, Nov 11, 2021</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/smtp>SMTP</a></div><div class=tag-list-item><a href=/tags/postal>Postal</a></div><div class=tag-list-item><a href=/tags/docker>Docker</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h2 id=postal-smtp>Postal SMTP</h2><p>Okay after spending some time looking around at the state of the postal. I have found a few items.</p><ul><li><a href=https://github.com/postalserver/postal>Postal Github</a> and it creators and maintainer are making updates and so on, and are focused on containerization.<ul><li>They don&rsquo;t have a public docker hub from what I can tell, which is odd but I see why so you have to host the image your self if you want use stock version.</li></ul></li><li>There is a helm version of this that is of this that was created about 2ish years ago by a <a href=https://github.com/linkyard/postal-kubernetes>Linkyard</a> with consideration to cert-manger and ingress options which is good.<ul><li>There is an issue tho with it being 2ish years old the kube api objects are out of date(apiVersion: apps/v1beta1) which can updated.<ul><li><img src=https://i.imgur.com/nX7sGxJ.png alt="enter image description here"></li></ul></li><li>Also I am not positive but looks like readiness probes wern&rsquo;t a thing at that time so initcontainers busybox containers are used to wait for the two required backend to be spun up. There also a few other things if left in would bother me so if I do end up going with would require a good amount of changes</li></ul></li><li>There also seems to be another option to get this working and its a customized docker version of postal with some spam and anti virius running on alpine instead of using the given Ubuntu. <a href=https://github.com/tiredofit/docker-postal>Github tiredofit/docker-postal</a><ul><li>Its in docker and on the hub which is nice save me some time plus it comes with some addon option out the box</li><li>So let <a href=https://kompose.io/>Kompose</a> it <img src=https://i.imgur.com/yOkkz7b.png alt="oof that a lot lol"></li><li>yeah that&rsquo;s is good amount of kube objects and also the those pvc are all in different volumes which i guess would work, but that seems wrong. I had to look into this while writing this,(5 mins later). It seems you can do both so hmm</li></ul></li></ul><h2 id=so-what-the-plan-for-smtp>So what the plan for SMTP</h2><p><del>I am going to use both <a href=https://github.com/linkyard/postal-kubernetes>linkyard/postal-kubernetes</a> & <a href=https://github.com/tiredofit/docker-postal>tiredofit/docker-postal</a> I am going to mash them together into something that can work on kube. They will just plan kube yaml for no helm. Once I get to a place with all these object I may consider making it into working helm but maybe
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>Docker SMTP | 211111</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>Docker SMTP | 211111</h2>
+<time>Thu, Nov 11, 2021</time>
+<div class=single-page-project>
+<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
+</div>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/smtp>SMTP</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/postal>Postal</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/docker>Docker</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+</div>
+<br>
+<div class=single-page-content>
+<h2 id=postal-smtp>Postal SMTP</h2>
+<p>Okay after spending some time looking around at the state of the postal. I have found a few items.</p>
+<ul>
+<li><a href=https://github.com/postalserver/postal>Postal Github</a> and it creators and maintainer are making updates and so on, and are focused on containerization.
+<ul>
+<li>They don&rsquo;t have a public docker hub from what I can tell, which is odd but I see why so you have to host the image your self if you want use stock version.</li>
+</ul>
+</li>
+<li>There is a helm version of this that is of this that was created about 2ish years ago by a <a href=https://github.com/linkyard/postal-kubernetes>Linkyard</a> with consideration to cert-manger and ingress options which is good.
+<ul>
+<li>There is an issue tho with it being 2ish years old the kube api objects are out of date(apiVersion: apps/v1beta1) which can updated.
+<ul>
+<li><img src=https://i.imgur.com/nX7sGxJ.png alt="enter image description here"></li>
+</ul>
+</li>
+<li>Also I am not positive but looks like readiness probes wern&rsquo;t a thing at that time so initcontainers busybox containers are used to wait for the two required backend to be spun up. There also a few other things if left in would bother me so if I do end up going with would require a good amount of changes</li>
+</ul>
+</li>
+<li>There also seems to be another option to get this working and its a customized docker version of postal with some spam and anti virius running on alpine instead of using the given Ubuntu. <a href=https://github.com/tiredofit/docker-postal>Github tiredofit/docker-postal</a>
+<ul>
+<li>Its in docker and on the hub which is nice save me some time plus it comes with some addon option out the box</li>
+<li>So let <a href=https://kompose.io/>Kompose</a> it <img src=https://i.imgur.com/yOkkz7b.png alt="oof that a lot lol"></li>
+<li>yeah that&rsquo;s is good amount of kube objects and also the those pvc are all in different volumes which i guess would work, but that seems wrong. I had to look into this while writing this,(5 mins later). It seems you can do both so hmm</li>
+</ul>
+</li>
+</ul>
+<h2 id=so-what-the-plan-for-smtp>So what the plan for SMTP</h2>
+<p><del>I am going to use both <a href=https://github.com/linkyard/postal-kubernetes>linkyard/postal-kubernetes</a> & <a href=https://github.com/tiredofit/docker-postal>tiredofit/docker-postal</a> I am going to mash them together into something that can work on kube. They will just plan kube yaml for no helm. Once I get to a place with all these object I may consider making it into working helm but maybe
 I have started on this I got the all the env variables files in config Mappings and respective secrets in to separate files (50+)</del>
-<img src=https://i.imgur.com/7dWhH6d.png alt="breakdown into separate files "></p><p><del>There is still a good amount of work to do on converting this into something that works well.</del></p><h2 id=edit>Edit</h2><p>I will not be doing this Postal is kinda of mess.
+<img src=https://i.imgur.com/7dWhH6d.png alt="breakdown into separate files "></p>
+<p><del>There is still a good amount of work to do on converting this into something that works well.</del></p>
+<h2 id=edit>Edit</h2>
+<p>I will not be doing this Postal is kinda of mess.
 The <a href=https://github.com/tiredofit/docker-postal>tiredofit/docker-postal</a> uses his own custom alpine image which is eh, but I tired to remove the s6 thing in that wont stop the container even it fails from what I can tell and even it do build its hug for alpine idk
-<img src=https://i.imgur.com/jmumDVL.png alt="enter image description here"></p><ul><li>They don&rsquo;t have a dockerhub<ul><li>so you have to build your image. fine<ul><li>but that image will failed then I check the git hub issue board 40+ open issue. I do think i could messaround it get it work with the base image, but have spent about a day on this. SOoooooo</li></ul></li></ul></li></ul><p>NEW Mail sever time and it this one(for now&mldr;)</p><h2 id=docker-mail-server>Docker Mail server</h2><p><img src=https://i.imgur.com/rFN8R3T.png alt="Docker Mail sever"></p><p>and what&rsquo;s this some kube support(unofficial)
-<img src=https://i.imgur.com/3SjZbqh.png alt="looky looky"></p><p>I will try(again) to get mail sever on the k8..</p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+<img src=https://i.imgur.com/jmumDVL.png alt="enter image description here"></p>
+<ul>
+<li>They don&rsquo;t have a dockerhub
+<ul>
+<li>so you have to build your image. fine
+<ul>
+<li>but that image will failed then I check the git hub issue board 40+ open issue. I do think i could messaround it get it work with the base image, but have spent about a day on this. SOoooooo</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>NEW Mail sever time and it this one(for now&mldr;)</p>
+<h2 id=docker-mail-server>Docker Mail server</h2>
+<p><img src=https://i.imgur.com/rFN8R3T.png alt="Docker Mail sever"></p>
+<p>and what&rsquo;s this some kube support(unofficial)
+<img src=https://i.imgur.com/3SjZbqh.png alt="looky looky"></p>
+<p>I will try(again) to get mail sever on the k8..</p>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

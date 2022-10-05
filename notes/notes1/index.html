@@ -1,39 +1,76 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>This is just a test of the local extreme weather response system | Test Note 1</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>This is just a test of the local extreme weather response system | Test Note 1</h2><time>Tue, Sep 13, 2022</time></div><br><div class=single-page-content><h1 id=this-is-a-test-note>This is a Test note</h1><p>Indeed Very Note like
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>This is just a test of the local extreme weather response system | Test Note 1</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>This is just a test of the local extreme weather response system | Test Note 1</h2>
+<time>Tue, Sep 13, 2022</time>
+</div>
+<br>
+<div class=single-page-content>
+<h1 id=this-is-a-test-note>This is a Test note</h1>
+<p>Indeed Very Note like
 asdlfkasdhfasd
 ads;lkfjasdklfjasd;lkfajsdkl;fjas
 dfaskdl;jfaksldjfas
 dfasl;djflkasdjfklas
 dfaslk;djfklasdjfa
-s</p><h2 id=now-for-somthing-completely-different>Now for somthing completely Different</h2><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#999;font-style:italic>// Servers defines a slice of Server
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>type</span> Servers []*Server
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// GetServers returns all servers from the database
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>GetServers</span>() (Servers, <span style=color:#6ab825;font-weight:700>error</span>) {
-</span></span><span style=display:flex><span>	pool, err := server_database.<span style=color:#447fcf>GetServersDBConnPool</span>()
-</span></span><span style=display:flex><span>	<span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {
-</span></span><span style=display:flex><span>		<span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, err
-</span></span><span style=display:flex><span>	}
-</span></span><span style=display:flex><span>	<span style=color:#6ab825;font-weight:700>var</span> servers []*Server
-</span></span><span style=display:flex><span>	err = pgxscan.<span style=color:#447fcf>Select</span>(context.<span style=color:#447fcf>Background</span>(), pool, &amp;servers, sqlGetAllServers)
-</span></span><span style=display:flex><span>	<span style=color:#6ab825;font-weight:700>var</span> pgErr *pgconn.PgError
-</span></span><span style=display:flex><span>	<span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {
-</span></span><span style=display:flex><span>		<span style=color:#999;font-style:italic>// Checks if the error is PG Error
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>		<span style=color:#6ab825;font-weight:700>if</span> errors.<span style=color:#447fcf>As</span>(err, &amp;pgErr) {
-</span></span><span style=display:flex><span>			<span style=color:#999;font-style:italic>// Break out into a switch statement
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>			<span style=color:#6ab825;font-weight:700>switch</span> pgErr.Code {
-</span></span><span style=display:flex><span>			<span style=color:#6ab825;font-weight:700>case</span> pgerrcode.CaseNotFound:
-</span></span><span style=display:flex><span>				<span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrServerNotFound
-</span></span><span style=display:flex><span>			<span style=color:#6ab825;font-weight:700>default</span>:
-</span></span><span style=display:flex><span>				log.<span style=color:#447fcf>Println</span>(errGenericSQLERROR, pgErr)
-</span></span><span style=display:flex><span>				<span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, pgErr
-</span></span><span style=display:flex><span>			}
-</span></span><span style=display:flex><span>		} <span style=color:#6ab825;font-weight:700>else</span> {
-</span></span><span style=display:flex><span>			log.<span style=color:#447fcf>Panic</span>(<span style=color:#ed9d13>&#34;[ERROR]: Expected SQL Error got something else:  &#34;</span>, err)
-</span></span><span style=display:flex><span>			<span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, err
-</span></span><span style=display:flex><span>		}
-</span></span><span style=display:flex><span>	}
-</span></span><span style=display:flex><span>	<span style=color:#6ab825;font-weight:700>return</span> servers, <span style=color:#6ab825;font-weight:700>nil</span>
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+s</p>
+<h2 id=now-for-somthing-completely-different>Now for somthing completely Different</h2>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#999;font-style:italic>// Servers defines a slice of Server
+</span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>type</span> Servers []*Server
+
+<span style=color:#999;font-style:italic>// GetServers returns all servers from the database
+</span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>GetServers</span>() (Servers, <span style=color:#6ab825;font-weight:700>error</span>) {
+	pool, err := server_database.<span style=color:#447fcf>GetServersDBConnPool</span>()
+	<span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {
+		<span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, err
+	}
+	<span style=color:#6ab825;font-weight:700>var</span> servers []*Server
+	err = pgxscan.<span style=color:#447fcf>Select</span>(context.<span style=color:#447fcf>Background</span>(), pool, &amp;servers, sqlGetAllServers)
+	<span style=color:#6ab825;font-weight:700>var</span> pgErr *pgconn.PgError
+	<span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {
+		<span style=color:#999;font-style:italic>// Checks if the error is PG Error
+</span><span style=color:#999;font-style:italic></span>		<span style=color:#6ab825;font-weight:700>if</span> errors.<span style=color:#447fcf>As</span>(err, &amp;pgErr) {
+			<span style=color:#999;font-style:italic>// Break out into a switch statement
+</span><span style=color:#999;font-style:italic></span>			<span style=color:#6ab825;font-weight:700>switch</span> pgErr.Code {
+			<span style=color:#6ab825;font-weight:700>case</span> pgerrcode.CaseNotFound:
+				<span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrServerNotFound
+			<span style=color:#6ab825;font-weight:700>default</span>:
+				log.<span style=color:#447fcf>Println</span>(errGenericSQLERROR, pgErr)
+				<span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, pgErr
+			}
+		} <span style=color:#6ab825;font-weight:700>else</span> {
+			log.<span style=color:#447fcf>Panic</span>(<span style=color:#ed9d13>&#34;[ERROR]: Expected SQL Error got something else:  &#34;</span>, err)
+			<span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, err
+		}
+	}
+	<span style=color:#6ab825;font-weight:700>return</span> servers, <span style=color:#6ab825;font-weight:700>nil</span>
+}
+</code></pre></div>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

@@ -1,3 +1,88 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Backend to Frontend | 211207</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Backend to Frontend | 211207</h2><time>Sun, Nov 7, 2021</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/keycloak>Keycloak</a></div><div class=tag-list-item><a href=/tags/nextjs>Next js</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h1 id=211207>211207</h1><h2 id=bff>BFF</h2><p><a href=https://samnewman.io/patterns/architectural/bff/>Backend for Frontend</a></p><p>I have been looking into how best how to handle the Nextjs front end with the backend services. Which is something I didn&rsquo;t really think about until I start writing application code cause the token to the frontend with no issue but using that token to with real concern, but how to best hand off that login ed in user to the backend came with some issues(more vagueness). I assumed there was just something I was missing or lacking in understanding so looked into the option on how to handle SSO with the frontend and backend be separated. cause there are a right many ways to handle it right with in the front end, while I don&rsquo;t want to have to re-login to use functionally on the service side. SO gotta figure out how to let the backend handle this, and I think BFF pattern is solution for this and so i will provide to overthink this</p><blockquote><p>1437</p></blockquote><h3 id=here-is-some-information-i-have-found-on-this>Here is some information i have found on this</h3><ul><li><a href=https://auth0.com/blog/backend-for-frontend-pattern-with-auth0-and-dotnet/>Auth0: BFF (.Net)</a></li><li><a href=https://auth0.com/blog/authentication-in-golang/>Auth0: React + Golang Auth</a></li><li><a href=https://curity.io/resources/learn/the-token-handler-pattern/>Curity:the-token-handler-pattern</a></li><li><a href=https://dev.to/damikun/web-app-security-understanding-the-meaning-of-the-bff-pattern-i85>Dev.to: Understanding BFF</a></li></ul><h2 id=heading></h2><p><img src=https://i.imgur.com/uRJXAi6.png alt="NextJs Conduit Landing"></p><h2 id=short-term-todo-list>Short Term todo list</h2><ul><li><p>Figure out a project directory structure</p><ul><li>Id like to everything in one repo(this may change)<ul><li>one cause it makes it easy for devember to no have all the infra,ui,services, etc spread across multiply gits</li><li>But no sure how to do this in way that will play nice with IDE,go mod, npm, &mldr;</li></ul></li></ul></li><li><p>Configure Callback URL</p></li><li><p>Configure Logout URL</p></li></ul><h2 id=oidc-with-golang>OIDC with Golang</h2><p>I am not smart enough to get this work correctly with PKCE There are really only two ad</p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>Backend to Frontend | 211207</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>Backend to Frontend | 211207</h2>
+<time>Sun, Nov 7, 2021</time>
+<div class=single-page-project>
+<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
+</div>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/keycloak>Keycloak</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/nextjs>Next js</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+</div>
+<br>
+<div class=single-page-content>
+<h1 id=211207>211207</h1>
+<h2 id=bff>BFF</h2>
+<p><a href=https://samnewman.io/patterns/architectural/bff/>Backend for Frontend</a></p>
+<p>I have been looking into how best how to handle the Nextjs front end with the backend services. Which is something I didn&rsquo;t really think about until I start writing application code cause the token to the frontend with no issue but using that token to with real concern, but how to best hand off that login ed in user to the backend came with some issues(more vagueness). I assumed there was just something I was missing or lacking in understanding so looked into the option on how to handle SSO with the frontend and backend be separated. cause there are a right many ways to handle it right with in the front end, while I don&rsquo;t want to have to re-login to use functionally on the service side. SO gotta figure out how to let the backend handle this, and I think BFF pattern is solution for this and so i will provide to overthink this</p>
+<blockquote>
+<p>1437</p>
+</blockquote>
+<h3 id=here-is-some-information-i-have-found-on-this>Here is some information i have found on this</h3>
+<ul>
+<li><a href=https://auth0.com/blog/backend-for-frontend-pattern-with-auth0-and-dotnet/>Auth0: BFF (.Net)</a></li>
+<li><a href=https://auth0.com/blog/authentication-in-golang/>Auth0: React + Golang Auth</a></li>
+<li><a href=https://curity.io/resources/learn/the-token-handler-pattern/>Curity:the-token-handler-pattern</a></li>
+<li><a href=https://dev.to/damikun/web-app-security-understanding-the-meaning-of-the-bff-pattern-i85>Dev.to: Understanding BFF</a></li>
+</ul>
+<h2 id=heading></h2>
+<p><img src=https://i.imgur.com/uRJXAi6.png alt="NextJs Conduit Landing"></p>
+<h2 id=short-term-todo-list>Short Term todo list</h2>
+<ul>
+<li>
+<p>Figure out a project directory structure</p>
+<ul>
+<li>Id like to everything in one repo(this may change)
+<ul>
+<li>one cause it makes it easy for devember to no have all the infra,ui,services, etc spread across multiply gits</li>
+<li>But no sure how to do this in way that will play nice with IDE,go mod, npm, &mldr;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Configure Callback URL</p>
+</li>
+<li>
+<p>Configure Logout URL</p>
+</li>
+</ul>
+<h2 id=oidc-with-golang>OIDC with Golang</h2>
+<p>I am not smart enough to get this work correctly with PKCE There are really only two ad</p>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

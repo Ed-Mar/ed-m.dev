@@ -1,3 +1,59 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Trying Kraft for this project | 220531</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Trying Kraft for this project | 220531</h2><time>Tue, May 31, 2022</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/kraft>Kraft</a></div><div class=tag-list-item><a href=/tags/kafka>Kafka</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h1 id=220531>220531</h1><p>So I am starting with Choreography pattering so that means going with Kafka I have worked with MQ in the past but the future is now.</p><p>So looking at the documentation for Kafka there is new feature that been in the tested in Kafka for a few years (since 2020) that removes the required zookeeper meta manager under the title <strong>KRaft</strong></p><p><img src=https://imgur.com/nJKSGTZ.png alt=KRaft></p><blockquote><p>Which is also the same spelling as <em>Kraft</em> Foods so gotta use those "" "" when searching for it</p></blockquote><p>So this adds a consensus layer into the Kafka and thus removes the additional zookeeper app needed to run kafka. Granted is has additional labels that go along with like <em>Not Ready for Production</em> and <em>For Testing</em>. So I am going to use it anyway cause If I am gonna be doing the learning mite as well be new material. I mean its not like it companies don&rsquo;t upgrade for years causing large technical debt cause it expensive and entropy (Right? Right..)</p><p>Let me see if I can get it working.</p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>Trying Kraft for this project | 220531</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>Trying Kraft for this project | 220531</h2>
+<time>Tue, May 31, 2022</time>
+<div class=single-page-project>
+<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
+</div>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/kraft>Kraft</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/kafka>Kafka</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+</div>
+<br>
+<div class=single-page-content>
+<h1 id=220531>220531</h1>
+<p>So I am starting with Choreography pattering so that means going with Kafka I have worked with MQ in the past but the future is now.</p>
+<p>So looking at the documentation for Kafka there is new feature that been in the tested in Kafka for a few years (since 2020) that removes the required zookeeper meta manager under the title <strong>KRaft</strong></p>
+<p><img src=https://imgur.com/nJKSGTZ.png alt=KRaft></p>
+<blockquote>
+<p>Which is also the same spelling as <em>Kraft</em> Foods so gotta use those "" "" when searching for it</p>
+</blockquote>
+<p>So this adds a consensus layer into the Kafka and thus removes the additional zookeeper app needed to run kafka. Granted is has additional labels that go along with like <em>Not Ready for Production</em> and <em>For Testing</em>. So I am going to use it anyway cause If I am gonna be doing the learning mite as well be new material. I mean its not like it companies don&rsquo;t upgrade for years causing large technical debt cause it expensive and entropy (Right? Right..)</p>
+<p>Let me see if I can get it working.</p>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

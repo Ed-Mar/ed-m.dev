@@ -1,14 +1,75 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Casting Commands | 220726</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Casting Commands | 220726</h2><time>Tue, Jul 26, 2022</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/microservices>Microservices</a></div><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div><div class=tag-list-item><a href=/tags/kakfa>Kakfa</a></div></div></div><br><div class=single-page-content><h1 id=220726>220726</h1><p>Okay I&rsquo;ve been working the saga pattern. It took me a while of paper and thinking to figure it out. I have the concept worked out. Looking at it now it seems simple, but it took me a lot of big thinking to figure it out.</p><p>I stuck now how to cast an interface{} into its appropriate variable type. I have an to allow a standardize of the <em>Execute</em> (<em>code snippet bellow</em>) function cause I want to use the TransactionCommand as a collection. I know I could easy just make easier on myself to just have custom Transaction commands in each of the Transaction themselves, but I want to repeatable pattern to allow for REST or Kafka, and anymore Command message functions I mite need/want to use in the future. The idea that I really don&rsquo;t need the Saga pattern at the projects current point is not lost on me. I have also argued with myself if the channel service and server service should be separated at this point.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> TransactionCommand <span style=color:#6ab825;font-weight:700>interface</span> {  
-</span></span><span style=display:flex><span>   <span style=color:#447fcf>Execute</span>(i <span style=color:#6ab825;font-weight:700>interface</span>{}) (response <span style=color:#6ab825;font-weight:700>string</span>, err <span style=color:#6ab825;font-weight:700>error</span>)  
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p>_
-Another item that come to my mind is that if you send a kafka event message. There is no response like REST. Which I knew I and I have worked with in the past, but really tired to do the saga pattern with. So hear me out if you use the saga pattern using a message broker you end needing one permanent listener/reader then another temporary one every time a service tries to Execute a Saga. Cause that permanent one doesn&rsquo;t have a straight line of sight into the on going function call running the Saga itself. So you you need to open the temporary listener with a unique key in the running Saga if you want a response from any other service you gonna need that temporary listener. I grabbed the example diagram from the <a href=https://microservices.io/patterns/data/saga.html>microservices website</a>. Is this really big deal not really you can still use the same docker/kube instance of Kafka you already have, but it just seems like a lot compute to use for something that could happen many times a second.</p><p><img src=https://i.imgur.com/tEZRjIp.png alt="example saga diagram"></p><p><em>___22:57</em></p><h2 id=executei-interface>Execute(i interface{})&mldr;</h2><p>Okay after overthinking it for about 3 hours I got it go into a http.Request. I tried a few other things before I got here like JSON marshaling and unmarshaling(if you try this you will get a JSON end of line/file not found) and other option I <em>almost</em> did was looping threw the values and just copy/pasting them in which seemed really dumb but I was prepared if I could not think if somthing selse
-<strong>Casting was the solution</strong> granted I didn&rsquo;t think I could do this with non primitives</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span>	httprequest, ok := i.(http.Request)
-</span></span><span style=display:flex><span>	<span style=color:#6ab825;font-weight:700>if</span> !ok {
-</span></span><span style=display:flex><span>		log.<span style=color:#447fcf>Fatal</span>(<span style=color:#ed9d13>&#34;could not assert value to http.Request&#34;</span>)
-</span></span><span style=display:flex><span>		<span style=color:#6ab825;font-weight:700>return</span>
-</span></span><span style=display:flex><span>	}
-</span></span><span style=display:flex><span>	fmt.<span style=color:#447fcf>Println</span>(reflect.<span style=color:#447fcf>TypeOf</span>(httprequest), httprequest)
-</span></span></code></pre></div><blockquote><p><strong>Output:</strong> http.Request {GET http://localhost:9292/servers 0 0 map[] 0 [] false map[] map[] map[] }</p></blockquote></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>Casting Commands | 220726</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>Casting Commands | 220726</h2>
+<time>Tue, Jul 26, 2022</time>
+<div class=single-page-project>
+<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
+</div>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/microservices>Microservices</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/kakfa>Kakfa</a>
+</div>
+</div>
+</div>
+<br>
+<div class=single-page-content>
+<h1 id=220726>220726</h1>
+<p>Okay I&rsquo;ve been working the saga pattern. It took me a while of paper and thinking to figure it out. I have the concept worked out. Looking at it now it seems simple, but it took me a lot of big thinking to figure it out.</p>
+<p>I stuck now how to cast an interface{} into its appropriate variable type. I have an to allow a standardize of the <em>Execute</em> (<em>code snippet bellow</em>) function cause I want to use the TransactionCommand as a collection. I know I could easy just make easier on myself to just have custom Transaction commands in each of the Transaction themselves, but I want to repeatable pattern to allow for REST or Kafka, and anymore Command message functions I mite need/want to use in the future. The idea that I really don&rsquo;t need the Saga pattern at the projects current point is not lost on me. I have also argued with myself if the channel service and server service should be separated at this point.</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#6ab825;font-weight:700>type</span> TransactionCommand <span style=color:#6ab825;font-weight:700>interface</span> {  
+   <span style=color:#447fcf>Execute</span>(i <span style=color:#6ab825;font-weight:700>interface</span>{}) (response <span style=color:#6ab825;font-weight:700>string</span>, err <span style=color:#6ab825;font-weight:700>error</span>)  
+}
+</code></pre></div><p>_
+Another item that come to my mind is that if you send a kafka event message. There is no response like REST. Which I knew I and I have worked with in the past, but really tired to do the saga pattern with. So hear me out if you use the saga pattern using a message broker you end needing one permanent listener/reader then another temporary one every time a service tries to Execute a Saga. Cause that permanent one doesn&rsquo;t have a straight line of sight into the on going function call running the Saga itself. So you you need to open the temporary listener with a unique key in the running Saga if you want a response from any other service you gonna need that temporary listener. I grabbed the example diagram from the <a href=https://microservices.io/patterns/data/saga.html>microservices website</a>. Is this really big deal not really you can still use the same docker/kube instance of Kafka you already have, but it just seems like a lot compute to use for something that could happen many times a second.</p>
+<p><img src=https://i.imgur.com/tEZRjIp.png alt="example saga diagram"></p>
+<p><em>___22:57</em></p>
+<h2 id=executei-interface>Execute(i interface{})&mldr;</h2>
+<p>Okay after overthinking it for about 3 hours I got it go into a http.Request. I tried a few other things before I got here like JSON marshaling and unmarshaling(if you try this you will get a JSON end of line/file not found) and other option I <em>almost</em> did was looping threw the values and just copy/pasting them in which seemed really dumb but I was prepared if I could not think if somthing selse
+<strong>Casting was the solution</strong> granted I didn&rsquo;t think I could do this with non primitives</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	httprequest, ok := i.(http.Request)
+	<span style=color:#6ab825;font-weight:700>if</span> !ok {
+		log.<span style=color:#447fcf>Fatal</span>(<span style=color:#ed9d13>&#34;could not assert value to http.Request&#34;</span>)
+		<span style=color:#6ab825;font-weight:700>return</span>
+	}
+	fmt.<span style=color:#447fcf>Println</span>(reflect.<span style=color:#447fcf>TypeOf</span>(httprequest), httprequest)
+</code></pre></div><blockquote>
+<p><strong>Output:</strong> http.Request {GET http://localhost:9292/servers 0 0 map[] 0 [] false map[] map[] map[] }</p>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

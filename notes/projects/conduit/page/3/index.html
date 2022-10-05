@@ -1,84 +1,397 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/notes-index.css><link rel=stylesheet href=https://ed-m.dev/css/individual-Project-Index.css><title>Ed-M.dev</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container"><div class=header><h2 class="header title">Conduit</h2><div class="header info">Group Messaging Golang/Fullstack Study</div></div><div class="individual-project panels container"><div class="project panel info"><h3 id=conduit--appalachian-bastion>Conduit | Appalachian-bastion</h3><p>Group messaging web application with a focus on the group&rsquo;s control of its own commuinty message policy and admittance. Once it&rsquo;s in working order then to expand it&rsquo;s feature set to <em>&lsquo;flashy&rsquo;</em> items.</p><p>Is more a study into golang web devlopment and devops. With a fouce on selfhosting and kubernetes.</p><div class=github-icon-container><a class=svg href=https://github.com/Ed-Mar/appalachian-bastion/tree/master/conduit><svg width="38" height="38" viewBox="0 0 24 24" aria-label="Link to Project's Github"><path d="M12 0C5.374.0.0 5.373.0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931.0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176.0.0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221.0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg></a><a href=https://github.com/Ed-Mar/appalachian-bastion/tree/master/conduit>Conduit's Github</a></div></div><div class="project panel stats"><div class=question>Number of post: <span class="question answer">40</span></div><div class=question>Project Status: <span class="question answer">Devlopment Paused</span></div><div class=question>Number Unque Tags: <span class="question answer">59</span></div><div class=question>Last Post: <span class="question answer"><time>Sat, Aug 27, 2022</time></span></div><div class=question>Project Start Date: <span class="question answer"><time>Sun, Oct 17, 2021</time></span></div></div></div><div class="project all-tags container"><a href=/tags/.env>. env</a>
-<a href=/tags/api>API</a>
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/notes-index.css>
+<link rel=stylesheet href=https://ed-m.dev/css/individual-Project-Index.css>
+<title>Ed-M.dev</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container">
+<div class=header>
+<h2 class="header title"> Conduit </h2>
+<div class="header info">
+Group Messaging Golang/Fullstack Study
+</div>
+</div>
+<div class="individual-project panels container">
+<div class="project panel info">
+<h3 id=conduit--appalachian-bastion>Conduit | Appalachian-bastion</h3>
+<p>Group messaging web application with a focus on the group&rsquo;s control of its own commuinty message policy and admittance. Once it&rsquo;s in working order then to expand it&rsquo;s feature set to <em>&lsquo;flashy&rsquo;</em> items.</p>
+<p>Is more a study into golang web devlopment and devops. With a fouce on selfhosting and kubernetes.</p>
+<div class=github-icon-container>
+<a class=svg href=https://github.com/Ed-Mar/appalachian-bastion/tree/master/conduit><svg width="38" height="38" viewBox="0 0 24 24" aria-label="Link to Project's Github"><path d="M12 0C5.374.0.0 5.373.0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931.0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176.0.0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221.0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+</a>
+<a href=https://github.com/Ed-Mar/appalachian-bastion/tree/master/conduit>Conduit's Github</a>
+</div>
+</div>
+<div class="project panel stats">
+<div class=question>Number of post: <span class="question answer">
+40
+</span></div>
+<div class=question>Project Status: <span class="question answer">Devlopment Paused</span></div>
+<div class=question>Number Unque Tags: <span class="question answer">
+59
+</span></div>
+<div class=question>Last Post: <span class="question answer">
+<time>Sat, Aug 27, 2022</time>
+</span></div>
+<div class=question>Project Start Date: <span class="question answer">
+<time>Sun, Oct 17, 2021</time>
+</span></div>
+</div>
+</div>
+<div class="project all-tags container">
+<a href=/tags/.env>. env
+</a>
+<a href=/tags/api>API
+</a>
 <a href=/tags/bitnami>Bitnami
-<sup>2</sup></a>
+<sup>2</sup>
+</a>
 <a href=/tags/book>Book
-<sup>2</sup></a>
-<a href=/tags/cert-manager>Cert manager</a>
+<sup>2</sup>
+</a>
+<a href=/tags/cert-manager>Cert manager
+</a>
 <a href=/tags/cloud-providers>Cloud providers
-<sup>2</sup></a>
-<a href=/tags/config>Config</a>
+<sup>2</sup>
+</a>
+<a href=/tags/config>Config
+</a>
 <a href=/tags/database>Database
-<sup>2</sup></a>
+<sup>2</sup>
+</a>
 <a href=/tags/devblog>Devblog
-<sup>34</sup></a>
+<sup>34</sup>
+</a>
 <a href=/tags/docker>Docker
-<sup>5</sup></a>
-<a href=/tags/experiments>Experiments</a>
+<sup>5</sup>
+</a>
+<a href=/tags/experiments>Experiments
+</a>
 <a href=/tags/go>Go
-<sup>18</sup></a>
-<a href=/tags/go-oidc>Go oidc</a>
+<sup>18</sup>
+</a>
+<a href=/tags/go-oidc>Go oidc
+</a>
 <a href=/tags/gorm>Gorm
-<sup>3</sup></a>
-<a href=/tags/informative>Informative</a>
-<a href=/tags/ingress>Ingress</a>
+<sup>3</sup>
+</a>
+<a href=/tags/informative>Informative
+</a>
+<a href=/tags/ingress>Ingress
+</a>
 <a href=/tags/kafka>Kafka
-<sup>6</sup></a>
-<a href=/tags/kafka-messaging>Kafka messaging</a>
+<sup>6</sup>
+</a>
+<a href=/tags/kafka-messaging>Kafka messaging
+</a>
 <a href=/tags/kakfa>Kakfa
-<sup>3</sup></a>
-<a href=/tags/kakfa-go>Kakfa go</a>
+<sup>3</sup>
+</a>
+<a href=/tags/kakfa-go>Kakfa go
+</a>
 <a href=/tags/keycloak>Keycloak
-<sup>6</sup></a>
+<sup>6</sup>
+</a>
 <a href=/tags/kraft>Kraft
-<sup>2</sup></a>
+<sup>2</sup>
+</a>
 <a href=/tags/kubernetes>Kubernetes
-<sup>2</sup></a>
-<a href=/tags/linode>Linode</a>
-<a href=/tags/local-dns>Local DNS</a>
+<sup>2</sup>
+</a>
+<a href=/tags/linode>Linode
+</a>
+<a href=/tags/local-dns>Local DNS
+</a>
 <a href=/tags/microservices>Microservices
-<sup>6</sup></a>
-<a href=/tags/minikube>Minikube</a>
+<sup>6</sup>
+</a>
+<a href=/tags/minikube>Minikube
+</a>
 <a href=/tags/nextjs>Nextjs
-<sup>2</sup></a>
-<a href=/tags/oauth>Oauth</a>
-<a href=/tags/oidc>Oidc</a>
+<sup>2</sup>
+</a>
+<a href=/tags/oauth>Oauth
+</a>
+<a href=/tags/oidc>Oidc
+</a>
 <a href=/tags/openid>Openid
-<sup>2</sup></a>
+<sup>2</sup>
+</a>
 <a href=/tags/pgx>Pgx
-<sup>2</sup></a>
-<a href=/tags/postal>Postal</a>
+<sup>2</sup>
+</a>
+<a href=/tags/postal>Postal
+</a>
 <a href=/tags/postgres>Postgres
-<sup>3</sup></a>
+<sup>3</sup>
+</a>
 <a href=/tags/rest>Rest
-<sup>5</sup></a>
+<sup>5</sup>
+</a>
 <a href=/tags/saga>Saga
-<sup>3</sup></a>
+<sup>3</sup>
+</a>
 <a href=/tags/smtp>SMTP
-<sup>3</sup></a>
-<a href=/tags/soft-delete>SOF t delete</a>
+<sup>3</sup>
+</a>
+<a href=/tags/soft-delete>SOF t delete
+</a>
 <a href=/tags/sql>SQL
-<sup>2</sup></a>
-<a href=/tags/sqlx>SQL x</a>
-<a href=/tags/swagger>Swagger</a>
+<sup>2</sup>
+</a>
+<a href=/tags/sqlx>SQL x
+</a>
+<a href=/tags/swagger>Swagger
+</a>
+<a href=/tags/uuid>UUID
+</a>
+<a href=/tags/viper>Viper
+</a>
+<a href=/tags/zookeeper>Zookeeper
+</a>
+</div>
+<div class="notes listing container">
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220108/>PGX Implementation | 220108</a></h3>
+<time>Sat, Jan 8, 2022</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/pgx>Pgx</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+<div class=tag-list-item>
 <a href=/tags/uuid>UUID</a>
-<a href=/tags/viper>Viper</a>
-<a href=/tags/zookeeper>Zookeeper</a></div><div class="notes listing container"><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220108/>PGX Implementation | 220108</a></h3><time>Sat, Jan 8, 2022</time><div class=tags-container><div class=tag-list-item><a href=/tags/pgx>Pgx</a></div><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div><div class=tag-list-item><a href=/tags/uuid>UUID</a></div><div class=tag-list-item><a href=/tags/soft-delete>Soft delete</a></div></div><span class=summary>210108 ~ 210122 Had wood to cut and snow to clear, plus trying to dev on generator power and LTE got old. Granted it suppose to snow again tomorrow(today)&mldr;
-PGX Server Crud is in a working state.</span>
-<a id=read-more href=/notes/projects/conduit/220108/>Read More…</a></div><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220107/>Out with the GROM in with pgx | 220107</a></h3><time>Fri, Jan 7, 2022</time><div class=tags-container><div class=tag-list-item><a href=/tags/pgx>Pgx</a></div><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/database>Database</a></div><div class=tag-list-item><a href=/tags/sql>SQL</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div><span class=summary>220107 Out with the GROM in with pgx was working and messing around in another project trying to get a better understanding on how I am going to do this saga thing, when I open back this project I forgot that I still have to remove all that grom stuff</span>
-<a id=read-more href=/notes/projects/conduit/220107/>Read More…</a></div><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220106/>Kafka Containerization | 220106</a></h3><time>Thu, Jan 6, 2022</time><div class=tags-container><div class=tag-list-item><a href=/tags/docker>Docker</a></div><div class=tag-list-item><a href=/tags/kafka>Kafka</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div><div class=tag-list-item><a href=/tags/zookeeper>Zookeeper</a></div></div><span class=summary>210106 Still cranking that generator and LTE hot-spot
-Docker Kafka Alright looking this space in relation to containerization(docker images) there seems to be a couple options at the time of writing this(Jan 2022)</span>
-<a id=read-more href=/notes/projects/conduit/220106/>Read More…</a></div><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220105/>Microservices Patterns Intoduction | 220105</a></h3><time>Wed, Jan 5, 2022</time><div class=tags-container><div class=tag-list-item><a href=/tags/microservices>Microservices</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div><span class=summary>220105 Running off generator power, ten inches of snow. TBA the return of normal power, water, and data services.
-Microservices Patterns Book : Having been given an unplanned opportunity to read, I&rsquo;ve been getting through this microservices patterns book.</span>
-<a id=read-more href=/notes/projects/conduit/220105/>Read More…</a></div><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220101/>End of the Year and a new Book | 220101</a></h3><time>Sat, Jan 1, 2022</time><div class=tags-container><div class=tag-list-item><a href=/tags/microservices>Microservices</a></div><div class=tag-list-item><a href=/tags/sqlx>Sqlx</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div><span class=summary>220101 Now What So I am going to try and break down each of the services that I have created to SQL schemes/Queries with the necessary item so that don&rsquo;t have go into the database for any reason.</span>
-<a id=read-more href=/notes/projects/conduit/220101/>Read More…</a></div><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211230/>Circular imports and GORM | 211230</a></h3><time>Thu, Dec 30, 2021</time><div class=tags-container><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/gorm>Gorm</a></div></div><span class=summary>211230 Circular imports and GORM GORM leads it self to putting you in a circular import loop by design and I have come to learn that from trying to add this temp user struct due to them being many to many</span>
-<a id=read-more href=/notes/projects/conduit/211230/>Read More…</a></div><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211223/>CRUD for Channels Service | 211223</a></h3><time>Thu, Dec 23, 2021</time><div class=tags-container><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div><div class=tag-list-item><a href=/tags/rest>Rest</a></div></div><span class=summary>211223 Kinda lost with the channel addition So In my head its straight forward, cause adding the channel obj to the Server is straight forward but integrating with the existing middleware, and mux is throwing me for a loop.</span>
-<a id=read-more href=/notes/projects/conduit/211223/>Read More…</a></div><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211221/>Database CRUD operations integration | 211221</a></h3><time>Tue, Dec 21, 2021</time><div class=tags-container><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/gorm>Gorm</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div><div class=tag-list-item><a href=/tags/postgres>Postgres</a></div></div><span class=summary>211221 Database CRUD operations integration Working to get the CRUD operation working correctly with the GORM and the database.
+</div>
+<div class=tag-list-item>
+<a href=/tags/soft-delete>Soft delete</a>
+</div>
+</div>
+<span class=summary>210108 ~ 210122 Had wood to cut and snow to clear, plus trying to dev on generator power and LTE got old. Granted it suppose to snow again tomorrow(today)&mldr; </span>
+<a id=read-more href=/notes/projects/conduit/220108/>Read More…</a>
+</div>
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220107/>Out with the GROM in with pgx | 220107</a></h3>
+<time>Fri, Jan 7, 2022</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/pgx>Pgx</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/database>Database</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/sql>SQL</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+<span class=summary>220107 Out with the GROM in with pgx was working and messing around in another project trying to get a better understanding on how I am going to do this saga thing, when I open back this project I forgot that I still have to remove all that grom stuff </span>
+<a id=read-more href=/notes/projects/conduit/220107/>Read More…</a>
+</div>
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220106/>Kafka Containerization | 220106</a></h3>
+<time>Thu, Jan 6, 2022</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/docker>Docker</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/kafka>Kafka</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/zookeeper>Zookeeper</a>
+</div>
+</div>
+<span class=summary>210106 Still cranking that generator and LTE hot-spot
+Docker Kafka Alright looking this space in relation to containerization(docker images) there seems to be a couple options at the time of writing this(Jan 2022) </span>
+<a id=read-more href=/notes/projects/conduit/220106/>Read More…</a>
+</div>
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220105/>Microservices Patterns Intoduction | 220105</a></h3>
+<time>Wed, Jan 5, 2022</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/microservices>Microservices</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+<span class=summary>220105 Running off generator power, ten inches of snow. TBA the return of normal power, water, and data services.
+Microservices Patterns Book : Having been given an unplanned opportunity to read, I&rsquo;ve been getting through this microservices patterns book. </span>
+<a id=read-more href=/notes/projects/conduit/220105/>Read More…</a>
+</div>
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/220101/>End of the Year and a new Book | 220101</a></h3>
+<time>Sat, Jan 1, 2022</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/microservices>Microservices</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/sqlx>Sqlx</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+<span class=summary>220101 Now What So I am going to try and break down each of the services that I have created to SQL schemes/Queries with the necessary item so that don&rsquo;t have go into the database for any reason. </span>
+<a id=read-more href=/notes/projects/conduit/220101/>Read More…</a>
+</div>
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211230/>Circular imports and GORM | 211230</a></h3>
+<time>Thu, Dec 30, 2021</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/gorm>Gorm</a>
+</div>
+</div>
+<span class=summary>211230 Circular imports and GORM GORM leads it self to putting you in a circular import loop by design and I have come to learn that from trying to add this temp user struct due to them being many to many </span>
+<a id=read-more href=/notes/projects/conduit/211230/>Read More…</a>
+</div>
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211223/>CRUD for Channels Service | 211223</a></h3>
+<time>Thu, Dec 23, 2021</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/rest>Rest</a>
+</div>
+</div>
+<span class=summary>211223 Kinda lost with the channel addition So In my head its straight forward, cause adding the channel obj to the Server is straight forward but integrating with the existing middleware, and mux is throwing me for a loop. </span>
+<a id=read-more href=/notes/projects/conduit/211223/>Read More…</a>
+</div>
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211221/>Database CRUD operations integration | 211221</a></h3>
+<time>Tue, Dec 21, 2021</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/gorm>Gorm</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/postgres>Postgres</a>
+</div>
+</div>
+<span class=summary>211221 Database CRUD operations integration Working to get the CRUD operation working correctly with the GORM and the database.
 Create (AddServer) Auto increment is on for gorm
-Update Get {id} Note that the model object has been added to the server model but is only turn on in the json for the update/delete testing</span>
-<a id=read-more href=/notes/projects/conduit/211221/>Read More…</a></div><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211218/>DB Code base intergration | 211218</a></h3><time>Sat, Dec 18, 2021</time><div class=tags-container><div class=tag-list-item><a href=/tags/docker>Docker</a></div><div class=tag-list-item><a href=/tags/gorm>Gorm</a></div><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/.env>.Env</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div><span class=summary>211218 Docker image for postures Bog standard nothing docker compose Note I plan to turn on ssl mode(link) on later when this gets on the cluster
-Using GORM for database Documentation for this and the package it self makes this rather easy.</span>
-<a id=read-more href=/notes/projects/conduit/211218/>Read More…</a></div><div class="post preview"><h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211210/>CRUD Operations | 211210</a></h3><time>Fri, Dec 10, 2021</time><div class=tags-container><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/nextjs>Nextjs</a></div><div class=tag-list-item><a href=/tags/swagger>Swagger</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div><span class=summary>211210 CRUD operations for Servers So I have the basic REST crud operations for the for the server service. For the Create, Update, and delete aren&rsquo;t necessary for the MVP, but I thought since i was here and for practice.</span>
-<a id=read-more href=/notes/projects/conduit/211210/>Read More…</a></div><ul class="pagination pagination-default"><li class=page-item><a href=/notes/projects/conduit/ aria-label=First class=page-link role=button><span aria-hidden=true>&#171;&#171;</span></a></li><li class=page-item><a href=/notes/projects/conduit/page/2/ aria-label=Previous class=page-link role=button><span aria-hidden=true>&#171;</span></a></li><li class=page-item><a href=/notes/projects/conduit/ aria-label="Page 1" class=page-link role=button>1</a></li><li class=page-item><a href=/notes/projects/conduit/page/2/ aria-label="Page 2" class=page-link role=button>2</a></li><li class="page-item active"><a aria-current=page aria-label="Page 3" class=page-link role=button>3</a></li><li class=page-item><a href=/notes/projects/conduit/page/4/ aria-label="Page 4" class=page-link role=button>4</a></li><li class=page-item><a href=/notes/projects/conduit/page/4/ aria-label=Next class=page-link role=button><span aria-hidden=true>&#187;</span></a></li><li class=page-item><a href=/notes/projects/conduit/page/4/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a></li></ul></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+Update Get {id} Note that the model object has been added to the server model but is only turn on in the json for the update/delete testing </span>
+<a id=read-more href=/notes/projects/conduit/211221/>Read More…</a>
+</div>
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211218/>DB Code base intergration | 211218</a></h3>
+<time>Sat, Dec 18, 2021</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/docker>Docker</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/gorm>Gorm</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/.env>.Env</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+<span class=summary>211218 Docker image for postures Bog standard nothing docker compose Note I plan to turn on ssl mode(link) on later when this gets on the cluster
+Using GORM for database Documentation for this and the package it self makes this rather easy. </span>
+<a id=read-more href=/notes/projects/conduit/211218/>Read More…</a>
+</div>
+<div class="post preview">
+<h3><a class=title-link href=https://ed-m.dev/notes/projects/conduit/211210/>CRUD Operations | 211210</a></h3>
+<time>Fri, Dec 10, 2021</time>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/nextjs>Nextjs</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/swagger>Swagger</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+<span class=summary>211210 CRUD operations for Servers So I have the basic REST crud operations for the for the server service. For the Create, Update, and delete aren&rsquo;t necessary for the MVP, but I thought since i was here and for practice. </span>
+<a id=read-more href=/notes/projects/conduit/211210/>Read More…</a>
+</div>
+<ul class="pagination pagination-default">
+<li class=page-item>
+<a href=/notes/projects/conduit/ aria-label=First class=page-link role=button><span aria-hidden=true>&#171;&#171;</span></a>
+</li>
+<li class=page-item>
+<a href=/notes/projects/conduit/page/2/ aria-label=Previous class=page-link role=button><span aria-hidden=true>&#171;</span></a>
+</li>
+<li class=page-item>
+<a href=/notes/projects/conduit/ aria-label="Page 1" class=page-link role=button>1</a>
+</li>
+<li class=page-item>
+<a href=/notes/projects/conduit/page/2/ aria-label="Page 2" class=page-link role=button>2</a>
+</li>
+<li class="page-item active">
+<a aria-current=page aria-label="Page 3" class=page-link role=button>3</a>
+</li>
+<li class=page-item>
+<a href=/notes/projects/conduit/page/4/ aria-label="Page 4" class=page-link role=button>4</a>
+</li>
+<li class=page-item>
+<a href=/notes/projects/conduit/page/4/ aria-label=Next class=page-link role=button><span aria-hidden=true>&#187;</span></a>
+</li>
+<li class=page-item>
+<a href=/notes/projects/conduit/page/4/ aria-label=Last class=page-link role=button><span aria-hidden=true>&#187;&#187;</span></a>
+</li>
+</ul>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

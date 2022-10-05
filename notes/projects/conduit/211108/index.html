@@ -1,3 +1,82 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>211108 | Ed-M.dev</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>211108 | Ed-M.dev</h2><time>Mon, Nov 8, 2021</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h2 id=progress-211108_1203>Progress 211108_1203</h2><ul><li>ingress controller is operation(haproxy)</li><li>cert-manger is operational</li><li>keycloak is operational<ul><li>more testing of full functionally is still needed, but initial smoke test everything seems to as it should</li></ul></li></ul><p><a href=https://github.com/Ed-Mar/appalachian-bastion/>GitHub</a>: has been updated with helm values and cluster issuers</p><h2 id=next-items>Next items</h2><ul><li>Get a better understanding of the realms and how to best operate keycloak</li><li>test the email validation for user sign-up</li><li>plan out the structure of the date of what is need for a user sign up.</li></ul><h3 id=future-item-in-no-particular-order>Future item <em>(In no particular order)</em></h3><ul><li>get app up working with some go bones<ul><li>deal with the SAML login</li></ul></li><li>plan out the data structures for all the items that I think i can deliver before the time is up</li><li>pick a backend (relational or not is the real question)<ul><li>once the data is finalized(-ish) get some swagger going</li></ul></li><li>frontend work if they exist so i guess i have to deal with that too</li><li>other(s)</li></ul><h4 id=demo>Demo</h4><p><img src=https://i.imgur.com/hQgLSqO.png alt="Keycloak up and with tls"><img src=https://i.imgur.com/Js0KYme.png alt="Pods up and not sh*tting themselves"></p><h4 id=notes>Notes</h4><p>I did end up going with cloudflare and haproxy. I spoke to those items in the last post</p><p>Looks like we&rsquo;re getting out of <em><strong>yaml land&mldr;</strong></em></p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>211108 | Ed-M.dev</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>211108 | Ed-M.dev</h2>
+<time>Mon, Nov 8, 2021</time>
+<div class=single-page-project>
+<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
+</div>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+</div>
+</div>
+<br>
+<div class=single-page-content>
+<h2 id=progress-211108_1203>Progress 211108_1203</h2>
+<ul>
+<li>ingress controller is operation(haproxy)</li>
+<li>cert-manger is operational</li>
+<li>keycloak is operational
+<ul>
+<li>more testing of full functionally is still needed, but initial smoke test everything seems to as it should</li>
+</ul>
+</li>
+</ul>
+<p><a href=https://github.com/Ed-Mar/appalachian-bastion/>GitHub</a>: has been updated with helm values and cluster issuers</p>
+<h2 id=next-items>Next items</h2>
+<ul>
+<li>Get a better understanding of the realms and how to best operate keycloak</li>
+<li>test the email validation for user sign-up</li>
+<li>plan out the structure of the date of what is need for a user sign up.</li>
+</ul>
+<h3 id=future-item-in-no-particular-order>Future item <em>(In no particular order)</em></h3>
+<ul>
+<li>get app up working with some go bones
+<ul>
+<li>deal with the SAML login</li>
+</ul>
+</li>
+<li>plan out the data structures for all the items that I think i can deliver before the time is up</li>
+<li>pick a backend (relational or not is the real question)
+<ul>
+<li>once the data is finalized(-ish) get some swagger going</li>
+</ul>
+</li>
+<li>frontend work if they exist so i guess i have to deal with that too</li>
+<li>other(s)</li>
+</ul>
+<h4 id=demo>Demo</h4>
+<p><img src=https://i.imgur.com/hQgLSqO.png alt="Keycloak up and with tls"><img src=https://i.imgur.com/Js0KYme.png alt="Pods up and not sh*tting themselves"></p>
+<h4 id=notes>Notes</h4>
+<p>I did end up going with cloudflare and haproxy. I spoke to those items in the last post</p>
+<p>Looks like we&rsquo;re getting out of <em><strong>yaml land&mldr;</strong></em></p>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

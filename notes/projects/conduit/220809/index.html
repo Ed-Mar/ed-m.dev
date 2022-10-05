@@ -1,222 +1,303 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Go Saga Pattern | 220809</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Go Saga Pattern | 220809</h2><time>Tue, Aug 9, 2022</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/microservices>Microservices</a></div><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/informative>Informative</a></div><div class=tag-list-item><a href=/tags/saga>Saga</a></div></div></div><br><div class=single-page-content><h1 id=220809>220809</h1><h2 id=saga-pattern-has-been-replicated>Saga Pattern has been replicated</h2><p><em>_2017</em>
-It took longer than I wanted to and stole my will a few times, but we&rsquo;re here now.</p><p><img src=https://i.imgur.com/gkxiGMn.png alt="Saga Pattern Operational in Go"></p><p>Okay so there is still some work to be done on it. I still testing it, but I&rsquo;ll push what I have now shortly.</p><h2 id=saga-pattern-for-microservices-implementation>Saga Pattern for microservices implementation</h2><p>I am going to try and explain how this how thing works now (Bear with me)</p><h3 id=sagaorchestrator>SagaOrchestrator</h3><p>This is main collector for the Saga it self. Its got a name, and a slice of Transactions</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> SagaOrchestrator <span style=color:#6ab825;font-weight:700>struct</span> {  
-</span></span><span style=display:flex><span>   Name         <span style=color:#6ab825;font-weight:700>string</span>  
-</span></span><span style=display:flex><span>  Transactions []Transaction  
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><p>There&rsquo;s a SagaOrchestrator Constructor that checks the order of the Transactions to insure they are ordered correctly which is important for proper saga execution. <strong>I am still testing this now</strong>. The count system was picked cause it seemed the most fast to write and easiest to read. I may go back make it so that you have to use the Constructor in the future, but for now I am fine with it cause I pass it around a little</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewSagaOrchestrator</span>(name <span style=color:#6ab825;font-weight:700>string</span>, transactions []Transaction) (*SagaOrchestrator, <span style=color:#6ab825;font-weight:700>error</span>) {  
-</span></span><span style=display:flex><span>  <span style=color:#6ab825;font-weight:700>var</span> sagaCreationErrorPrefix = <span style=color:#ed9d13>&#34;[ERROR] [SAGA_PATTERN] &#34;</span>  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span>  so := <span style=color:#24909d>new</span>(SagaOrchestrator)  
-</span></span><span style=display:flex><span>  so.Name = name  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span>  <span style=color:#6ab825;font-weight:700>var</span> countOfCompensatableTransactions = <span style=color:#3677a9>0</span>  
-</span></span><span style=display:flex><span>  <span style=color:#6ab825;font-weight:700>var</span> countOfPivotTransactions = <span style=color:#3677a9>0</span>  
-</span></span><span style=display:flex><span>  <span style=color:#6ab825;font-weight:700>var</span> countOfRetryableTransactions = <span style=color:#3677a9>0</span>  
-</span></span><span style=display:flex><span>  lastIndex := <span style=color:#24909d>len</span>(transactions) - <span style=color:#3677a9>1</span>  
-</span></span><span style=display:flex><span>  <span style=color:#999;font-style:italic>// Loops through the list of transactions to check for acceptable order has been passed  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>for</span> index, transaction := <span style=color:#6ab825;font-weight:700>range</span> transactions {  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span> <span style=color:#999;font-style:italic>//Checks for Compensatable Transactions  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>//Ruling:
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// There cannot be a Pivot Transaction prior to any Compensatable Transaction
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// There cannot be Retryable Transactions prior to any Pivot Transactions  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetCompensatableTransactionType</span>() {  
-</span></span><span style=display:flex><span>         countOfCompensatableTransactions = countOfCompensatableTransactions + <span style=color:#3677a9>1</span>  
-</span></span><span style=display:flex><span>         
-</span></span><span style=display:flex><span>	  <span style=color:#999;font-style:italic>//Checking if it&#39;s before any Pivot Transactions  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>	  <span style=color:#6ab825;font-weight:700>if</span> countOfPivotTransactions &gt; <span style=color:#3677a9>0</span> {  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] [Compensatable]| Cannot put Compensatable Transactions after a Pivot Transaction&#34;</span>)  
-</span></span><span style=display:flex><span>         }  
-</span></span><span style=display:flex><span>         <span style=color:#999;font-style:italic>//Checking if it&#39;s before any Retryable Transactions  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>	  <span style=color:#6ab825;font-weight:700>if</span> countOfRetryableTransactions &gt; <span style=color:#3677a9>0</span> {  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] [Compensatable]| Cannot put Compensatable Transactions before any Retryable Transaction(s)&#34;</span>)  
-</span></span><span style=display:flex><span>         }  
-</span></span><span style=display:flex><span>     }  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span> <span style=color:#999;font-style:italic>//Checks for Pivot Transaction  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>//Ruling:
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// There cannot be more than one pivot transaction 
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// There are no Retryable prior to the Pivot  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetPivotTransactionType</span>() {  
-</span></span><span style=display:flex><span>         countOfPivotTransactions = countOfPivotTransactions + <span style=color:#3677a9>1</span>  
-</span></span><span style=display:flex><span>	  <span style=color:#999;font-style:italic>//Checks that there is not already a Pivot Transaction in the List of Transactions  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>	  <span style=color:#6ab825;font-weight:700>if</span> countOfPivotTransactions &gt; <span style=color:#3677a9>1</span> {  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] [Pivot]| There is more than one Pivot Transaction&#34;</span>)  
-</span></span><span style=display:flex><span>         }  
-</span></span><span style=display:flex><span>	  <span style=color:#999;font-style:italic>//Checks that there is not any Retryable Transactions prior in the list of Transactions  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>	  <span style=color:#6ab825;font-weight:700>if</span> countOfRetryableTransactions &gt; <span style=color:#3677a9>0</span> {  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] [Pivot]| Cannot put Pivot Transaction After Retryable Transactions&#34;</span>)  
-</span></span><span style=display:flex><span>         }    
-</span></span><span style=display:flex><span>      }  
-</span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//Checking Retryable  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//Note: currently 220801 that I do not think I need to check for anything for Retryable, cause the other two cover it. 
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//but I will leave this code here just in case
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetPivotTransactionType</span>() {  
-</span></span><span style=display:flex><span>         countOfRetryableTransactions = countOfRetryableTransactions + <span style=color:#3677a9>1</span>  
-</span></span><span style=display:flex><span>}  
-</span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//Checks at last Transaction in the list  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>if</span> index == lastIndex {  
-</span></span><span style=display:flex><span>	<span style=color:#999;font-style:italic>//Checks that there is a pivot if there is any Compensatable Transactions  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>	<span style=color:#6ab825;font-weight:700>if</span> countOfPivotTransactions &lt; <span style=color:#3677a9>1</span> &amp;&amp; countOfCompensatableTransactions &gt; <span style=color:#3677a9>0</span> {  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] | Compensatable Transactions have not Pivot Transactions&#34;</span>)  
-</span></span><span style=display:flex><span>         }  
-</span></span><span style=display:flex><span>      }  
-</span></span><span style=display:flex><span>   }  
-</span></span><span style=display:flex><span>  <span style=color:#999;font-style:italic>// So it passes the checks above its good to go.  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  so.Transactions = transactions  
-</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>return</span> so, <span style=color:#6ab825;font-weight:700>nil</span>  
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><h3 id=transaction>Transaction</h3><p>Transaction is an interface cause there are multiple types( Compensatable, Pivot, & Retryable). There are currently three functions that they have to populate to be consider an Transaction. Sense I am using an interface and won&rsquo;t access to the data if any directly. Cause golang doesn&rsquo;t implement classes like other languages(there is no extend). I do have methods in which I can implement to return the data I need for the each of the separate sub types(this took much longer for me really understand and internalize. Which was most of time doing this part).</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> Transaction <span style=color:#6ab825;font-weight:700>interface</span> {  
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>GetTransactionType</span>() sagaTransactionType  
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>GetTransactionCommands</span>() []TransactionCommand  
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>GetTransactionName</span>() <span style=color:#6ab825;font-weight:700>string</span>  
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><h5 id=gettransactiontype>GetTransactionType()</h5><p>This gets a type I created in which I can compare during execution to know what type of Transaction it is. As each of them have there own logic. The custom type was made just to make coding it little easier and to insure an extra space/inconstant spelling/etc.. cause I know myself I will mess up and string compare somehow and lose many hours of my life.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span>  <span style=color:#6ab825;font-weight:700>type</span> Transaction <span style=color:#6ab825;font-weight:700>interface</span> {  
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>GetTransactionType</span>() sagaTransactionType  
-</span></span><span style=display:flex><span>  ...
-</span></span></code></pre></div><h5 id=gettransactioncommands>GetTransactionCommands()</h5><p>This returns a slice of &lsquo;TrainsactionCommands&rsquo; Its a list cause the Compensatable Transaction should have two by definition, even if the second one is empty, but it should have two. The others ones only need one, but this is why its a slice and not just the Command. &lsquo;TransactionCommand&rsquo; Cause that is workhorse of this implementation of the Saga Pattern</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span>  <span style=color:#6ab825;font-weight:700>type</span> Transaction <span style=color:#6ab825;font-weight:700>interface</span> {  
-</span></span><span style=display:flex><span>  ...
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>GetTransactionCommands</span>() []TransactionCommand  
-</span></span><span style=display:flex><span>  ...
-</span></span></code></pre></div><h5 id=gettransactionname>GetTransactionName()</h5><p>just returns the name of the Transaction its nice to have when implementing and debugging</p><h3 id=transactioncommand>TransactionCommand</h3><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#999;font-style:italic>// TransactionCommand this action part of the Transaction in which Execute would do it and give the response if any.
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// this was made to allow both REST and Kafka thus functioning taking an anonymous interface. Doing this allows for both  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// of the possible solutions Actions to be in the same collection  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>type</span> TransactionCommand <span style=color:#6ab825;font-weight:700>interface</span> {  
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>Execute</span>() (success <span style=color:#6ab825;font-weight:700>bool</span>, err <span style=color:#6ab825;font-weight:700>error</span>)  
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>GetTransactionCommandType</span>() <span style=color:#6ab825;font-weight:700>string</span>  
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>GetTransactionCommandName</span>() <span style=color:#6ab825;font-weight:700>string</span>  
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><h4 id=gettransactioncommandtype--gettransactioncommandname>GetTransactionCommandType() & GetTransactionCommandName()</h4><p>both just used for debugging. The <em>GetTransactionCommandType()</em> is leftover from earlier prototyping, but I think it could be useful later&mldr; maybe.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> TransactionCommand <span style=color:#6ab825;font-weight:700>interface</span> {  
-</span></span><span style=display:flex><span>  ...
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>GetTransactionCommandType</span>() <span style=color:#6ab825;font-weight:700>string</span>  
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>GetTransactionCommandName</span>() <span style=color:#6ab825;font-weight:700>string</span>  
-</span></span></code></pre></div><h4 id=execute>Execute()</h4><p>This interface method allows for many implementations of it. In which it only needs to return two things a <em>proceed</em> boolean and an error. When going threw this I wanted to allow for just about any type of &lsquo;Command&rsquo; as the book puts it and boiled that down in an Execute function that could a HTTP call to another service, Kafka Message, g/RPC, even Service side DB calls, essentially whatever. The Book did not go over this, but its what I took from it. Essentially a list of Actions with a pivot points to undo or complete.</p><p><em>NOTE: I am not positive on the bool, error parms cause I think should be able to just send an error for either and let implementation of Execute deal with which was the main goal of this whole &lsquo;TransactionCommand&rsquo;. I just don&rsquo;t want to leave out the option of needing to send an error for some reason, but still wanting to proceed.</em></p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> TransactionCommand <span style=color:#6ab825;font-weight:700>interface</span> {  
-</span></span><span style=display:flex><span>  <span style=color:#447fcf>Execute</span>() (success <span style=color:#6ab825;font-weight:700>bool</span>, err <span style=color:#6ab825;font-weight:700>error</span>)
-</span></span><span style=display:flex><span>  ....  
-</span></span></code></pre></div><h3 id=saga-execution>Saga Execution</h3><p>A Runner for the SagaOrchestrator its just a simple loop with some logic in it to ad hear to the rules of the saga pattern. The order of Transaction should be confirmed by using the SagaOrchestrator constructor. There are sub functions to deal with undo the necessary Transactions and retrying the ones that allow it. Still testing this logic but it seems to work enough for the write up and any changes will be in the git. I left a bunch of notes/comments in the code to help me write it and remind me when I would come back to it after the weekend.</p><p>There are a lot ghost prints in it, but that a future me problem I am still tweaking it in testing.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>const</span> RetryableTransactionRetryLimit = <span style=color:#3677a9>3</span>  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> sagaRunner <span style=color:#6ab825;font-weight:700>struct</span> {  
-</span></span><span style=display:flex><span>   logger             *log.Logger  
-</span></span><span style=display:flex><span>  generalErrorPrefix <span style=color:#6ab825;font-weight:700>error</span>  
-</span></span><span style=display:flex><span>}  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//ExecuteSaga  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span><span style=color:#999;font-style:italic>/*  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic> Order of Transaction is import in passed ListOfTransactions - Compensatable Transactions: -- NOTE: Compensatable Transactions should have two Transaction Commands. The first one for the intended Transaction and the second one to Roll back that Transaction encase of failure/issues in any of the following Transaction  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic> -- Can only be in place prior in order to the Pivot Transaction and never after -- If there is no Pivot Transaction Action then there cannot be any Compensatable Transactions - Pivot Transaction:  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic> -- There can only be one per list of Transactions or - Retryable Transactions: -- If the Pivot Transaction exist in the List then Retryable Transactions can only be in after that Pivot Transaction  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic> -- Retryable Transactions should never be in the list of Transactions prior to the Pivot Transaction if it exists  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic> - NOTE Other Use Cases: -- You can have a Pivot Transaction without Compensatable Transaction(s)  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic> -- You can just have list of Transactions without Pivot nor Compensatable Transactions(So just Retryable Transactions (Granted idk why you would tho))*/</span>  
-</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>ExecuteSaga</span>(orchestrator SagaOrchestrator) <span style=color:#6ab825;font-weight:700>error</span> {  
-</span></span><span style=display:flex><span>   prefixSagaExecutionError := errors.<span style=color:#447fcf>New</span>(prefixSagaExecutionError + <span style=color:#ed9d13>&#34;[&#34;</span> + orchestrator.Name + <span style=color:#ed9d13>&#34;]&#34;</span>)  
-</span></span><span style=display:flex><span>   sagaRunnerLogger := sagaRunner{  
-</span></span><span style=display:flex><span>      logger:             log.<span style=color:#447fcf>New</span>(os.Stdout, orchestrator.Name+<span style=color:#ed9d13>&#34; | &#34;</span>, log.LstdFlags),  
-</span></span><span style=display:flex><span>  generalErrorPrefix: prefixSagaExecutionError,  
-</span></span><span style=display:flex><span>  }  
-</span></span><span style=display:flex><span>   <span style=color:#999;font-style:italic>//This is the list of the undo transaction in the event of a failure or  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>var</span> compensatableTransactionCommands []TransactionCommand  
-</span></span><span style=display:flex><span>  <span style=color:#6ab825;font-weight:700>var</span> hasCompensatableTransaction = <span style=color:#6ab825;font-weight:700>false</span>  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span>  sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;------- Saga Execution Start --------&#34;</span>)  
-</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>for</span> _, transaction := <span style=color:#6ab825;font-weight:700>range</span> orchestrator.Transactions {  
-</span></span><span style=display:flex><span>      <span style=color:#999;font-style:italic>//Pull the List of Transactions Commands  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// [1] is the intended transaction Command // [2] would be a compensatableTransaction Command  transactionCommands := transaction.GetTransactionCommands()  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  
-</span></span><span style=display:flex><span>      sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;Transaction Name: &#34;</span> + transaction.<span style=color:#447fcf>GetTransactionName</span>())  
-</span></span><span style=display:flex><span>      sagaRunnerLogger.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34;Transaction Type: %+v\n&#34;</span>, transaction.<span style=color:#447fcf>GetTransactionType</span>())  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span>      <span style=color:#999;font-style:italic>//Execute the Transaction  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// To handle result a lil later  canProceed, err := transactionCommands[0].Execute()  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  
-</span></span><span style=display:flex><span>      sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;--- Transaction Executed Results ---&#34;</span>)  
-</span></span><span style=display:flex><span>      sagaRunnerLogger.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34;Can Proceed to Next Transaction: %t\n&#34;</span>, canProceed)  
-</span></span><span style=display:flex><span>      sagaRunnerLogger.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34;Was There an Error In that Transaction: %v\n&#34;</span>, err)  
-</span></span><span style=display:flex><span>      <span style=color:#999;font-style:italic>//COMPENSATABLE TRANSACTION  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>//If it&#39;s a Compensatable Transaction Type add the second transaction to the list undo Transaction Commands  if transaction.GetTransactionType() == GetCompensatableTransactionType() {  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>         hasCompensatableTransaction = <span style=color:#6ab825;font-weight:700>true</span>  
-</span></span><span style=display:flex><span>  compensatableTransactionCommands = <span style=color:#24909d>append</span>(compensatableTransactionCommands, transactionCommands[<span style=color:#3677a9>2</span>])  
-</span></span><span style=display:flex><span>      }  
-</span></span><span style=display:flex><span>        
-</span></span><span style=display:flex><span>      <span style=color:#999;font-style:italic>//FAILURE IN COMPENSATABLE OR PIVOT TRANSACTION  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// If get the do not proceed flag or an error (the canProceed is for Transaction Commands that get responses)  if !canProceed || err != nil {  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>         <span style=color:#999;font-style:italic>// This is just in case you get a Pivot Transaction without any CompensatableTransaction(s) in an effort to try and save some compute  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>if</span> !hasCompensatableTransaction {  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetPivotTransactionType</span>() {  
-</span></span><span style=display:flex><span>               <span style=color:#6ab825;font-weight:700>if</span> err == <span style=color:#6ab825;font-weight:700>nil</span> {  
-</span></span><span style=display:flex><span>                  err = errors.<span style=color:#447fcf>New</span>(<span style=color:#ed9d13>&#34;got a Do Not Proceed, but No Error(So now you get an Error)&#34;</span>)  
-</span></span><span style=display:flex><span>               }  
-</span></span><span style=display:flex><span>               log.<span style=color:#447fcf>Println</span>(err)  
-</span></span><span style=display:flex><span>               <span style=color:#6ab825;font-weight:700>return</span> err  
-</span></span><span style=display:flex><span>            }  
-</span></span><span style=display:flex><span>         }  
-</span></span><span style=display:flex><span>         <span style=color:#999;font-style:italic>//Check if the Transaction Type is Pivot/Compensatable then undo the Transactions providing the list of undo Transaction Commands  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetCompensatableTransactionType</span>() || transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetPivotTransactionType</span>() {  
-</span></span><span style=display:flex><span>            undoErr := <span style=color:#447fcf>undoCompensatableTransactions</span>(compensatableTransactionCommands, &amp;sagaRunnerLogger)  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>if</span> undoErr != <span style=color:#6ab825;font-weight:700>nil</span> {  
-</span></span><span style=display:flex><span>               <span style=color:#999;font-style:italic>// This process fails I really don&#39;t want to tell the end user. So I guess I&#39;ll just log it.  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(undoErr)  
-</span></span><span style=display:flex><span>            }  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>if</span> err == <span style=color:#6ab825;font-weight:700>nil</span> {  
-</span></span><span style=display:flex><span>               err = errors.<span style=color:#447fcf>New</span>(<span style=color:#ed9d13>&#34;got a Do Not Proceed, but No Error(So now you get an Error)&#34;</span>)  
-</span></span><span style=display:flex><span>            }  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>return</span> err  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span>         }  
-</span></span><span style=display:flex><span>      }  
-</span></span><span style=display:flex><span>      <span style=color:#999;font-style:italic>//Check if the Transaction Type is Retryable then try to reattempt them to preset retry limit  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetRetriableTransactionType</span>() {  
-</span></span><span style=display:flex><span>         <span style=color:#6ab825;font-weight:700>if</span> !canProceed || err != <span style=color:#6ab825;font-weight:700>nil</span> {  
-</span></span><span style=display:flex><span>            didItFinallyWork, err := <span style=color:#447fcf>retryRetractableTransactionToPresetLimit</span>(transactionCommands[<span style=color:#3677a9>0</span>], &amp;sagaRunnerLogger)  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {  
-</span></span><span style=display:flex><span>               <span style=color:#6ab825;font-weight:700>return</span> err  
-</span></span><span style=display:flex><span>  }  
-</span></span><span style=display:flex><span>            <span style=color:#6ab825;font-weight:700>if</span> !didItFinallyWork {  
-</span></span><span style=display:flex><span>               retriesFailed := fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;%v [UNDO] | After the Preset Number (#%d) of Retries this RetryTabiable Transaction(%v) has still Failed. Look at contruction of this Transaction and its Transaction Command(%v)&#34;</span>, sagaRunnerLogger.generalErrorPrefix, RetryableTransactionRetryLimit, transaction.<span style=color:#447fcf>GetTransactionName</span>(), transaction.<span style=color:#447fcf>GetTransactionCommands</span>()[<span style=color:#3677a9>0</span>].<span style=color:#447fcf>GetTransactionCommandName</span>())  
-</span></span><span style=display:flex><span>               sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(retriesFailed)  
-</span></span><span style=display:flex><span>               <span style=color:#999;font-style:italic>// I am not positive If I am supposed to return this error I will for now  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>return</span> fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;%v | %v &#34;</span>, retriesFailed, err)  
-</span></span><span style=display:flex><span>            }  
-</span></span><span style=display:flex><span>         }  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span>      }  
-</span></span><span style=display:flex><span>      sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;------- Next Transaction --------&#34;</span>)  
-</span></span><span style=display:flex><span>   } <span style=color:#999;font-style:italic>//End of loop  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;------- End of Saga Execution --------&#34;</span>)  
-</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>  
-</span></span><span style=display:flex><span>}  
-</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>retryRetractableTransactionToPresetLimit</span>(command TransactionCommand, runner *sagaRunner) (<span style=color:#6ab825;font-weight:700>bool</span>, <span style=color:#6ab825;font-weight:700>error</span>) {  
-</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>var</span> didItFinallyWork = <span style=color:#6ab825;font-weight:700>false</span>  
-</span></span><span style=display:flex><span> <span style=color:#6ab825;font-weight:700>var</span> err <span style=color:#6ab825;font-weight:700>error</span>  
-</span></span><span style=display:flex><span> <span style=color:#6ab825;font-weight:700>for</span> i := <span style=color:#3677a9>1</span>; i &lt;= RetryableTransactionRetryLimit; i++ {  
-</span></span><span style=display:flex><span>      runner.logger.<span style=color:#447fcf>Println</span>(fmt.<span style=color:#447fcf>Sprintf</span>(<span style=color:#ed9d13>&#34;%v [RETRYABLE] Retrying Retryable Transaction %d of %d&#34;</span>, runner.generalErrorPrefix, i, RetryableTransactionRetryLimit))  
-</span></span><span style=display:flex><span>      <span style=color:#6ab825;font-weight:700>var</span> err1 <span style=color:#6ab825;font-weight:700>error</span>  
-</span></span><span style=display:flex><span>  didItFinallyWork, err1 = command.<span style=color:#447fcf>Execute</span>()  
-</span></span><span style=display:flex><span>      <span style=color:#999;font-style:italic>//TODO Learn proper error handling  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  err = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;retry #: %d | error: %v | %v&#34;</span>, i, err1, err)  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span>   }  
-</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>return</span> didItFinallyWork, err  
-</span></span><span style=display:flex><span>}  
-</span></span><span style=display:flex><span>  
-</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>undoCompensatableTransactions</span>(listOfCompensatableTransactions []TransactionCommand, runner *sagaRunner) <span style=color:#6ab825;font-weight:700>error</span> {  
-</span></span><span style=display:flex><span>   <span style=color:#999;font-style:italic>//TODO Need to learn to Wrap errors  
-</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  undo := errors.<span style=color:#447fcf>New</span>(<span style=color:#ed9d13>&#34;[UNDO] |&#34;</span>)  
-</span></span><span style=display:flex><span>   errCollector := errors.<span style=color:#447fcf>New</span>(<span style=color:#ed9d13>&#34;&#34;</span>)  
-</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>for</span> _, transactionCommand := <span style=color:#6ab825;font-weight:700>range</span> listOfCompensatableTransactions {  
-</span></span><span style=display:flex><span>      workAsExpected, err := transactionCommand.<span style=color:#447fcf>Execute</span>()  
-</span></span><span style=display:flex><span>      <span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {  
-</span></span><span style=display:flex><span>         runner.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34; %v %v | TransactionCommandName: %v, Error: %v&#34;</span>, runner.generalErrorPrefix, undo, transactionCommand.<span style=color:#447fcf>GetTransactionCommandName</span>(), err)  
-</span></span><span style=display:flex><span>         errCollector = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;%v | %v | %v&#34;</span>, runner.generalErrorPrefix, undo, err)  
-</span></span><span style=display:flex><span>         <span style=color:#6ab825;font-weight:700>return</span> errCollector  
-</span></span><span style=display:flex><span>      }  
-</span></span><span style=display:flex><span>      <span style=color:#6ab825;font-weight:700>if</span> !workAsExpected {  
-</span></span><span style=display:flex><span>         runner.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34;%v %v | | TransactionCommandName: %v . Got an do not proceed on the undo that&#39;s not good so here is your sign&#34;</span>, runner.generalErrorPrefix, undo, transactionCommand.<span style=color:#447fcf>GetTransactionCommandName</span>())  
-</span></span><span style=display:flex><span>      }  
-</span></span><span style=display:flex><span>   }  
-</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>  
-</span></span><span style=display:flex><span>}
-</span></span></code></pre></div><h2 id=other-items>Other items</h2><p>For future me if you see this error in the stack it most likely means the http request timed out and just add some time to the timeout.<br><strong>&ldquo;context deadline exceeded&rdquo;</strong></p><p><img src=https://i.imgur.com/4pwzYZx.png alt="enter image description here"></p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>Go Saga Pattern | 220809</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>Go Saga Pattern | 220809</h2>
+<time>Tue, Aug 9, 2022</time>
+<div class=single-page-project>
+<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
+</div>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/microservices>Microservices</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/go>Go</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/informative>Informative</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/saga>Saga</a>
+</div>
+</div>
+</div>
+<br>
+<div class=single-page-content>
+<h1 id=220809>220809</h1>
+<h2 id=saga-pattern-has-been-replicated>Saga Pattern has been replicated</h2>
+<p><em>_2017</em>
+It took longer than I wanted to and stole my will a few times, but we&rsquo;re here now.</p>
+<p><img src=https://i.imgur.com/gkxiGMn.png alt="Saga Pattern Operational in Go"></p>
+<p>Okay so there is still some work to be done on it. I still testing it, but I&rsquo;ll push what I have now shortly.</p>
+<h2 id=saga-pattern-for-microservices-implementation>Saga Pattern for microservices implementation</h2>
+<p>I am going to try and explain how this how thing works now (Bear with me)</p>
+<h3 id=sagaorchestrator>SagaOrchestrator</h3>
+<p>This is main collector for the Saga it self. Its got a name, and a slice of Transactions</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#6ab825;font-weight:700>type</span> SagaOrchestrator <span style=color:#6ab825;font-weight:700>struct</span> {  
+   Name         <span style=color:#6ab825;font-weight:700>string</span>  
+  Transactions []Transaction  
+}
+</code></pre></div><p>There&rsquo;s a SagaOrchestrator Constructor that checks the order of the Transactions to insure they are ordered correctly which is important for proper saga execution. <strong>I am still testing this now</strong>. The count system was picked cause it seemed the most fast to write and easiest to read. I may go back make it so that you have to use the Constructor in the future, but for now I am fine with it cause I pass it around a little</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewSagaOrchestrator</span>(name <span style=color:#6ab825;font-weight:700>string</span>, transactions []Transaction) (*SagaOrchestrator, <span style=color:#6ab825;font-weight:700>error</span>) {  
+  <span style=color:#6ab825;font-weight:700>var</span> sagaCreationErrorPrefix = <span style=color:#ed9d13>&#34;[ERROR] [SAGA_PATTERN] &#34;</span>  
+  
+  so := <span style=color:#24909d>new</span>(SagaOrchestrator)  
+  so.Name = name  
+  
+  <span style=color:#6ab825;font-weight:700>var</span> countOfCompensatableTransactions = <span style=color:#3677a9>0</span>  
+  <span style=color:#6ab825;font-weight:700>var</span> countOfPivotTransactions = <span style=color:#3677a9>0</span>  
+  <span style=color:#6ab825;font-weight:700>var</span> countOfRetryableTransactions = <span style=color:#3677a9>0</span>  
+  lastIndex := <span style=color:#24909d>len</span>(transactions) - <span style=color:#3677a9>1</span>  
+  <span style=color:#999;font-style:italic>// Loops through the list of transactions to check for acceptable order has been passed  
+</span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>for</span> index, transaction := <span style=color:#6ab825;font-weight:700>range</span> transactions {  
+  
+ <span style=color:#999;font-style:italic>//Checks for Compensatable Transactions  
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>//Ruling:
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// There cannot be a Pivot Transaction prior to any Compensatable Transaction
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// There cannot be Retryable Transactions prior to any Pivot Transactions  
+</span><span style=color:#999;font-style:italic></span> <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetCompensatableTransactionType</span>() {  
+         countOfCompensatableTransactions = countOfCompensatableTransactions + <span style=color:#3677a9>1</span>  
+         
+	  <span style=color:#999;font-style:italic>//Checking if it&#39;s before any Pivot Transactions  
+</span><span style=color:#999;font-style:italic></span>	  <span style=color:#6ab825;font-weight:700>if</span> countOfPivotTransactions &gt; <span style=color:#3677a9>0</span> {  
+            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] [Compensatable]| Cannot put Compensatable Transactions after a Pivot Transaction&#34;</span>)  
+         }  
+         <span style=color:#999;font-style:italic>//Checking if it&#39;s before any Retryable Transactions  
+</span><span style=color:#999;font-style:italic></span>	  <span style=color:#6ab825;font-weight:700>if</span> countOfRetryableTransactions &gt; <span style=color:#3677a9>0</span> {  
+            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] [Compensatable]| Cannot put Compensatable Transactions before any Retryable Transaction(s)&#34;</span>)  
+         }  
+     }  
+  
+ <span style=color:#999;font-style:italic>//Checks for Pivot Transaction  
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>//Ruling:
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// There cannot be more than one pivot transaction 
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// There are no Retryable prior to the Pivot  
+</span><span style=color:#999;font-style:italic></span> <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetPivotTransactionType</span>() {  
+         countOfPivotTransactions = countOfPivotTransactions + <span style=color:#3677a9>1</span>  
+	  <span style=color:#999;font-style:italic>//Checks that there is not already a Pivot Transaction in the List of Transactions  
+</span><span style=color:#999;font-style:italic></span>	  <span style=color:#6ab825;font-weight:700>if</span> countOfPivotTransactions &gt; <span style=color:#3677a9>1</span> {  
+            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] [Pivot]| There is more than one Pivot Transaction&#34;</span>)  
+         }  
+	  <span style=color:#999;font-style:italic>//Checks that there is not any Retryable Transactions prior in the list of Transactions  
+</span><span style=color:#999;font-style:italic></span>	  <span style=color:#6ab825;font-weight:700>if</span> countOfRetryableTransactions &gt; <span style=color:#3677a9>0</span> {  
+            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] [Pivot]| Cannot put Pivot Transaction After Retryable Transactions&#34;</span>)  
+         }    
+      }  
+<span style=color:#999;font-style:italic>//Checking Retryable  
+</span><span style=color:#999;font-style:italic>//Note: currently 220801 that I do not think I need to check for anything for Retryable, cause the other two cover it. 
+</span><span style=color:#999;font-style:italic>//but I will leave this code here just in case
+</span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetPivotTransactionType</span>() {  
+         countOfRetryableTransactions = countOfRetryableTransactions + <span style=color:#3677a9>1</span>  
+}  
+<span style=color:#999;font-style:italic>//Checks at last Transaction in the list  
+</span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>if</span> index == lastIndex {  
+	<span style=color:#999;font-style:italic>//Checks that there is a pivot if there is any Compensatable Transactions  
+</span><span style=color:#999;font-style:italic></span>	<span style=color:#6ab825;font-weight:700>if</span> countOfPivotTransactions &lt; <span style=color:#3677a9>1</span> &amp;&amp; countOfCompensatableTransactions &gt; <span style=color:#3677a9>0</span> {  
+            <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, errors.<span style=color:#447fcf>New</span>(sagaCreationErrorPrefix + <span style=color:#ed9d13>&#34;[SAGA_CREATION] | Compensatable Transactions have not Pivot Transactions&#34;</span>)  
+         }  
+      }  
+   }  
+  <span style=color:#999;font-style:italic>// So it passes the checks above its good to go.  
+</span><span style=color:#999;font-style:italic></span>  so.Transactions = transactions  
+   <span style=color:#6ab825;font-weight:700>return</span> so, <span style=color:#6ab825;font-weight:700>nil</span>  
+}
+</code></pre></div><h3 id=transaction>Transaction</h3>
+<p>Transaction is an interface cause there are multiple types( Compensatable, Pivot, & Retryable). There are currently three functions that they have to populate to be consider an Transaction. Sense I am using an interface and won&rsquo;t access to the data if any directly. Cause golang doesn&rsquo;t implement classes like other languages(there is no extend). I do have methods in which I can implement to return the data I need for the each of the separate sub types(this took much longer for me really understand and internalize. Which was most of time doing this part).</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#6ab825;font-weight:700>type</span> Transaction <span style=color:#6ab825;font-weight:700>interface</span> {  
+  <span style=color:#447fcf>GetTransactionType</span>() sagaTransactionType  
+  <span style=color:#447fcf>GetTransactionCommands</span>() []TransactionCommand  
+  <span style=color:#447fcf>GetTransactionName</span>() <span style=color:#6ab825;font-weight:700>string</span>  
+}
+</code></pre></div><h5 id=gettransactiontype>GetTransactionType()</h5>
+<p>This gets a type I created in which I can compare during execution to know what type of Transaction it is. As each of them have there own logic. The custom type was made just to make coding it little easier and to insure an extra space/inconstant spelling/etc.. cause I know myself I will mess up and string compare somehow and lose many hours of my life.</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>  <span style=color:#6ab825;font-weight:700>type</span> Transaction <span style=color:#6ab825;font-weight:700>interface</span> {  
+  <span style=color:#447fcf>GetTransactionType</span>() sagaTransactionType  
+  ...
+</code></pre></div><h5 id=gettransactioncommands>GetTransactionCommands()</h5>
+<p>This returns a slice of &lsquo;TrainsactionCommands&rsquo; Its a list cause the Compensatable Transaction should have two by definition, even if the second one is empty, but it should have two. The others ones only need one, but this is why its a slice and not just the Command. &lsquo;TransactionCommand&rsquo; Cause that is workhorse of this implementation of the Saga Pattern</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>  <span style=color:#6ab825;font-weight:700>type</span> Transaction <span style=color:#6ab825;font-weight:700>interface</span> {  
+  ...
+  <span style=color:#447fcf>GetTransactionCommands</span>() []TransactionCommand  
+  ...
+</code></pre></div><h5 id=gettransactionname>GetTransactionName()</h5>
+<p>just returns the name of the Transaction its nice to have when implementing and debugging</p>
+<h3 id=transactioncommand>TransactionCommand</h3>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#999;font-style:italic>// TransactionCommand this action part of the Transaction in which Execute would do it and give the response if any.
+</span><span style=color:#999;font-style:italic>// this was made to allow both REST and Kafka thus functioning taking an anonymous interface. Doing this allows for both  
+</span><span style=color:#999;font-style:italic>// of the possible solutions Actions to be in the same collection  
+</span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>type</span> TransactionCommand <span style=color:#6ab825;font-weight:700>interface</span> {  
+  <span style=color:#447fcf>Execute</span>() (success <span style=color:#6ab825;font-weight:700>bool</span>, err <span style=color:#6ab825;font-weight:700>error</span>)  
+  <span style=color:#447fcf>GetTransactionCommandType</span>() <span style=color:#6ab825;font-weight:700>string</span>  
+  <span style=color:#447fcf>GetTransactionCommandName</span>() <span style=color:#6ab825;font-weight:700>string</span>  
+}
+</code></pre></div><h4 id=gettransactioncommandtype--gettransactioncommandname>GetTransactionCommandType() & GetTransactionCommandName()</h4>
+<p>both just used for debugging. The <em>GetTransactionCommandType()</em> is leftover from earlier prototyping, but I think it could be useful later&mldr; maybe.</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#6ab825;font-weight:700>type</span> TransactionCommand <span style=color:#6ab825;font-weight:700>interface</span> {  
+  ...
+  <span style=color:#447fcf>GetTransactionCommandType</span>() <span style=color:#6ab825;font-weight:700>string</span>  
+  <span style=color:#447fcf>GetTransactionCommandName</span>() <span style=color:#6ab825;font-weight:700>string</span>  
+</code></pre></div><h4 id=execute>Execute()</h4>
+<p>This interface method allows for many implementations of it. In which it only needs to return two things a <em>proceed</em> boolean and an error. When going threw this I wanted to allow for just about any type of &lsquo;Command&rsquo; as the book puts it and boiled that down in an Execute function that could a HTTP call to another service, Kafka Message, g/RPC, even Service side DB calls, essentially whatever. The Book did not go over this, but its what I took from it. Essentially a list of Actions with a pivot points to undo or complete.</p>
+<p><em>NOTE: I am not positive on the bool, error parms cause I think should be able to just send an error for either and let implementation of Execute deal with which was the main goal of this whole &lsquo;TransactionCommand&rsquo;. I just don&rsquo;t want to leave out the option of needing to send an error for some reason, but still wanting to proceed.</em></p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#6ab825;font-weight:700>type</span> TransactionCommand <span style=color:#6ab825;font-weight:700>interface</span> {  
+  <span style=color:#447fcf>Execute</span>() (success <span style=color:#6ab825;font-weight:700>bool</span>, err <span style=color:#6ab825;font-weight:700>error</span>)
+  ....  
+</code></pre></div><h3 id=saga-execution>Saga Execution</h3>
+<p>A Runner for the SagaOrchestrator its just a simple loop with some logic in it to ad hear to the rules of the saga pattern. The order of Transaction should be confirmed by using the SagaOrchestrator constructor. There are sub functions to deal with undo the necessary Transactions and retrying the ones that allow it. Still testing this logic but it seems to work enough for the write up and any changes will be in the git. I left a bunch of notes/comments in the code to help me write it and remind me when I would come back to it after the weekend.</p>
+<p>There are a lot ghost prints in it, but that a future me problem I am still tweaking it in testing.</p>
+<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#6ab825;font-weight:700>const</span> RetryableTransactionRetryLimit = <span style=color:#3677a9>3</span>  
+  
+<span style=color:#6ab825;font-weight:700>type</span> sagaRunner <span style=color:#6ab825;font-weight:700>struct</span> {  
+   logger             *log.Logger  
+  generalErrorPrefix <span style=color:#6ab825;font-weight:700>error</span>  
+}  
+  
+<span style=color:#999;font-style:italic>//ExecuteSaga  
+</span><span style=color:#999;font-style:italic></span><span style=color:#999;font-style:italic>/*  
+</span><span style=color:#999;font-style:italic>  
+</span><span style=color:#999;font-style:italic> Order of Transaction is import in passed ListOfTransactions - Compensatable Transactions: -- NOTE: Compensatable Transactions should have two Transaction Commands. The first one for the intended Transaction and the second one to Roll back that Transaction encase of failure/issues in any of the following Transaction  
+</span><span style=color:#999;font-style:italic> -- Can only be in place prior in order to the Pivot Transaction and never after -- If there is no Pivot Transaction Action then there cannot be any Compensatable Transactions - Pivot Transaction:  
+</span><span style=color:#999;font-style:italic> -- There can only be one per list of Transactions or - Retryable Transactions: -- If the Pivot Transaction exist in the List then Retryable Transactions can only be in after that Pivot Transaction  
+</span><span style=color:#999;font-style:italic> -- Retryable Transactions should never be in the list of Transactions prior to the Pivot Transaction if it exists  
+</span><span style=color:#999;font-style:italic> - NOTE Other Use Cases: -- You can have a Pivot Transaction without Compensatable Transaction(s)  
+</span><span style=color:#999;font-style:italic> -- You can just have list of Transactions without Pivot nor Compensatable Transactions(So just Retryable Transactions (Granted idk why you would tho))*/</span>  
+<span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>ExecuteSaga</span>(orchestrator SagaOrchestrator) <span style=color:#6ab825;font-weight:700>error</span> {  
+   prefixSagaExecutionError := errors.<span style=color:#447fcf>New</span>(prefixSagaExecutionError + <span style=color:#ed9d13>&#34;[&#34;</span> + orchestrator.Name + <span style=color:#ed9d13>&#34;]&#34;</span>)  
+   sagaRunnerLogger := sagaRunner{  
+      logger:             log.<span style=color:#447fcf>New</span>(os.Stdout, orchestrator.Name+<span style=color:#ed9d13>&#34; | &#34;</span>, log.LstdFlags),  
+  generalErrorPrefix: prefixSagaExecutionError,  
+  }  
+   <span style=color:#999;font-style:italic>//This is the list of the undo transaction in the event of a failure or  
+</span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>var</span> compensatableTransactionCommands []TransactionCommand  
+  <span style=color:#6ab825;font-weight:700>var</span> hasCompensatableTransaction = <span style=color:#6ab825;font-weight:700>false</span>  
+  
+  sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;------- Saga Execution Start --------&#34;</span>)  
+   <span style=color:#6ab825;font-weight:700>for</span> _, transaction := <span style=color:#6ab825;font-weight:700>range</span> orchestrator.Transactions {  
+      <span style=color:#999;font-style:italic>//Pull the List of Transactions Commands  
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// [1] is the intended transaction Command // [2] would be a compensatableTransaction Command  transactionCommands := transaction.GetTransactionCommands()  
+</span><span style=color:#999;font-style:italic></span>  
+      sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;Transaction Name: &#34;</span> + transaction.<span style=color:#447fcf>GetTransactionName</span>())  
+      sagaRunnerLogger.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34;Transaction Type: %+v\n&#34;</span>, transaction.<span style=color:#447fcf>GetTransactionType</span>())  
+  
+      <span style=color:#999;font-style:italic>//Execute the Transaction  
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// To handle result a lil later  canProceed, err := transactionCommands[0].Execute()  
+</span><span style=color:#999;font-style:italic></span>  
+      sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;--- Transaction Executed Results ---&#34;</span>)  
+      sagaRunnerLogger.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34;Can Proceed to Next Transaction: %t\n&#34;</span>, canProceed)  
+      sagaRunnerLogger.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34;Was There an Error In that Transaction: %v\n&#34;</span>, err)  
+      <span style=color:#999;font-style:italic>//COMPENSATABLE TRANSACTION  
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>//If it&#39;s a Compensatable Transaction Type add the second transaction to the list undo Transaction Commands  if transaction.GetTransactionType() == GetCompensatableTransactionType() {  
+</span><span style=color:#999;font-style:italic></span>         hasCompensatableTransaction = <span style=color:#6ab825;font-weight:700>true</span>  
+  compensatableTransactionCommands = <span style=color:#24909d>append</span>(compensatableTransactionCommands, transactionCommands[<span style=color:#3677a9>2</span>])  
+      }  
+        
+      <span style=color:#999;font-style:italic>//FAILURE IN COMPENSATABLE OR PIVOT TRANSACTION  
+</span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// If get the do not proceed flag or an error (the canProceed is for Transaction Commands that get responses)  if !canProceed || err != nil {  
+</span><span style=color:#999;font-style:italic></span>         <span style=color:#999;font-style:italic>// This is just in case you get a Pivot Transaction without any CompensatableTransaction(s) in an effort to try and save some compute  
+</span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>if</span> !hasCompensatableTransaction {  
+            <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetPivotTransactionType</span>() {  
+               <span style=color:#6ab825;font-weight:700>if</span> err == <span style=color:#6ab825;font-weight:700>nil</span> {  
+                  err = errors.<span style=color:#447fcf>New</span>(<span style=color:#ed9d13>&#34;got a Do Not Proceed, but No Error(So now you get an Error)&#34;</span>)  
+               }  
+               log.<span style=color:#447fcf>Println</span>(err)  
+               <span style=color:#6ab825;font-weight:700>return</span> err  
+            }  
+         }  
+         <span style=color:#999;font-style:italic>//Check if the Transaction Type is Pivot/Compensatable then undo the Transactions providing the list of undo Transaction Commands  
+</span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetCompensatableTransactionType</span>() || transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetPivotTransactionType</span>() {  
+            undoErr := <span style=color:#447fcf>undoCompensatableTransactions</span>(compensatableTransactionCommands, &amp;sagaRunnerLogger)  
+            <span style=color:#6ab825;font-weight:700>if</span> undoErr != <span style=color:#6ab825;font-weight:700>nil</span> {  
+               <span style=color:#999;font-style:italic>// This process fails I really don&#39;t want to tell the end user. So I guess I&#39;ll just log it.  
+</span><span style=color:#999;font-style:italic></span>  sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(undoErr)  
+            }  
+            <span style=color:#6ab825;font-weight:700>if</span> err == <span style=color:#6ab825;font-weight:700>nil</span> {  
+               err = errors.<span style=color:#447fcf>New</span>(<span style=color:#ed9d13>&#34;got a Do Not Proceed, but No Error(So now you get an Error)&#34;</span>)  
+            }  
+            <span style=color:#6ab825;font-weight:700>return</span> err  
+  
+         }  
+      }  
+      <span style=color:#999;font-style:italic>//Check if the Transaction Type is Retryable then try to reattempt them to preset retry limit  
+</span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>if</span> transaction.<span style=color:#447fcf>GetTransactionType</span>() == <span style=color:#447fcf>GetRetriableTransactionType</span>() {  
+         <span style=color:#6ab825;font-weight:700>if</span> !canProceed || err != <span style=color:#6ab825;font-weight:700>nil</span> {  
+            didItFinallyWork, err := <span style=color:#447fcf>retryRetractableTransactionToPresetLimit</span>(transactionCommands[<span style=color:#3677a9>0</span>], &amp;sagaRunnerLogger)  
+            <span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {  
+               <span style=color:#6ab825;font-weight:700>return</span> err  
+  }  
+            <span style=color:#6ab825;font-weight:700>if</span> !didItFinallyWork {  
+               retriesFailed := fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;%v [UNDO] | After the Preset Number (#%d) of Retries this RetryTabiable Transaction(%v) has still Failed. Look at contruction of this Transaction and its Transaction Command(%v)&#34;</span>, sagaRunnerLogger.generalErrorPrefix, RetryableTransactionRetryLimit, transaction.<span style=color:#447fcf>GetTransactionName</span>(), transaction.<span style=color:#447fcf>GetTransactionCommands</span>()[<span style=color:#3677a9>0</span>].<span style=color:#447fcf>GetTransactionCommandName</span>())  
+               sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(retriesFailed)  
+               <span style=color:#999;font-style:italic>// I am not positive If I am supposed to return this error I will for now  
+</span><span style=color:#999;font-style:italic></span>  <span style=color:#6ab825;font-weight:700>return</span> fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;%v | %v &#34;</span>, retriesFailed, err)  
+            }  
+         }  
+  
+      }  
+      sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;------- Next Transaction --------&#34;</span>)  
+   } <span style=color:#999;font-style:italic>//End of loop  
+</span><span style=color:#999;font-style:italic></span>  sagaRunnerLogger.logger.<span style=color:#447fcf>Println</span>(<span style=color:#ed9d13>&#34;------- End of Saga Execution --------&#34;</span>)  
+   <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>  
+}  
+<span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>retryRetractableTransactionToPresetLimit</span>(command TransactionCommand, runner *sagaRunner) (<span style=color:#6ab825;font-weight:700>bool</span>, <span style=color:#6ab825;font-weight:700>error</span>) {  
+   <span style=color:#6ab825;font-weight:700>var</span> didItFinallyWork = <span style=color:#6ab825;font-weight:700>false</span>  
+ <span style=color:#6ab825;font-weight:700>var</span> err <span style=color:#6ab825;font-weight:700>error</span>  
+ <span style=color:#6ab825;font-weight:700>for</span> i := <span style=color:#3677a9>1</span>; i &lt;= RetryableTransactionRetryLimit; i++ {  
+      runner.logger.<span style=color:#447fcf>Println</span>(fmt.<span style=color:#447fcf>Sprintf</span>(<span style=color:#ed9d13>&#34;%v [RETRYABLE] Retrying Retryable Transaction %d of %d&#34;</span>, runner.generalErrorPrefix, i, RetryableTransactionRetryLimit))  
+      <span style=color:#6ab825;font-weight:700>var</span> err1 <span style=color:#6ab825;font-weight:700>error</span>  
+  didItFinallyWork, err1 = command.<span style=color:#447fcf>Execute</span>()  
+      <span style=color:#999;font-style:italic>//TODO Learn proper error handling  
+</span><span style=color:#999;font-style:italic></span>  err = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;retry #: %d | error: %v | %v&#34;</span>, i, err1, err)  
+  
+   }  
+   <span style=color:#6ab825;font-weight:700>return</span> didItFinallyWork, err  
+}  
+  
+<span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>undoCompensatableTransactions</span>(listOfCompensatableTransactions []TransactionCommand, runner *sagaRunner) <span style=color:#6ab825;font-weight:700>error</span> {  
+   <span style=color:#999;font-style:italic>//TODO Need to learn to Wrap errors  
+</span><span style=color:#999;font-style:italic></span>  undo := errors.<span style=color:#447fcf>New</span>(<span style=color:#ed9d13>&#34;[UNDO] |&#34;</span>)  
+   errCollector := errors.<span style=color:#447fcf>New</span>(<span style=color:#ed9d13>&#34;&#34;</span>)  
+   <span style=color:#6ab825;font-weight:700>for</span> _, transactionCommand := <span style=color:#6ab825;font-weight:700>range</span> listOfCompensatableTransactions {  
+      workAsExpected, err := transactionCommand.<span style=color:#447fcf>Execute</span>()  
+      <span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {  
+         runner.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34; %v %v | TransactionCommandName: %v, Error: %v&#34;</span>, runner.generalErrorPrefix, undo, transactionCommand.<span style=color:#447fcf>GetTransactionCommandName</span>(), err)  
+         errCollector = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;%v | %v | %v&#34;</span>, runner.generalErrorPrefix, undo, err)  
+         <span style=color:#6ab825;font-weight:700>return</span> errCollector  
+      }  
+      <span style=color:#6ab825;font-weight:700>if</span> !workAsExpected {  
+         runner.logger.<span style=color:#447fcf>Printf</span>(<span style=color:#ed9d13>&#34;%v %v | | TransactionCommandName: %v . Got an do not proceed on the undo that&#39;s not good so here is your sign&#34;</span>, runner.generalErrorPrefix, undo, transactionCommand.<span style=color:#447fcf>GetTransactionCommandName</span>())  
+      }  
+   }  
+   <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>  
+}
+</code></pre></div><h2 id=other-items>Other items</h2>
+<p>For future me if you see this error in the stack it most likely means the http request timed out and just add some time to the timeout.<br>
+<strong>&ldquo;context deadline exceeded&rdquo;</strong></p>
+<p><img src=https://i.imgur.com/4pwzYZx.png alt="enter image description here"></p>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>

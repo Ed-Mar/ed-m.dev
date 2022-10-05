@@ -1,5 +1,64 @@
-<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>New local Drive | 220524</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
-<a href=/notes>Notes</a>
-<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>New local Drive | 220524</h2><time>Tue, May 24, 2022</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div><div class=tag-list-item><a href=/tags/database>Database</a></div></div></div><br><div class=single-page-content><blockquote><p>(EDIT 221004) I moved this is why there is gap in the devlopment (220201 ~ 220501).
-I also built a desk in this time</p></blockquote><h1 id=220524>220524</h1><blockquote><p>Alright I have moved to a warmer location and gotten set up</p></blockquote><p>It&rsquo;s been a few months and I ready to get back into this.
-One issue fresh install of the OS, I still have the code repo, but setting it back up will still be required not much but something. Also maybe some skill leakage(I forgot some stuff)</p><h3 id=databases>Databases</h3><p>So the sql setup code I had made this rather easy, but even with notes it apparels the roles for each of the service user need to pushed into the correct ownership roles for there tables.</p><p><img src=https://i.imgur.com/YW7YEGs.png alt="permission not allowed"></p><p>Easy fix</p><p><img src=https://imgur.com/LF0kuh5.png alt="As the super user just alter the ownership of the table"></p><p>Not Really an issue, but I will need to try this again and get this automated some how. I will throw that on the list. Then add some test test for each of the services to confirm that it works before running. That can be done later once a CI pipeline has been made and an other item to add to the list.</p><p><em>1647</em></p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
+<!doctype html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="ie=edge">
+<link rel=stylesheet href=https://ed-m.dev/css/style.css>
+<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
+<title>New local Drive | 220524</title>
+</head>
+<body>
+<nav class=navBar>
+<ul>
+<a href=/>
+Ed-M.Dev
+</a>
+<a href=/notes>
+Notes
+</a>
+<a href=/about>
+About
+</a>
+</ul>
+</nav>
+<div class="main container single">
+<div class=single-page-content-container>
+<div class=single-page-header>
+<h2>New local Drive | 220524</h2>
+<time>Tue, May 24, 2022</time>
+<div class=single-page-project>
+<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
+</div>
+<div class=tags-container>
+<div class=tag-list-item>
+<a href=/tags/devblog>Devblog</a>
+</div>
+<div class=tag-list-item>
+<a href=/tags/database>Database</a>
+</div>
+</div>
+</div>
+<br>
+<div class=single-page-content>
+<blockquote>
+<p>(EDIT 221004) I moved this is why there is gap in the devlopment (220201 ~ 220501).
+I also built a desk in this time</p>
+</blockquote>
+<h1 id=220524>220524</h1>
+<blockquote>
+<p>Alright I have moved to a warmer location and gotten set up</p>
+</blockquote>
+<p>It&rsquo;s been a few months and I ready to get back into this.
+One issue fresh install of the OS, I still have the code repo, but setting it back up will still be required not much but something. Also maybe some skill leakage(I forgot some stuff)</p>
+<h3 id=databases>Databases</h3>
+<p>So the sql setup code I had made this rather easy, but even with notes it apparels the roles for each of the service user need to pushed into the correct ownership roles for there tables.</p>
+<p><img src=https://i.imgur.com/YW7YEGs.png alt="permission not allowed"></p>
+<p>Easy fix</p>
+<p><img src=https://imgur.com/LF0kuh5.png alt="As the super user just alter the ownership of the table"></p>
+<p>Not Really an issue, but I will need to try this again and get this automated some how. I will throw that on the list. Then add some test test for each of the services to confirm that it works before running. That can be done later once a CI pipeline has been made and an other item to add to the list.</p>
+<p><em>1647</em></p>
+</div>
+</div>
+</div>
+</body>
+<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
+</html>
