@@ -191,7 +191,8 @@ hr:after {
     text-decoration: underline;
 }
 .svg{
-    fill: #427643;        
+    fill: #427643;
+    padding: 1px;        
 }
 .svg:hover{
     fill: #818181;        
