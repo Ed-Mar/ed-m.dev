@@ -1,0 +1,138 @@
+.main.container.landing-page{    
+    display: block;
+    justify-content: baseline;
+}
+.main.container.with-sidebar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .7rem;
+    
+    flex-direction:unset;
+    margin-top: .7rem;
+}
+
+.main.content {
+    flex-basis: 0;
+    flex-grow: 666;
+    min-inline-size: 60%;
+    background-color: #202020;
+    
+}
+.side-bar {
+    flex-basis: 20rem;
+    flex-grow: 1;      
+    align-items: stretch; 
+    background-color: #202020;
+}
+
+.homepage.content{
+    width: unset;
+    margin-left: unset;
+    background-color: #272727;
+    
+
+    text-align: justify;
+    hyphens: auto;    
+
+    padding: 10px;
+
+    margin-top: .7rem;
+    border-radius:4px;
+    -moz-border-radius:4px;    
+}
+.homepage.content p{
+margin-top: 1rem;
+}
+.list{
+    font-family: "Montserrat", sans-serif;    
+    border-radius:4px;
+    -moz-border-radius:4px;
+}
+.list h1,h2,h3,h4{
+    font-weight: 500; 
+ 
+}
+
+.list.container{
+    margin-top: 1rem;
+    background-color: unset;    
+}
+.list.element{
+    background-color: #272727;
+    margin-top: .7rem;
+    padding-left: .2rem;
+    padding-right: .4rem;
+}
+.list.element time{
+    color: #818181;
+    padding-left: .6rem;}
+
+.list.element.title {
+    color: #E6F2E3;
+    text-decoration: none;
+}
+.list.element.title:hover{
+    text-decoration: underline;
+}
+.header.latestpost{
+    background-color: #202020;
+}
+.list.element.title:hover {
+    color: #427643;
+}
+
+
+#site-desc{    
+    background-color: #272727;
+    
+    padding: 4px;
+    padding-left: 10px;
+    width: 97%;
+
+    font-family: "Montserrat", sans-serif;    
+    color: #E6F2E3;    
+    font-size-adjust: 0.5;
+    display: block;
+    line-height: calc(1ex / 0.32);
+    text-align: justify;
+    hyphens: auto;
+}
+
+.sidebar-inner-content-container{
+    margin: auto;
+    margin-top: 6%;    
+    margin-left: 3%;
+    margin-right: 3%;
+    background-color: #272727;
+    padding: 5px;
+    
+    
+}
+.author-avatar{
+    margin-left: 10%;
+    margin-right: 10%;    
+}
+.author-avatar img{
+    margin-left: 10%;
+    margin-right: 10%;    
+}
+.author-info{
+    margin-left: 3%;
+    font-family: "Montserrat", sans-serif;    
+    color: #ddd;    
+}
+.author-icons-container{    
+    margin: auto;
+    margin-top: .5rem;
+    width: 95%;
+    text-align: center;
+}
+
+
+.tag-list-item a{
+    color: #427643;
+    text-decoration: none;  
+}
+.tags-list-item a:hover{
+    text-decoration: underline;  
+}

@@ -1,0 +1,32 @@
+<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>CRUD Operations | 211210</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
+<a href=/notes>Notes</a>
+<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>CRUD Operations | 211210</h2><time>Fri, Dec 10, 2021</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/nextjs>Nextjs</a></div><div class=tag-list-item><a href=/tags/swagger>Swagger</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h1 id=211210>211210</h1><h2 id=crud-operations-for-servers>CRUD operations for Servers</h2><p><img src=https://i.imgur.com/xJyDBYP.png alt="broken down handlers"></p><p>So I have the basic REST crud operations for the for the server service. For the Create, Update, and delete aren&rsquo;t necessary for the MVP, but I thought since i was here and for practice. For the future I will have to the create, delete, and update interface with keycloak to add/remove/update the necessary roles, but that is for a later time I really just need the GET right now and will remove them from the client.</p><p>Client -> Runner -> Mux -> Handler -> Validation -> Server CRUD function</p><p><img src=https://i.imgur.com/yMrlsIq.png alt="Mux to Handler"></p><p><img src=https://i.imgur.com/Gx9IaYB.png alt="local testing ListAll "></p><h2 id=open-20-swagger-meta---docs>Open 2.0 (Swagger) Meta + Docs</h2><p>So looking at what needed to be done I needed a client for the frontend so I figure I&rsquo;d do two things at one documentation and get some of that yummy code gen. so I did that for this primary start.</p><p><img src=https://i.imgur.com/xOK4dKK.png alt="Swagger Docs with ReDocs">
+Powered by ReDocs</p><p>Swagger docs</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a61717;background-color:#e3d2d2>$</span> server-api/handlers/docs.<span style=color:#6ab825;font-weight:700>go</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// Package handlers classification of Server API  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// Documentation for Server API  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// Schemes: http  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// BasePath: /  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// Version: 0.0.1  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// Consumes:  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// - application/json  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// services:  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// - application/json  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// swagger:meta  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>package</span> handlers  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>import</span> <span style=color:#ed9d13>&#34;server-api/data&#34;</span>  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// Generic error message returned as a string  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic>// swagger:response errorResponse  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span><span style=color:#6ab825;font-weight:700>type</span> errorResponseWrapper <span style=color:#6ab825;font-weight:700>struct</span> {  
+</span></span><span style=display:flex><span>   <span style=color:#999;font-style:italic>// Description of the error  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> <span style=color:#999;font-style:italic>// in: body  Body GenericError
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span> ...
+</span></span></code></pre></div><p><img src=https://i.imgur.com/3X5BQFo.png alt="Serve the redocs page and the swagger.yaml">
+Serve both the Redocs and the swagger on the base directory</p><p>Don&rsquo;t think I&rsquo;ll keep the yaml on forever but I think it will help with code gen once it gets on the cluster mite make it easier.</p><h2 id=nextjs-frontend>Next.js Frontend</h2><p>Alright I am getting into frontend and straight up out of my element.</p><p>So I followed the Next.js quick-start guide. I have some experience with js but with bots so eh. I followed the guide to get two pages up and still need to table or something for the get call for the table.</p><p><img src=https://i.imgur.com/pODoQY4.png alt="basic is basic"></p><blockquote><p>Should be on the github when you see this.</p></blockquote></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
