@@ -1,6 +1,6 @@
 main: 
   - identifier: ed-m
-    name: Ed-M@Dev
+    name: Ed-M.Dev
     url: /
     weight: -616
   - identifier: notes 
