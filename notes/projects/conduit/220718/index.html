@@ -1,112 +1,23 @@
-<!doctype html><head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<link rel=stylesheet href=https://ed-m.dev/css/style.css>
-<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
-<title>Planning Sage Pattern Implemtation and Experments | 220718</title>
-</head>
-<body>
-<nav class=navBar>
-<ul>
-<a href=/>
-Ed-M.Dev
-</a>
-<a href=/notes>
-Notes
-</a>
-<a href=/about>
-About
-</a>
-</ul>
-</nav>
-<div class="main container single">
-<div class=single-page-content-container>
-<div class=single-page-header>
-<h2>Planning Sage Pattern Implemtation and Experments | 220718</h2>
-<time>Mon, Jul 18, 2022</time>
-<div class=single-page-project>
-<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
-</div>
-<div class=tags-container>
-<div class=tag-list-item>
-<a href=/tags/kakfa>Kakfa</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/rest>Rest</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/devblog>Devblog</a>
-</div>
-</div>
-</div>
-<br>
-<div class=single-page-content>
-<h1 id=220718>220718</h1>
-<p><em>_0523</em></p>
-<p>Okay I&rsquo;ve been do throwing this idea around in my head after getting that reader to work last week. I don&rsquo;t think I need a Kafka just to use cross service just to send REST request between services. After coming to this concussion. My first thought was damn I wasted a lot of time. Then I tried to rationalize it which I think won out in the end.</p>
-<ul>
-<li>I learned to a small degree how Kafka works and how to integrate it with golang and the package go-kafka. Learning is my main goal of this whole thing, but I would like some at the end I would like to use.</li>
-<li>Kafka already has retry part and scalability built in, but is not really needed at the current state of things.
-<ul>
-<li>to get the best use of some of these features I would have to send all REST request through them and that just seems silly</li>
-</ul>
-</li>
-<li>I do think making the kafka reader and writer item could be useful later for items that don&rsquo;t have a easily implementable REST requirement</li>
-<li>I am still going to have to do the orchestration part of the pattern with sage it self and adding the kafka part right doesn&rsquo;t seem to add anything of value. SO what I think I am trying to say is adding the <strong>kafka messaging between services doesn&rsquo;t have a huge add at the current state if I am going to just send a REST request</strong>.</li>
-</ul>
-<p>Now what&mldr;
-I&rsquo;m the in the middle of the writing the kafka write that and service can use do some basic test to see if works as expected then move on start on the saga pattern it self.</p>
-<p>__
-<em>_0555</em></p>
-<p>Wtf is a key kafka:
-I have to keep looking this up for some reason</p>
-<p><a href=https://stackoverflow.com/posts/29515696/timeline>Straight from the Stack-overflow</a></p>
-<p><em>&ldquo;Keys are mostly useful/necessary if you require strong order for a key and are developing something like a state machine. If you require that messages with the same key (for instance, a unique id) are always seen in the correct order, attaching a key to messages will ensure messages with the same key always go to the same partition in a topic. Kafka guarantees order within a partition, but not across partitions in a topic, so alternatively not providing a key - which will result in round-robin distribution across partitions - will not maintain such order&mldr;"</em></p>
-<p>So in other other word if First in First Out is the desired give it some uuid.</p>
-<p>_
-<em>_0832</em></p>
-<p>So the generic kafka writer is complete and seems to work. I was feeling froggy and started to work on for generic reader, but ran into mux. So this I can pass a generic REST mux then fill it out each of the services or create more custom one per service and function carry, but both of those are a good deal of work for something I really don&rsquo;t plan on using.</p>
-<p>I have a working reader made just for the server service with a working mux for both GETs so I&rsquo;ll leave that code in for now.</p>
-<p><em>_2048</em></p>
-<p>Okay after a sleep I have one more thought on the idea. The Sending REST request to that start of the service would work fine, but it would limit the depth of</p>
-<h1 id=220719>220719</h1>
-<p><em>_2023</em>
-So I am designing the saga pattern in golang and the no real Inheritance is fucking me up.</p>
-<p><em>_220720_0174</em>
+<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Planning Sage Pattern Implemtation and Experments | 220718</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
+<a href=/notes>Notes</a>
+<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Planning Sage Pattern Implemtation and Experments | 220718</h2><time>Mon, Jul 18, 2022</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/kakfa>Kakfa</a></div><div class=tag-list-item><a href=/tags/rest>Rest</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h1 id=220718>220718</h1><p><em>_0523</em></p><p>Okay I&rsquo;ve been do throwing this idea around in my head after getting that reader to work last week. I don&rsquo;t think I need a Kafka just to use cross service just to send REST request between services. After coming to this concussion. My first thought was damn I wasted a lot of time. Then I tried to rationalize it which I think won out in the end.</p><ul><li>I learned to a small degree how Kafka works and how to integrate it with golang and the package go-kafka. Learning is my main goal of this whole thing, but I would like some at the end I would like to use.</li><li>Kafka already has retry part and scalability built in, but is not really needed at the current state of things.<ul><li>to get the best use of some of these features I would have to send all REST request through them and that just seems silly</li></ul></li><li>I do think making the kafka reader and writer item could be useful later for items that don&rsquo;t have a easily implementable REST requirement</li><li>I am still going to have to do the orchestration part of the pattern with sage it self and adding the kafka part right doesn&rsquo;t seem to add anything of value. SO what I think I am trying to say is adding the <strong>kafka messaging between services doesn&rsquo;t have a huge add at the current state if I am going to just send a REST request</strong>.</li></ul><p>Now what&mldr;
+I&rsquo;m the in the middle of the writing the kafka write that and service can use do some basic test to see if works as expected then move on start on the saga pattern it self.</p><p>__
+<em>_0555</em></p><p>Wtf is a key kafka:
+I have to keep looking this up for some reason</p><p><a href=https://stackoverflow.com/posts/29515696/timeline>Straight from the Stack-overflow</a></p><p><em>&ldquo;Keys are mostly useful/necessary if you require strong order for a key and are developing something like a state machine. If you require that messages with the same key (for instance, a unique id) are always seen in the correct order, attaching a key to messages will ensure messages with the same key always go to the same partition in a topic. Kafka guarantees order within a partition, but not across partitions in a topic, so alternatively not providing a key - which will result in round-robin distribution across partitions - will not maintain such order&mldr;&rdquo;</em></p><p>So in other other word if First in First Out is the desired give it some uuid.</p><p>_
+<em>_0832</em></p><p>So the generic kafka writer is complete and seems to work. I was feeling froggy and started to work on for generic reader, but ran into mux. So this I can pass a generic REST mux then fill it out each of the services or create more custom one per service and function carry, but both of those are a good deal of work for something I really don&rsquo;t plan on using.</p><p>I have a working reader made just for the server service with a working mux for both GETs so I&rsquo;ll leave that code in for now.</p><p><em>_2048</em></p><p>Okay after a sleep I have one more thought on the idea. The Sending REST request to that start of the service would work fine, but it would limit the depth of</p><h1 id=220719>220719</h1><p><em>_2023</em>
+So I am designing the saga pattern in golang and the no real Inheritance is fucking me up.</p><p><em>_220720_0174</em>
 <img src=https://i.imgur.com/47Nbp8S.png alt="Yes I need all these Tabs">
 220718
-_0523</p>
-<p>Okay I’ve been do throwing this idea around in my head after getting that reader to work last week. I don’t think I need a Kafka just to use cross service just to send REST request between services. After coming to this concussion. My first thought was damn I wasted a lot of time. Then I tried to rationalize it which I think won out in the end.</p>
-<p>I learned to a small degree how Kafka works and how to integrate it with golang and the package go-kafka. Learning is my main goal of this whole thing, but I would like some at the end I would like to use.
+_0523</p><p>Okay I’ve been do throwing this idea around in my head after getting that reader to work last week. I don’t think I need a Kafka just to use cross service just to send REST request between services. After coming to this concussion. My first thought was damn I wasted a lot of time. Then I tried to rationalize it which I think won out in the end.</p><p>I learned to a small degree how Kafka works and how to integrate it with golang and the package go-kafka. Learning is my main goal of this whole thing, but I would like some at the end I would like to use.
 Kafka already has retry part and scalability built in, but is not really needed at the current state of things.
 to get the best use of some of these features I would have to send all REST request through them and that just seems silly
 I do think making the kafka reader and writer item could be useful later for items that don’t have a easily implementable REST requirement
 I am still going to have to do the orchestration part of the pattern with sage it self and adding the kafka part right doesn’t seem to add anything of value. SO what I think I am trying to say is adding the kafka messaging between services doesn’t have a huge add at the current state if I am going to just send a REST request.
 Now what…
-I’m the in the middle of the writing the kafka write that and service can use do some basic test to see if works as expected then move on start on the saga pattern it self.</p>
-<p>__
-_0555</p>
-<p>Wtf is a key kafka:
-I have to keep looking this up for some reason</p>
-<p>Straight from the Stack-overflow</p>
-<p>“Keys are mostly useful/necessary if you require strong order for a key and are developing something like a state machine. If you require that messages with the same key (for instance, a unique id) are always seen in the correct order, attaching a key to messages will ensure messages with the same key always go to the same partition in a topic. Kafka guarantees order within a partition, but not across partitions in a topic, so alternatively not providing a key - which will result in round-robin distribution across partitions - will not maintain such order…”</p>
-<p>So in other other word if First in First Out is the desired give it some uuid.</p>
-<p>_
-_0832</p>
-<p>So the generic kafka writer is complete and seems to work. I was feeling froggy and started to work on for generic reader, but ran into mux. So this I can pass a generic REST mux then fill it out each of the services or create more custom one per service and function carry, but both of those are a good deal of work for something I really don’t plan on using.</p>
-<p>I have a working reader made just for the server service with a working mux for both GETs so I’ll leave that code in for now.</p>
-<p>_2048</p>
-<p>Okay after a sleep I have one more thought on the idea. The Sending REST request to that start of the service would work fine, but it would limit the depth of</p>
-<p>220719
+I’m the in the middle of the writing the kafka write that and service can use do some basic test to see if works as expected then move on start on the saga pattern it self.</p><p>__
+_0555</p><p>Wtf is a key kafka:
+I have to keep looking this up for some reason</p><p>Straight from the Stack-overflow</p><p>“Keys are mostly useful/necessary if you require strong order for a key and are developing something like a state machine. If you require that messages with the same key (for instance, a unique id) are always seen in the correct order, attaching a key to messages will ensure messages with the same key always go to the same partition in a topic. Kafka guarantees order within a partition, but not across partitions in a topic, so alternatively not providing a key - which will result in round-robin distribution across partitions - will not maintain such order…”</p><p>So in other other word if First in First Out is the desired give it some uuid.</p><p>_
+_0832</p><p>So the generic kafka writer is complete and seems to work. I was feeling froggy and started to work on for generic reader, but ran into mux. So this I can pass a generic REST mux then fill it out each of the services or create more custom one per service and function carry, but both of those are a good deal of work for something I really don’t plan on using.</p><p>I have a working reader made just for the server service with a working mux for both GETs so I’ll leave that code in for now.</p><p>_2048</p><p>Okay after a sleep I have one more thought on the idea. The Sending REST request to that start of the service would work fine, but it would limit the depth of</p><p>220719
 _2023
-So I am designing the saga pattern in golang and the no real Inheritance is fucking me up.</p>
-<p>_220720_0174
-Yes I need all these Tabs</p>
-<p>Markdown 3167 bytes 586 words 46 lines Ln 46, Col 61HTML 2407 characters 573 words 27 paragraphs</p>
-</div>
-</div>
-</div>
-</body>
-<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
-</html>
+So I am designing the saga pattern in golang and the no real Inheritance is fucking me up.</p><p>_220720_0174
+Yes I need all these Tabs</p><p>Markdown 3167 bytes 586 words 46 lines Ln 46, Col 61HTML 2407 characters 573 words 27 paragraphs</p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>

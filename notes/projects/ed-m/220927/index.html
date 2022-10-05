@@ -1,93 +1,15 @@
-<!doctype html><head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<link rel=stylesheet href=https://ed-m.dev/css/style.css>
-<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
-<title>Layouts for sub dir | 220927</title>
-</head>
-<body>
-<nav class=navBar>
-<ul>
-<a href=/>
-Ed-M.Dev
-</a>
-<a href=/notes>
-Notes
-</a>
-<a href=/about>
-About
-</a>
-</ul>
-</nav>
-<div class="main container single">
-<div class=single-page-content-container>
-<div class=single-page-header>
-<h2>Layouts for sub dir | 220927</h2>
-<time>Tue, Sep 27, 2022</time>
-<div class=single-page-project>
-<h3><a href=/notes/projects/ed-m> Project - Ed m</a></h3>
-</div>
-<div class=tags-container>
-<div class=tag-list-item>
-<a href=/tags/hugo>Hugo</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/devblog>Devblog</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/layouts>Layouts</a>
-</div>
-</div>
-</div>
-<br>
-<div class=single-page-content>
-<h1 id=220927>220927</h1>
-<h2 id=layouts-are-only-for-top-lvl>Layouts are only for top lvl.</h2>
-<p><em>_0550</em></p>
-<p>So while trying to make a layout for list pages /notes/projects/*. I came to the understanding that I can&rsquo;t using Hugo normal variables/function to do this. Which is fun.</p>
-<p>I have been seeing inking lings of this going through all the documentation, forum post, book I found, and various websites.</p>
-<p>Here is the link to the forum post that informed me of this</p>
-<p><a href=https://discourse.gohugo.io/t/list-pages-of-sub-sub-folders/9436/6?>Link to Forum Post</a></p>
-<blockquote>
-<p>&ldquo;You cannot currently have a specific layout for the nested sections (only the top level). <strong>There may be workarounds</strong> for you, but I don’t understand what you want to do good enough.&rdquo; ~ <a href=https://discourse.gohugo.io/u/bep>bep</a></p>
-</blockquote>
-<p>Granted this was posted back in 2017, but from my probing and testing it&rsquo;s still rings true.</p>
-<h2 id=there-may-be-workarounds><em>"<strong>There may be workarounds</strong>"</em></h2>
-<p>Alright so there is some hope if I want to keep my organization of my files to make sense(to me at-least).</p>
-<p>So later on in the same forum post there is one proposed solution. <a href=https://discourse.gohugo.io/t/list-pages-of-sub-sub-folders/9436/11?>Link to Post in thread</a></p>
-<p>The proposed solution is to just to have the layout itself figure out what page its on and then populate it with the desired layout.</p>
-<p>Now I must ask my self that all import question. &ldquo;If so? How to?&rdquo;</p>
-<p><em>_0719</em>
-Messing around trying to figure out how to make this work I found that <em>{{.Section}}</em> & {{.CurrentSection}} give to separate things. I was under the impression they would do the same thing when run a sub-directory of the section, because the section is defined by the top level folder in /content. But nope.</p>
-<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>{{if  .Section}}
-	Section: {{.Section}}
-	&lt;<span style=color:#6ab825;font-weight:700>br</span>/&gt;
-	Current Section: {{.CurrentSection}}
-	&lt;<span style=color:#6ab825;font-weight:700>br</span>/&gt;
-{{end}}
-</code></pre></div><blockquote>
-<p><strong>Output</strong>: Run in &ldquo;http://localhost:1313/notes/projects/conduit/&rdquo;</p>
-<p>Section: notes<br>
-Current Section: Page(/notes/projects/conduit/_index.md)</p>
-</blockquote>
-<p><a href=https://gohugo.io/content-management/sections/#section-page-variables-and-methods>Link to HUGO Section Documentation</a></p>
-<p>It states that .CurrentSection can return a page if it is a section&mldr; Which it does.</p>
-<p>So Hugo says that my branch bundles are sections, but not what you get when you use {{.Section}}. I assume that my mis-understanding was from the concentrate from the lexicon, them wanting to make hugo easy to implement for less complex site creation, maybe some backwards compatibility, and some me being a fucking idiot.</p>
-<p>Well why was any of this fucking relevant to substituting layout content depending on location. Cause it allows me to use the <strong>.{{.IsDescendant $anotherPage))</strong> which under the section documentation.</p>
-<p>Granted there is a few other ways to go about this just get the abs path and token it, add a param in each of the sub index, or whatever that 2D arrays of sections from the forum post did.</p>
-<p>The is Descendant makes the logic for this easy</p>
-<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>{{if  .Section}}
-	Current Page Path:{{.RelPermalink}}
-	&lt;br&gt;
-	Is this a Descendant of &#34;{{$anotherPage}}&#34;: {{.IsDescendant  $anotherPage}}
-{{end}}
-</code></pre></div><p>Output:</p>
-<p><img src=https://i.imgur.com/ck5YCO1.png alt=Output></p>
-<p>So now its breaking down notes layout and making one for the for project pages.</p>
-</div>
-</div>
-</div>
-</body>
-<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
-</html>
+<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Layouts for sub dir | 220927</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
+<a href=/notes>Notes</a>
+<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Layouts for sub dir | 220927</h2><time>Tue, Sep 27, 2022</time><div class=single-page-project><h3><a href=/notes/projects/ed-m>Project - Ed m</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/hugo>Hugo</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div><div class=tag-list-item><a href=/tags/layouts>Layouts</a></div></div></div><br><div class=single-page-content><h1 id=220927>220927</h1><h2 id=layouts-are-only-for-top-lvl>Layouts are only for top lvl.</h2><p><em>_0550</em></p><p>So while trying to make a layout for list pages /notes/projects/*. I came to the understanding that I can&rsquo;t using Hugo normal variables/function to do this. Which is fun.</p><p>I have been seeing inking lings of this going through all the documentation, forum post, book I found, and various websites.</p><p>Here is the link to the forum post that informed me of this</p><p><a href=https://discourse.gohugo.io/t/list-pages-of-sub-sub-folders/9436/6?>Link to Forum Post</a></p><blockquote><p>&ldquo;You cannot currently have a specific layout for the nested sections (only the top level). <strong>There may be workarounds</strong> for you, but I don’t understand what you want to do good enough.&rdquo; ~ <a href=https://discourse.gohugo.io/u/bep>bep</a></p></blockquote><p>Granted this was posted back in 2017, but from my probing and testing it&rsquo;s still rings true.</p><h2 id=there-may-be-workarounds><em>"<strong>There may be workarounds</strong>"</em></h2><p>Alright so there is some hope if I want to keep my organization of my files to make sense(to me at-least).</p><p>So later on in the same forum post there is one proposed solution. <a href=https://discourse.gohugo.io/t/list-pages-of-sub-sub-folders/9436/11?>Link to Post in thread</a></p><p>The proposed solution is to just to have the layout itself figure out what page its on and then populate it with the desired layout.</p><p>Now I must ask my self that all import question. &ldquo;If so? How to?&rdquo;</p><p><em>_0719</em>
+Messing around trying to figure out how to make this work I found that <em>{{.Section}}</em> & {{.CurrentSection}} give to separate things. I was under the impression they would do the same thing when run a sub-directory of the section, because the section is defined by the top level folder in /content. But nope.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{{if  .Section}}
+</span></span><span style=display:flex><span>	Section: {{.Section}}
+</span></span><span style=display:flex><span>	&lt;<span style=color:#6ab825;font-weight:700>br</span>/&gt;
+</span></span><span style=display:flex><span>	Current Section: {{.CurrentSection}}
+</span></span><span style=display:flex><span>	&lt;<span style=color:#6ab825;font-weight:700>br</span>/&gt;
+</span></span><span style=display:flex><span>{{end}}
+</span></span></code></pre></div><blockquote><p><strong>Output</strong>: Run in &ldquo;http://localhost:1313/notes/projects/conduit/&rdquo;</p><p>Section: notes<br>Current Section: Page(/notes/projects/conduit/_index.md)</p></blockquote><p><a href=https://gohugo.io/content-management/sections/#section-page-variables-and-methods>Link to HUGO Section Documentation</a></p><p>It states that .CurrentSection can return a page if it is a section&mldr; Which it does.</p><p>So Hugo says that my branch bundles are sections, but not what you get when you use {{.Section}}. I assume that my mis-understanding was from the concentrate from the lexicon, them wanting to make hugo easy to implement for less complex site creation, maybe some backwards compatibility, and some me being a fucking idiot.</p><p>Well why was any of this fucking relevant to substituting layout content depending on location. Cause it allows me to use the <strong>.{{.IsDescendant $anotherPage))</strong> which under the section documentation.</p><p>Granted there is a few other ways to go about this just get the abs path and token it, add a param in each of the sub index, or whatever that 2D arrays of sections from the forum post did.</p><p>The is Descendant makes the logic for this easy</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>{{if  .Section}}
+</span></span><span style=display:flex><span>	Current Page Path:{{.RelPermalink}}
+</span></span><span style=display:flex><span>	&lt;br&gt;
+</span></span><span style=display:flex><span>	Is this a Descendant of &#34;{{$anotherPage}}&#34;: {{.IsDescendant  $anotherPage}}
+</span></span><span style=display:flex><span>{{end}}
+</span></span></code></pre></div><p>Output:</p><p><img src=https://i.imgur.com/ck5YCO1.png alt=Output></p><p>So now its breaking down notes layout and making one for the for project pages.</p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>

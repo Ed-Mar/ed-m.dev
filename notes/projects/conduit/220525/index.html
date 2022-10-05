@@ -1,217 +1,157 @@
-<!doctype html><head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<link rel=stylesheet href=https://ed-m.dev/css/style.css>
-<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
-<title>Planning out Saga 'Object' | 220525</title>
-</head>
-<body>
-<nav class=navBar>
-<ul>
-<a href=/>
-Ed-M.Dev
-</a>
-<a href=/notes>
-Notes
-</a>
-<a href=/about>
-About
-</a>
-</ul>
-</nav>
-<div class="main container single">
-<div class=single-page-content-container>
-<div class=single-page-header>
-<h2>Planning out Saga 'Object' | 220525</h2>
-<time>Wed, May 25, 2022</time>
-<div class=single-page-project>
-<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
-</div>
-<div class=tags-container>
-<div class=tag-list-item>
-<a href=/tags/go>Go</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/microservices>Microservices</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/saga>Saga</a>
-</div>
-</div>
-</div>
-<br>
-<div class=single-page-content>
-<p><em>_2321</em></p>
-<p>I had some code written for a saga, Its not perfect, but I would like to start to mess with it.</p>
-<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go> <span style=color:#6ab825;font-weight:700>package</span> saga  
-      
-    <span style=color:#6ab825;font-weight:700>import</span> (  
-       <span style=color:#ed9d13>&#34;fmt&#34;</span>  
-       <span style=color:#ed9d13>&#34;io&#34;</span>
-       <span style=color:#ed9d13>&#34;net/http&#34;</span>
-       <span style=color:#ed9d13>&#34;strings&#34;</span>)  
-      
-    <span style=color:#6ab825;font-weight:700>type</span> Saga <span style=color:#6ab825;font-weight:700>struct</span> {  
-       SageName     <span style=color:#6ab825;font-weight:700>string</span>  
-      Transactions []*transaction  
-    }  
-      
-    <span style=color:#6ab825;font-weight:700>type</span> transaction <span style=color:#6ab825;font-weight:700>struct</span> {  
-       TransactionName <span style=color:#6ab825;font-weight:700>string</span>  
-      ServiceName     <span style=color:#6ab825;font-weight:700>string</span>  
-      TransactionAction  
-    }  
-      
-    <span style=color:#6ab825;font-weight:700>func</span> (t *transaction) <span style=color:#447fcf>GetTransaction</span>() *transaction {  
-       <span style=color:#6ab825;font-weight:700>return</span> t  
-    }  
-      
-    <span style=color:#999;font-style:italic>//TODO find a better name for this. &#34;TransactionAction&#34;  
-</span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// I have no idea wtf to call this. I have spent four+ hours looking for what to call this.  
-</span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// It&#39;s the action part of the transaction. I am floored on what to call this.  
-</span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// If anyone ever read this please let me.  
-</span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// Cause a transaction has data and it&#39;s a function at the same time, technically its a noun but idk  
-</span><span style=color:#999;font-style:italic></span>      
-    <span style=color:#999;font-style:italic>//TransactionAction generic for the action part of the transactiontype TransactionAction interface {  
-</span><span style=color:#999;font-style:italic></span>       <span style=color:#447fcf>Execute</span>() <span style=color:#6ab825;font-weight:700>error</span>  
-    }  
-      
-    <span style=color:#999;font-style:italic>//These Definitions are straight form the book  
-</span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>//Microservices Patterns By Chris Richardson  
-</span><span style=color:#999;font-style:italic></span>      
-    <span style=color:#999;font-style:italic>//RetryableTransaction Transactions that follow the pivot transaction and are guaranteed to succeed.type RetryableTransaction struct {  
-</span><span style=color:#999;font-style:italic></span>       transaction  
-    }  
-      
-    <span style=color:#999;font-style:italic>//NewRetriableTransaction Constructor for RetryableTransaction  
-</span><span style=color:#999;font-style:italic></span>    <span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewRetriableTransaction</span>(transactionName <span style=color:#6ab825;font-weight:700>string</span>, serviceName <span style=color:#6ab825;font-weight:700>string</span>, transactionAction TransactionAction) *RetryableTransaction {  
-       <span style=color:#6ab825;font-weight:700>return</span> &amp;RetryableTransaction{transaction{  
-          TransactionName:   transactionName,  
-      ServiceName:       serviceName,  
-      TransactionAction: transactionAction,  
-      }}  
-    }  
-      
-    <span style=color:#999;font-style:italic>//CompensatableTransaction transaction that can potentially be rolled back using a compensating transaction.type CompensatableTransaction struct {  
-</span><span style=color:#999;font-style:italic></span>       transaction  
-      <span style=color:#999;font-style:italic>//The is the action that un does this transaction if it fails  
-</span><span style=color:#999;font-style:italic></span>      CompensatableAction TransactionAction  
-    }  
-      
-    <span style=color:#999;font-style:italic>//NewCompensatableTransaction Constructor for CompensatableTransaction  
-</span><span style=color:#999;font-style:italic></span>    <span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewCompensatableTransaction</span>(transactionName <span style=color:#6ab825;font-weight:700>string</span>, serviceName <span style=color:#6ab825;font-weight:700>string</span>, transactionAction TransactionAction, compensatableAction TransactionAction) *CompensatableTransaction {  
-       <span style=color:#6ab825;font-weight:700>return</span> &amp;CompensatableTransaction{  
-          transaction: transaction{  
-             TransactionName:   transactionName,  
-      ServiceName:       serviceName,  
-      TransactionAction: transactionAction,  
-      },  
-      CompensatableAction: compensatableAction,  
-      }  
-    }  
-      
-    <span style=color:#999;font-style:italic>//PivotTransaction The go/no-go point in a saga. If the pivot transaction commits, the saga will run until completion. A pivot transaction can be a transaction that’s neither compensatable nor retriable. Alternatively, it can be the last compensatable transaction or the first retriable transaction.type PivotTransaction struct {  
-</span><span style=color:#999;font-style:italic></span>       transaction  
-    }  
-      
-    <span style=color:#999;font-style:italic>//NewPivotTransaction Constructor for NewPivotTransaction  
-</span><span style=color:#999;font-style:italic></span>    <span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewPivotTransaction</span>(transactionName <span style=color:#6ab825;font-weight:700>string</span>, serviceName <span style=color:#6ab825;font-weight:700>string</span>, transactionAction TransactionAction) *RetryableTransaction {  
-       <span style=color:#6ab825;font-weight:700>return</span> &amp;RetryableTransaction{transaction{  
-          TransactionName:   transactionName,  
-      ServiceName:       serviceName,  
-      TransactionAction: transactionAction,  
-      }}  
-    }  
-      
-    <span style=color:#999;font-style:italic>// OKay I am looking back after 2 months of writing most of this, and I am not positive how the theis RestProxy connects  
-</span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// to the code above  
-</span><span style=color:#999;font-style:italic></span>      
-    <span style=color:#6ab825;font-weight:700>type</span> TransactionRESTProxy <span style=color:#6ab825;font-weight:700>struct</span> {  
-       TransactionAction  
-      HttpFunction <span style=color:#6ab825;font-weight:700>string</span>  
-      URL          <span style=color:#6ab825;font-weight:700>string</span>  
-      Body         *io.Reader  
-      Response     *http.Response  
-    }  
-      
-    <span style=color:#999;font-style:italic>// NewTransactionActionRestProxy is a constructor for the transaction REST Proxy creation just to make sure values make sense before making that call to the other services, or it own servicefunc NewTransactionActionRestProxy(httpFunction string, url string, body *io.Reader) (*TransactionRESTProxy, error) {  
-</span><span style=color:#999;font-style:italic></span>       <span style=color:#6ab825;font-weight:700>var</span> ErrMismatchHttpFunctionWithBody = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;[ERROR] [SAGA] [TRANSACTION] [REST PROXY] [CREATION] | Cannot have body with this %+v | GET or DELETE&#34;</span>, httpFunction)  
-       <span style=color:#6ab825;font-weight:700>var</span> ErrMissingBodyForAssociatedHttpFunction = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;[ERROR] [SAGA] [TRANSACTION] [REST PROXY] [CREATION] | Cannot have missingbody for this fucntion %+v | POST or UPDATE&#34;</span>, httpFunction)  
-       <span style=color:#6ab825;font-weight:700>var</span> ErrNonSupportedHTTPFunction = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;[ERROR] [SAGA] [TRANSACTION] [REST PROXY] [CREATION] | %+v is not a supported http Fuction: Supported Functions: POST, GET, UPDATE, and DELETE&#34;</span>, httpFunction)  
-       groomedHTTPFunction := strings.<span style=color:#447fcf>ToUpper</span>(strings.<span style=color:#447fcf>TrimSpace</span>(httpFunction))  
-       <span style=color:#6ab825;font-weight:700>switch</span> groomedHTTPFunction {  
-       <span style=color:#6ab825;font-weight:700>case</span> <span style=color:#ed9d13>&#34;GET&#34;</span>:  
-          {  
-             <span style=color:#6ab825;font-weight:700>if</span> body != <span style=color:#6ab825;font-weight:700>nil</span> {  
-                <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrMismatchHttpFunctionWithBody  
-             }  
-      
-          }  
-       <span style=color:#6ab825;font-weight:700>case</span> <span style=color:#ed9d13>&#34;DELETE&#34;</span>:  
-          {  
-             <span style=color:#6ab825;font-weight:700>if</span> body != <span style=color:#6ab825;font-weight:700>nil</span> {  
-                <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrMismatchHttpFunctionWithBody  
-             }  
-          }  
-       <span style=color:#6ab825;font-weight:700>case</span> <span style=color:#ed9d13>&#34;UPDATE&#34;</span>:  
-          {  
-             <span style=color:#6ab825;font-weight:700>if</span> body == <span style=color:#6ab825;font-weight:700>nil</span> {  
-                <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrMissingBodyForAssociatedHttpFunction  
-             }  
-          }  
-       <span style=color:#6ab825;font-weight:700>case</span> <span style=color:#ed9d13>&#34;POST&#34;</span>:  
-          {  
-             <span style=color:#6ab825;font-weight:700>if</span> body == <span style=color:#6ab825;font-weight:700>nil</span> {  
-                <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrMissingBodyForAssociatedHttpFunction  
-             }  
-          }  
-       <span style=color:#6ab825;font-weight:700>default</span>:  
-          {  
-             <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrNonSupportedHTTPFunction  
-          }  
-       }  
-       <span style=color:#999;font-style:italic>//TODO Figure out if should do any check on the url  
-</span><span style=color:#999;font-style:italic></span>      <span style=color:#999;font-style:italic>//I am guessing I should check if it in the correct domain like internal, but later  
-</span><span style=color:#999;font-style:italic></span>     <span style=color:#999;font-style:italic>//That means I need a file where I keep the domain at for later // // I could also have it be dynamic like a list that updated when services in the &#34;backend&#34; so have script // run at the start of each service // I have a lot idea about this, but none seem to pressing to getting this operational  
-</span><span style=color:#999;font-style:italic></span>      <span style=color:#6ab825;font-weight:700>return</span> &amp;TransactionRESTProxy{HttpFunction: groomedHTTPFunction, URL: url, Body: body, Response: <span style=color:#6ab825;font-weight:700>nil</span>}, <span style=color:#6ab825;font-weight:700>nil</span>  
-    }  
-      
-    <span style=color:#6ab825;font-weight:700>func</span> (trp *TransactionRESTProxy) <span style=color:#447fcf>Execute</span>() <span style=color:#6ab825;font-weight:700>error</span> {  
-      
-       client := &amp;http.Client{}  
-       req, err := http.<span style=color:#447fcf>NewRequest</span>(trp.HttpFunction, trp.URL, *trp.Body)  
-       <span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {  
-          fmt.<span style=color:#447fcf>Print</span>(err.<span style=color:#447fcf>Error</span>())  
-       }  
-       req.Header.<span style=color:#447fcf>Add</span>(<span style=color:#ed9d13>&#34;Accept&#34;</span>, <span style=color:#ed9d13>&#34;application/json&#34;</span>)  
-       req.Header.<span style=color:#447fcf>Add</span>(<span style=color:#ed9d13>&#34;Content-Type&#34;</span>, <span style=color:#ed9d13>&#34;application/json&#34;</span>)  
-       resp, err := client.<span style=color:#447fcf>Do</span>(req)  
-       <span style=color:#6ab825;font-weight:700>defer</span> <span style=color:#6ab825;font-weight:700>func</span>(Body io.ReadCloser) {  
-          err := Body.<span style=color:#447fcf>Close</span>()  
-          <span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {  
-             <span style=color:#999;font-style:italic>// Need to find a way to make this return an error.  
-</span><span style=color:#999;font-style:italic></span>     <span style=color:#999;font-style:italic>//  }  
-</span><span style=color:#999;font-style:italic></span>       }(resp.Body)  
-       trp.Response = resp  
-       <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>  
-      
-    }
-</code></pre></div><p>I am not positive that any of this will be useful, but I need to figure out how I am going to keep track of each of the sagas. Cause there doesn&rsquo;t seem to much in go for sagas that is written</p>
-<p><a href=https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga>Microsoft and Sagas</a>
-<a href=https://microservices.io/patterns/data/saga.html>Microservices Sagas</a></p>
-<p>There appears to be two different ways to go about implementing sagas</p>
-<p><a href=https://github.com/eventuate-tram/eventuate-tram-examples-customers-and-orders>Spring (Java) Example of Choreography</a></p>
-<p>So this is the event message system and why was looking at Apache Kafka. I think this more used one or at least form what I can tell the other option being</p>
-<p><a href=https://github.com/eventuate-tram/eventuate-tram-sagas-examples-customers-and-orders>Spring (Java) Example Orchestration</a></p>
-<p>So this one has the start of the order be created at the start of a saga life and orchestrate it through its life.</p>
-<hr>
-<p>So between these two I can see some things the Orchestration would seem to allow me to use the code I have ready written with the saga code above and the status i have in the models for each of services, but that&rsquo;s not really a good reason. The Choreography seems to more scaleable cause it whole new container to deal with sagas events that scaled to the needs of the system. This does working with another system cause creating my own event message management system seems a bit much for my given scope, even tho external dependencies is not preferable.</p>
-<p>I am not positive which one, but I think i&rsquo;ll try the Kafka one first and see what I get.</p>
-<p>Not the most eventful update, but I am getting back into it. Feels good and lil overwhelming cause I have forgot a lot.</p>
-</div>
-</div>
-</div>
-</body>
-<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
-</html>
+<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Planning out Saga 'Object' | 220525</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
+<a href=/notes>Notes</a>
+<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Planning out Saga 'Object' | 220525</h2><time>Wed, May 25, 2022</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/microservices>Microservices</a></div><div class=tag-list-item><a href=/tags/saga>Saga</a></div></div></div><br><div class=single-page-content><p><em>_2321</em></p><p>I had some code written for a saga, Its not perfect, but I would like to start to mess with it.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span> <span style=color:#6ab825;font-weight:700>package</span> saga  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#6ab825;font-weight:700>import</span> (  
+</span></span><span style=display:flex><span>       <span style=color:#ed9d13>&#34;fmt&#34;</span>  
+</span></span><span style=display:flex><span>       <span style=color:#ed9d13>&#34;io&#34;</span>
+</span></span><span style=display:flex><span>       <span style=color:#ed9d13>&#34;net/http&#34;</span>
+</span></span><span style=display:flex><span>       <span style=color:#ed9d13>&#34;strings&#34;</span>)  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#6ab825;font-weight:700>type</span> Saga <span style=color:#6ab825;font-weight:700>struct</span> {  
+</span></span><span style=display:flex><span>       SageName     <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>      Transactions []*transaction  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#6ab825;font-weight:700>type</span> transaction <span style=color:#6ab825;font-weight:700>struct</span> {  
+</span></span><span style=display:flex><span>       TransactionName <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>      ServiceName     <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>      TransactionAction  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#6ab825;font-weight:700>func</span> (t *transaction) <span style=color:#447fcf>GetTransaction</span>() *transaction {  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>return</span> t  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>//TODO find a better name for this. &#34;TransactionAction&#34;  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// I have no idea wtf to call this. I have spent four+ hours looking for what to call this.  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// It&#39;s the action part of the transaction. I am floored on what to call this.  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// If anyone ever read this please let me.  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// Cause a transaction has data and it&#39;s a function at the same time, technically its a noun but idk  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>//TransactionAction generic for the action part of the transactiontype TransactionAction interface {  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>       <span style=color:#447fcf>Execute</span>() <span style=color:#6ab825;font-weight:700>error</span>  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>//These Definitions are straight form the book  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>//Microservices Patterns By Chris Richardson  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>//RetryableTransaction Transactions that follow the pivot transaction and are guaranteed to succeed.type RetryableTransaction struct {  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>       transaction  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>//NewRetriableTransaction Constructor for RetryableTransaction  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>    <span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewRetriableTransaction</span>(transactionName <span style=color:#6ab825;font-weight:700>string</span>, serviceName <span style=color:#6ab825;font-weight:700>string</span>, transactionAction TransactionAction) *RetryableTransaction {  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>return</span> &amp;RetryableTransaction{transaction{  
+</span></span><span style=display:flex><span>          TransactionName:   transactionName,  
+</span></span><span style=display:flex><span>      ServiceName:       serviceName,  
+</span></span><span style=display:flex><span>      TransactionAction: transactionAction,  
+</span></span><span style=display:flex><span>      }}  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>//CompensatableTransaction transaction that can potentially be rolled back using a compensating transaction.type CompensatableTransaction struct {  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>       transaction  
+</span></span><span style=display:flex><span>      <span style=color:#999;font-style:italic>//The is the action that un does this transaction if it fails  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>      CompensatableAction TransactionAction  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>//NewCompensatableTransaction Constructor for CompensatableTransaction  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>    <span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewCompensatableTransaction</span>(transactionName <span style=color:#6ab825;font-weight:700>string</span>, serviceName <span style=color:#6ab825;font-weight:700>string</span>, transactionAction TransactionAction, compensatableAction TransactionAction) *CompensatableTransaction {  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>return</span> &amp;CompensatableTransaction{  
+</span></span><span style=display:flex><span>          transaction: transaction{  
+</span></span><span style=display:flex><span>             TransactionName:   transactionName,  
+</span></span><span style=display:flex><span>      ServiceName:       serviceName,  
+</span></span><span style=display:flex><span>      TransactionAction: transactionAction,  
+</span></span><span style=display:flex><span>      },  
+</span></span><span style=display:flex><span>      CompensatableAction: compensatableAction,  
+</span></span><span style=display:flex><span>      }  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>//PivotTransaction The go/no-go point in a saga. If the pivot transaction commits, the saga will run until completion. A pivot transaction can be a transaction that’s neither compensatable nor retriable. Alternatively, it can be the last compensatable transaction or the first retriable transaction.type PivotTransaction struct {  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>       transaction  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>//NewPivotTransaction Constructor for NewPivotTransaction  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>    <span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewPivotTransaction</span>(transactionName <span style=color:#6ab825;font-weight:700>string</span>, serviceName <span style=color:#6ab825;font-weight:700>string</span>, transactionAction TransactionAction) *RetryableTransaction {  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>return</span> &amp;RetryableTransaction{transaction{  
+</span></span><span style=display:flex><span>          TransactionName:   transactionName,  
+</span></span><span style=display:flex><span>      ServiceName:       serviceName,  
+</span></span><span style=display:flex><span>      TransactionAction: transactionAction,  
+</span></span><span style=display:flex><span>      }}  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>// OKay I am looking back after 2 months of writing most of this, and I am not positive how the theis RestProxy connects  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>    <span style=color:#999;font-style:italic>// to the code above  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>      
+</span></span><span style=display:flex><span>    <span style=color:#6ab825;font-weight:700>type</span> TransactionRESTProxy <span style=color:#6ab825;font-weight:700>struct</span> {  
+</span></span><span style=display:flex><span>       TransactionAction  
+</span></span><span style=display:flex><span>      HttpFunction <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>      URL          <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>      Body         *io.Reader  
+</span></span><span style=display:flex><span>      Response     *http.Response  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#999;font-style:italic>// NewTransactionActionRestProxy is a constructor for the transaction REST Proxy creation just to make sure values make sense before making that call to the other services, or it own servicefunc NewTransactionActionRestProxy(httpFunction string, url string, body *io.Reader) (*TransactionRESTProxy, error) {  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>       <span style=color:#6ab825;font-weight:700>var</span> ErrMismatchHttpFunctionWithBody = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;[ERROR] [SAGA] [TRANSACTION] [REST PROXY] [CREATION] | Cannot have body with this %+v | GET or DELETE&#34;</span>, httpFunction)  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>var</span> ErrMissingBodyForAssociatedHttpFunction = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;[ERROR] [SAGA] [TRANSACTION] [REST PROXY] [CREATION] | Cannot have missingbody for this fucntion %+v | POST or UPDATE&#34;</span>, httpFunction)  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>var</span> ErrNonSupportedHTTPFunction = fmt.<span style=color:#447fcf>Errorf</span>(<span style=color:#ed9d13>&#34;[ERROR] [SAGA] [TRANSACTION] [REST PROXY] [CREATION] | %+v is not a supported http Fuction: Supported Functions: POST, GET, UPDATE, and DELETE&#34;</span>, httpFunction)  
+</span></span><span style=display:flex><span>       groomedHTTPFunction := strings.<span style=color:#447fcf>ToUpper</span>(strings.<span style=color:#447fcf>TrimSpace</span>(httpFunction))  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>switch</span> groomedHTTPFunction {  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>case</span> <span style=color:#ed9d13>&#34;GET&#34;</span>:  
+</span></span><span style=display:flex><span>          {  
+</span></span><span style=display:flex><span>             <span style=color:#6ab825;font-weight:700>if</span> body != <span style=color:#6ab825;font-weight:700>nil</span> {  
+</span></span><span style=display:flex><span>                <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrMismatchHttpFunctionWithBody  
+</span></span><span style=display:flex><span>             }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>          }  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>case</span> <span style=color:#ed9d13>&#34;DELETE&#34;</span>:  
+</span></span><span style=display:flex><span>          {  
+</span></span><span style=display:flex><span>             <span style=color:#6ab825;font-weight:700>if</span> body != <span style=color:#6ab825;font-weight:700>nil</span> {  
+</span></span><span style=display:flex><span>                <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrMismatchHttpFunctionWithBody  
+</span></span><span style=display:flex><span>             }  
+</span></span><span style=display:flex><span>          }  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>case</span> <span style=color:#ed9d13>&#34;UPDATE&#34;</span>:  
+</span></span><span style=display:flex><span>          {  
+</span></span><span style=display:flex><span>             <span style=color:#6ab825;font-weight:700>if</span> body == <span style=color:#6ab825;font-weight:700>nil</span> {  
+</span></span><span style=display:flex><span>                <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrMissingBodyForAssociatedHttpFunction  
+</span></span><span style=display:flex><span>             }  
+</span></span><span style=display:flex><span>          }  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>case</span> <span style=color:#ed9d13>&#34;POST&#34;</span>:  
+</span></span><span style=display:flex><span>          {  
+</span></span><span style=display:flex><span>             <span style=color:#6ab825;font-weight:700>if</span> body == <span style=color:#6ab825;font-weight:700>nil</span> {  
+</span></span><span style=display:flex><span>                <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrMissingBodyForAssociatedHttpFunction  
+</span></span><span style=display:flex><span>             }  
+</span></span><span style=display:flex><span>          }  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>default</span>:  
+</span></span><span style=display:flex><span>          {  
+</span></span><span style=display:flex><span>             <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>, ErrNonSupportedHTTPFunction  
+</span></span><span style=display:flex><span>          }  
+</span></span><span style=display:flex><span>       }  
+</span></span><span style=display:flex><span>       <span style=color:#999;font-style:italic>//TODO Figure out if should do any check on the url  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>      <span style=color:#999;font-style:italic>//I am guessing I should check if it in the correct domain like internal, but later  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>     <span style=color:#999;font-style:italic>//That means I need a file where I keep the domain at for later // // I could also have it be dynamic like a list that updated when services in the &#34;backend&#34; so have script // run at the start of each service // I have a lot idea about this, but none seem to pressing to getting this operational  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>      <span style=color:#6ab825;font-weight:700>return</span> &amp;TransactionRESTProxy{HttpFunction: groomedHTTPFunction, URL: url, Body: body, Response: <span style=color:#6ab825;font-weight:700>nil</span>}, <span style=color:#6ab825;font-weight:700>nil</span>  
+</span></span><span style=display:flex><span>    }  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    <span style=color:#6ab825;font-weight:700>func</span> (trp *TransactionRESTProxy) <span style=color:#447fcf>Execute</span>() <span style=color:#6ab825;font-weight:700>error</span> {  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>       client := &amp;http.Client{}  
+</span></span><span style=display:flex><span>       req, err := http.<span style=color:#447fcf>NewRequest</span>(trp.HttpFunction, trp.URL, *trp.Body)  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {  
+</span></span><span style=display:flex><span>          fmt.<span style=color:#447fcf>Print</span>(err.<span style=color:#447fcf>Error</span>())  
+</span></span><span style=display:flex><span>       }  
+</span></span><span style=display:flex><span>       req.Header.<span style=color:#447fcf>Add</span>(<span style=color:#ed9d13>&#34;Accept&#34;</span>, <span style=color:#ed9d13>&#34;application/json&#34;</span>)  
+</span></span><span style=display:flex><span>       req.Header.<span style=color:#447fcf>Add</span>(<span style=color:#ed9d13>&#34;Content-Type&#34;</span>, <span style=color:#ed9d13>&#34;application/json&#34;</span>)  
+</span></span><span style=display:flex><span>       resp, err := client.<span style=color:#447fcf>Do</span>(req)  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>defer</span> <span style=color:#6ab825;font-weight:700>func</span>(Body io.ReadCloser) {  
+</span></span><span style=display:flex><span>          err := Body.<span style=color:#447fcf>Close</span>()  
+</span></span><span style=display:flex><span>          <span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {  
+</span></span><span style=display:flex><span>             <span style=color:#999;font-style:italic>// Need to find a way to make this return an error.  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>     <span style=color:#999;font-style:italic>//  }  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>       }(resp.Body)  
+</span></span><span style=display:flex><span>       trp.Response = resp  
+</span></span><span style=display:flex><span>       <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#6ab825;font-weight:700>nil</span>  
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>    }
+</span></span></code></pre></div><p>I am not positive that any of this will be useful, but I need to figure out how I am going to keep track of each of the sagas. Cause there doesn&rsquo;t seem to much in go for sagas that is written</p><p><a href=https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga>Microsoft and Sagas</a>
+<a href=https://microservices.io/patterns/data/saga.html>Microservices Sagas</a></p><p>There appears to be two different ways to go about implementing sagas</p><p><a href=https://github.com/eventuate-tram/eventuate-tram-examples-customers-and-orders>Spring (Java) Example of Choreography</a></p><p>So this is the event message system and why was looking at Apache Kafka. I think this more used one or at least form what I can tell the other option being</p><p><a href=https://github.com/eventuate-tram/eventuate-tram-sagas-examples-customers-and-orders>Spring (Java) Example Orchestration</a></p><p>So this one has the start of the order be created at the start of a saga life and orchestrate it through its life.</p><hr><p>So between these two I can see some things the Orchestration would seem to allow me to use the code I have ready written with the saga code above and the status i have in the models for each of services, but that&rsquo;s not really a good reason. The Choreography seems to more scaleable cause it whole new container to deal with sagas events that scaled to the needs of the system. This does working with another system cause creating my own event message management system seems a bit much for my given scope, even tho external dependencies is not preferable.</p><p>I am not positive which one, but I think i&rsquo;ll try the Kafka one first and see what I get.</p><p>Not the most eventful update, but I am getting back into it. Feels good and lil overwhelming cause I have forgot a lot.</p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>

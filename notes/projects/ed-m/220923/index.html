@@ -1,135 +1,57 @@
-<!doctype html><head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<link rel=stylesheet href=https://ed-m.dev/css/style.css>
-<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
-<title>SVGs, Break Statements & HUGO | 220923</title>
-</head>
-<body>
-<nav class=navBar>
-<ul>
-<a href=/>
-Ed-M.Dev
-</a>
-<a href=/notes>
-Notes
-</a>
-<a href=/about>
-About
-</a>
-</ul>
-</nav>
-<div class="main container single">
-<div class=single-page-content-container>
-<div class=single-page-header>
-<h2>SVGs, Break Statements & HUGO | 220923</h2>
-<time>Fri, Sep 23, 2022</time>
-<div class=single-page-project>
-<h3><a href=/notes/projects/ed-m> Project - Ed m</a></h3>
-</div>
-<div class=tags-container>
-<div class=tag-list-item>
-<a href=/tags/hugo>Hugo</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/devblog>Devblog</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/partials>Partials</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/svg>Svg</a>
-</div>
-</div>
-</div>
-<br>
-<div class=single-page-content>
-<h1 id=220923>220923</h1>
-<h2 id=github-project-links-and-svg>Github Project Links and svg</h2>
-<p><em>_0121</em></p>
-<p>Quick add to the project list page to pull the think Github link form the projects front matter, then just in case in the link. Use a dictionary to pass the values to a partial to dictate the size of the svg</p>
-<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=color:#999;font-style:italic>&lt;!-- /ed-m/layouts/notes/list.html --&gt;</span>
-...
-<span style=color:#999;font-style:italic>&lt;!--If there is github in the project index front matter then makes pull the github svg and put in the link to the projects base github--&gt;</span>
-{{with  .Param  &#34;github&#34;}}
-	{{  $githubAsset := resources.Get  &#34;/svgs/github.svg&#34;  }}
-	&lt;<span style=color:#6ab825;font-weight:700>a</span>  <span style=color:#bbb>class</span>=<span style=color:#ed9d13>&#34;github-svg&#34;</span>  <span style=color:#bbb>href</span>=<span style=color:#ed9d13>{{.}}</span>&gt;
-		<span style=color:#999;font-style:italic>&lt;!-- Simple Dictonary insert for the nessary values for for the SVG size --&gt;</span>
-		{{  partial  &#34;github-svg.html&#34; (dict  &#34;width&#34;  30  &#34;height&#34;  30 ) }}
-	&lt;/<span style=color:#6ab825;font-weight:700>a</span>&gt;
-{{end}}
-...
-</code></pre></div><blockquote>
-<p>Side note: I notice I keep finding my self on this one site to better understand basic css implementation and wanted to share it. <a href=https://css-tricks.com/snippets/css/>https://css-tricks.com/snippets/css/</a> . I know the URL looks like bullshit site, but some of the new articles are full of digrams and example code that I find really helpful.</p>
-</blockquote>
-<p><em>_0651</em>
-Current Progress.</p>
-<p><img src=https://i.imgur.com/hoyaDPt.png alt=0651></p>
-<h2 id=trying-to-get-the-post-count-for-a-given-project>Trying to get the post count for a given project</h2>
-<p>So while trying to fill up some space I thought of a few project stats I could do with out writing a webhook into github(maybe another day). So I am trying to use the index version of range in hugo with where as well but getting some errors. I kinda expected this.</p>
-<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=color:#999;font-style:italic>&lt;!-- Expected input project name --&gt;</span>
-{{with  .Param  &#34;projectName&#34;  }}
-
-	<span style=color:#999;font-style:italic>&lt;!-- Set the Current Project Name that we will looking for it&#39;s Pages--&gt;</span>
-
-	{{$projectname := .}}
-	{{$index := 1}}
-
-	{{range  where  $index, site.Pages  &#34;Params.project&#34;  $projectname}}
-
-		{{$index}}
-	{{end}}
-{{end}}
-</code></pre></div><p>Leads to it not knowing why the common is there</p>
-<p><img src=https://i.imgur.com/SCZxtu7.png alt=issue></p>
-<p>And if you take it out</p>
-<p><img src=https://i.imgur.com/y8LyaQd.png alt="another error"></p>
-<p>It tries to iterate over the set index. So i am going out limb guess you can&rsquo;t use range where with an index as well.</p>
-<p>That&rsquo;s fine. I can use Scratch to count for me.</p>
-<p>With a few more lines of hugo funky code we can count.</p>
-<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=color:#999;font-style:italic>&lt;!--/ed-m/layouts/partials/num-post-for-project.html --&gt;</span>
-<span style=color:#999;font-style:italic>&lt;!-- Expected in put project name --&gt;</span>
-{{with  .Param  &#34;projectName&#34;  }}
-
-	<span style=color:#999;font-style:italic>&lt;!-- Set the Current Project Name that we will looking for it&#39;s Pages--&gt;</span>
-	{{$projectname := .}}
-	<span style=color:#999;font-style:italic>&lt;!-- Had to use Scratch to count for us cause I could&#39;nt get the index to work with where--&gt;</span>
-	{{  $.Scratch.Set &#34;betterIndex&#34;  0  }}
-	{{range  where site.Pages  &#34;Params.project&#34;  $projectname}}
-		{{  $.Scratch.Set &#34;betterIndex&#34; (add 	($.Scratch.Get &#34;betterIndex&#34;) 1) }}
-	{{end}}
-	<span style=color:#999;font-style:italic>&lt;!--Displays the Total number Post for the given project --&gt;</span>
-	{{$.Scratch.Get &#34;betterIndex&#34;}}
-{{end}}
-</code></pre></div><p><img src=https://i.imgur.com/dDpDE9V.png alt="Finished result"></p>
-<p>I know this is a simple things, but I know once I move on from working on this site, I am going to forget how hugo works.</p>
-<p>I idea of counting the elements iterated over a loop is not a diffcult one, but how to do this in hugo sytanx is a little hard. I am learning it now, but can&rsquo;t see myself working with everyday once the project is completed my knowledge gains of may become a skill leakage point.</p>
-<hr>
-<p><em>_0831</em></p>
-<p><strong>Hugo has no break statement&mldr;</strong></p>
-<p><img src=https://i.imgur.com/PKOQBHx.png alt="yeah "></p>
-<p>I mean that post is from 2017. They could have put in by now. Yeah&mldr; I can&rsquo;t find it anywhere in the docs. or external sites so woo.</p>
-<p>but it does let me do dumb things like this.</p>
-<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=color:#999;font-style:italic>&lt;!-- /ed-m/layouts/partials/last-date-of-post-for-project.html --&gt;</span>
-{{with  .Param  &#34;projectName&#34;  }}
-	{{$projectname := .}}
-	{{$WTFisABreakStatment := true}}
-	{{range  where site.Pages.ByDate  &#34;Params.project&#34;  $projectname  }}
-		{{if  $WTFisABreakStatment}}
-			&lt;<span style=color:#6ab825;font-weight:700>time</span>&gt;{{  .Date.Format  &#34;Mon, Jan 2, 2006&#34;  }}&lt;/<span style=color:#6ab825;font-weight:700>time</span>&gt;
-		{{else}}
-			<span style=color:#999;font-style:italic>&lt;!-- Do fuck all --&gt;</span>
-		{{end}}
-	{{$WTFisABreakStatment = false}}
-	{{end}}
-{{end}}
-</code></pre></div><p>Elegant: No
+<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>SVGs, Break Statements & HUGO | 220923</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
+<a href=/notes>Notes</a>
+<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>SVGs, Break Statements & HUGO | 220923</h2><time>Fri, Sep 23, 2022</time><div class=single-page-project><h3><a href=/notes/projects/ed-m>Project - Ed m</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/hugo>Hugo</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div><div class=tag-list-item><a href=/tags/partials>Partials</a></div><div class=tag-list-item><a href=/tags/svg>Svg</a></div></div></div><br><div class=single-page-content><h1 id=220923>220923</h1><h2 id=github-project-links-and-svg>Github Project Links and svg</h2><p><em>_0121</em></p><p>Quick add to the project list page to pull the think Github link form the projects front matter, then just in case in the link. Use a dictionary to pass the values to a partial to dictate the size of the svg</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#999;font-style:italic>&lt;!-- /ed-m/layouts/notes/list.html --&gt;</span>
+</span></span><span style=display:flex><span>...
+</span></span><span style=display:flex><span><span style=color:#999;font-style:italic>&lt;!--If there is github in the project index front matter then makes pull the github svg and put in the link to the projects base github--&gt;</span>
+</span></span><span style=display:flex><span>{{with  .Param  &#34;github&#34;}}
+</span></span><span style=display:flex><span>	{{  $githubAsset := resources.Get  &#34;/svgs/github.svg&#34;  }}
+</span></span><span style=display:flex><span>	&lt;<span style=color:#6ab825;font-weight:700>a</span>  <span style=color:#bbb>class</span>=<span style=color:#ed9d13>&#34;github-svg&#34;</span>  <span style=color:#bbb>href</span>=<span style=color:#ed9d13>{{.}}</span>&gt;
+</span></span><span style=display:flex><span>		<span style=color:#999;font-style:italic>&lt;!-- Simple Dictonary insert for the nessary values for for the SVG size --&gt;</span>
+</span></span><span style=display:flex><span>		{{  partial  &#34;github-svg.html&#34; (dict  &#34;width&#34;  30  &#34;height&#34;  30 ) }}
+</span></span><span style=display:flex><span>	&lt;/<span style=color:#6ab825;font-weight:700>a</span>&gt;
+</span></span><span style=display:flex><span>{{end}}
+</span></span><span style=display:flex><span>...
+</span></span></code></pre></div><blockquote><p>Side note: I notice I keep finding my self on this one site to better understand basic css implementation and wanted to share it. <a href=https://css-tricks.com/snippets/css/>https://css-tricks.com/snippets/css/</a> . I know the URL looks like bullshit site, but some of the new articles are full of digrams and example code that I find really helpful.</p></blockquote><p><em>_0651</em>
+Current Progress.</p><p><img src=https://i.imgur.com/hoyaDPt.png alt=0651></p><h2 id=trying-to-get-the-post-count-for-a-given-project>Trying to get the post count for a given project</h2><p>So while trying to fill up some space I thought of a few project stats I could do with out writing a webhook into github(maybe another day). So I am trying to use the index version of range in hugo with where as well but getting some errors. I kinda expected this.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#999;font-style:italic>&lt;!-- Expected input project name --&gt;</span>
+</span></span><span style=display:flex><span>{{with  .Param  &#34;projectName&#34;  }}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#999;font-style:italic>&lt;!-- Set the Current Project Name that we will looking for it&#39;s Pages--&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	{{$projectname := .}}
+</span></span><span style=display:flex><span>	{{$index := 1}}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	{{range  where  $index, site.Pages  &#34;Params.project&#34;  $projectname}}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>		{{$index}}
+</span></span><span style=display:flex><span>	{{end}}
+</span></span><span style=display:flex><span>{{end}}
+</span></span></code></pre></div><p>Leads to it not knowing why the common is there</p><p><img src=https://i.imgur.com/SCZxtu7.png alt=issue></p><p>And if you take it out</p><p><img src=https://i.imgur.com/y8LyaQd.png alt="another error"></p><p>It tries to iterate over the set index. So i am going out limb guess you can&rsquo;t use range where with an index as well.</p><p>That&rsquo;s fine. I can use Scratch to count for me.</p><p>With a few more lines of hugo funky code we can count.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#999;font-style:italic>&lt;!--/ed-m/layouts/partials/num-post-for-project.html --&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#999;font-style:italic>&lt;!-- Expected in put project name --&gt;</span>
+</span></span><span style=display:flex><span>{{with  .Param  &#34;projectName&#34;  }}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#999;font-style:italic>&lt;!-- Set the Current Project Name that we will looking for it&#39;s Pages--&gt;</span>
+</span></span><span style=display:flex><span>	{{$projectname := .}}
+</span></span><span style=display:flex><span>	<span style=color:#999;font-style:italic>&lt;!-- Had to use Scratch to count for us cause I could&#39;nt get the index to work with where--&gt;</span>
+</span></span><span style=display:flex><span>	{{  $.Scratch.Set &#34;betterIndex&#34;  0  }}
+</span></span><span style=display:flex><span>	{{range  where site.Pages  &#34;Params.project&#34;  $projectname}}
+</span></span><span style=display:flex><span>		{{  $.Scratch.Set &#34;betterIndex&#34; (add 	($.Scratch.Get &#34;betterIndex&#34;) 1) }}
+</span></span><span style=display:flex><span>	{{end}}
+</span></span><span style=display:flex><span>	<span style=color:#999;font-style:italic>&lt;!--Displays the Total number Post for the given project --&gt;</span>
+</span></span><span style=display:flex><span>	{{$.Scratch.Get &#34;betterIndex&#34;}}
+</span></span><span style=display:flex><span>{{end}}
+</span></span></code></pre></div><p><img src=https://i.imgur.com/dDpDE9V.png alt="Finished result"></p><p>I know this is a simple things, but I know once I move on from working on this site, I am going to forget how hugo works.</p><p>I idea of counting the elements iterated over a loop is not a diffcult one, but how to do this in hugo sytanx is a little hard. I am learning it now, but can&rsquo;t see myself working with everyday once the project is completed my knowledge gains of may become a skill leakage point.</p><hr><p><em>_0831</em></p><p><strong>Hugo has no break statement&mldr;</strong></p><p><img src=https://i.imgur.com/PKOQBHx.png alt="yeah "></p><p>I mean that post is from 2017. They could have put in by now. Yeah&mldr; I can&rsquo;t find it anywhere in the docs. or external sites so woo.</p><p>but it does let me do dumb things like this.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#999;font-style:italic>&lt;!-- /ed-m/layouts/partials/last-date-of-post-for-project.html --&gt;</span>
+</span></span><span style=display:flex><span>{{with  .Param  &#34;projectName&#34;  }}
+</span></span><span style=display:flex><span>	{{$projectname := .}}
+</span></span><span style=display:flex><span>	{{$WTFisABreakStatment := true}}
+</span></span><span style=display:flex><span>	{{range  where site.Pages.ByDate  &#34;Params.project&#34;  $projectname  }}
+</span></span><span style=display:flex><span>		{{if  $WTFisABreakStatment}}
+</span></span><span style=display:flex><span>			&lt;<span style=color:#6ab825;font-weight:700>time</span>&gt;{{  .Date.Format  &#34;Mon, Jan 2, 2006&#34;  }}&lt;/<span style=color:#6ab825;font-weight:700>time</span>&gt;
+</span></span><span style=display:flex><span>		{{else}}
+</span></span><span style=display:flex><span>			<span style=color:#999;font-style:italic>&lt;!-- Do fuck all --&gt;</span>
+</span></span><span style=display:flex><span>		{{end}}
+</span></span><span style=display:flex><span>	{{$WTFisABreakStatment = false}}
+</span></span><span style=display:flex><span>	{{end}}
+</span></span><span style=display:flex><span>{{end}}
+</span></span></code></pre></div><p>Elegant: No
 Efficient Computationally or Memory wise: No
-Kinda Goofy to write: Yes&mldr;</p>
-</div>
-</div>
-</div>
-</body>
-<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
-</html>
+Kinda Goofy to write: Yes&mldr;</p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>

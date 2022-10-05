@@ -1,186 +1,61 @@
-<!doctype html><head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<link rel=stylesheet href=https://ed-m.dev/css/style.css>
-<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
-<title>Tags Page & 90 - 90 Rule | 221003</title>
-</head>
-<body>
-<nav class=navBar>
-<ul>
-<a href=/>
-Ed-M.Dev
-</a>
-<a href=/notes>
-Notes
-</a>
-<a href=/about>
-About
-</a>
-</ul>
-</nav>
-<div class="main container single">
-<div class=single-page-content-container>
-<div class=single-page-header>
-<h2>Tags Page & 90 - 90 Rule | 221003</h2>
-<time>Mon, Oct 3, 2022</time>
-<div class=single-page-project>
-<h3><a href=/notes/projects/ed-m> Project - Ed m</a></h3>
-</div>
-<div class=tags-container>
-<div class=tag-list-item>
-<a href=/tags/hugo>Hugo</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/devblog>Devblog</a>
-</div>
-</div>
-</div>
-<br>
-<div class=single-page-content>
-<h1 id=221003>221003</h1>
-<blockquote>
-<p>Lost a day of planned development due some guy named &lsquo;Ian&rsquo; came in messing up my local infrastructure</p>
-</blockquote>
-<h2 id=tags>Tags</h2>
-<h3 id=tags-per-project>Tags Per Project</h3>
-<p><em>_1226</em></p>
-<p>Initial logic and comments for this have been completed. Making it pretty is pending.</p>
-<p><img src=https://i.imgur.com/ifPs0sv.png alt="enter image description here"></p>
-<p>In the photo above I have the projects then each tag for that project then with a collection of its pages where it was found.</p>
-<div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>{{range  where  .Site.Pages  &#34;Params.type&#34;  &#34;project&#34;}}
-	{{with  .Param  &#34;projectName&#34;  }}
-		&lt;<span style=color:#6ab825;font-weight:700>h2</span>&gt;&lt;<span style=color:#6ab825;font-weight:700>a</span>  <span style=color:#bbb>href</span>=<span style=color:#ed9d13>&#34;{{&#34;</span><span style=color:#a61717;background-color:#e3d2d2>/</span><span style=color:#bbb>notes</span><span style=color:#a61717;background-color:#e3d2d2>/</span><span style=color:#bbb>projects</span><span style=color:#a61717;background-color:#e3d2d2>/&#34;</span>  <span style=color:#a61717;background-color:#e3d2d2>|</span>  <span style=color:#bbb>relLangURL</span>  <span style=color:#a61717;background-color:#e3d2d2>}}{{</span>  <span style=color:#a61717;background-color:#e3d2d2>.</span>  <span style=color:#a61717;background-color:#e3d2d2>|</span>  <span style=color:#bbb>urlize</span>  <span style=color:#a61717;background-color:#e3d2d2>}}&#34;</span>&gt;  {{humanize  .}}&lt;/<span style=color:#6ab825;font-weight:700>a</span>&gt;&lt;/<span style=color:#6ab825;font-weight:700>h2</span>&gt;
-		{{$projectname := .}}
-		<span style=color:#999;font-style:italic>&lt;!-- Intilize an empty slice to collect the tags of every page of the given project --&gt;</span>
-		{{$projectTagsCollection:= newScratch}}
-		<span style=color:#999;font-style:italic>&lt;!--This needs to be Intilized and set or you&#39;ll get some nil errors--&gt;</span>
-		<span style=color:#999;font-style:italic>&lt;!--&#34;ProjectName - Tag Name - Slice(ofPagesThatContainThatTag)&#34; --&gt;</span>
-		{{$projectTagsCollection.SetInMap  $projectname  &#34;DELETE-ME&#34;  slice  }}
-		<span style=color:#999;font-style:italic>&lt;!-- Flag is used to the Delete the intilizer var--&gt;</span>
-		{{$fristTagFlag := false}}
-		<span style=color:#999;font-style:italic>&lt;!-- Range over all the sites pages with param of the current project name--&gt;</span>
-		{{range  where site.Pages  &#34;Params.project&#34;  $projectname}}
-			<span style=color:#999;font-style:italic>&lt;!-- While in this scope set to var to the current page to added to the slice of pages--&gt;</span>
-			{{$currentPage := .}}
-			<span style=color:#999;font-style:italic>&lt;!--Var is used to save some time in call it--&gt;</span>
-			{{$mapOfCurrentProjectTags := $projectTagsCollection.Get  $projectname}}
-			<span style=color:#999;font-style:italic>&lt;!-- Iterates over the current pages Tags--&gt;</span>
-			{{  range  .Params.tags  }}
-				<span style=color:#999;font-style:italic>&lt;!-- Checks to see if the Tag has been added yet --&gt;</span>
-				{{if  index  $mapOfCurrentProjectTags  .}}
-				<span style=color:#999;font-style:italic>&lt;!-- IF Yes the tag has been added then we need to add the current page to that tag --&gt;</span>
-					<span style=color:#999;font-style:italic>&lt;!-- Set a var at the current Tag which gets us the slice of pages for it --&gt;</span>
-					{{$tagPagesSlice := index  $mapOfCurrentProjectTags  .  }}
-					<span style=color:#999;font-style:italic>&lt;!-- append the slice of pages with the curretn pages --&gt;</span>
-					{{$tagPagesSlice = append  $currentPage  $tagPagesSlice}}
-					<span style=color:#999;font-style:italic>&lt;!-- Write the new slice over the current slice --&gt;</span>
-					{{$projectTagsCollection.SetInMap  $projectname  .  $tagPagesSlice}}
-				{{else}}
-				<span style=color:#999;font-style:italic>&lt;!-- IF NO the tag has Not been added, then we add it with the current page to the new tag --&gt;</span>
-					<span style=color:#999;font-style:italic>&lt;!-- It&#39;s expecting a slice, so add the current page to a new slice --&gt;</span>
-					{{$tempSlice := slice  $currentPage}}
-					<span style=color:#999;font-style:italic>&lt;!--add the new tag and its page to the collection --&gt;</span>
-					{{$projectTagsCollection.SetInMap  $projectname  .  $tempSlice}}
-					
-					<span style=color:#999;font-style:italic>&lt;!-- Since a tag has been added we can flag for the temp intilzer to be deleted --&gt;</span>
-					{{$fristTagFlag = true}}
-				{{end}}
-				{{if  $fristTagFlag}}
-					<span style=color:#999;font-style:italic>&lt;!-- Removeal of the intailizer var--&gt;</span>
-					{{$projectTagsCollection.DeleteInMap  $projectname  &#34;DELETE-ME&#34;}}
-				{{end}}
-			{{end}}		
-		{{end}}
-		<span style=color:#999;font-style:italic>&lt;!-- Output of our tags and its collection of Pages--&gt;</span>
-		{{$OutputMap := $projectTagsCollection.Get  $projectname}}
-		{{range  $tagName, $sliceOfPages := $OutputMap}}
-			{{  $tagName  }}
-			&lt;<span style=color:#6ab825;font-weight:700>br</span>/&gt;
-			{{range  $sliceOfPages  }}
-				&lt;<span style=color:#6ab825;font-weight:700>a</span>  <span style=color:#bbb>href</span>=<span style=color:#ed9d13>{{.RelPermalink}}</span>&gt;{{  partial  &#34;title.html&#34;  .}}&lt;/<span style=color:#6ab825;font-weight:700>a</span>&gt; |
-			{{end}}
-			&lt;<span style=color:#6ab825;font-weight:700>br</span>/&gt;
-		{{end}}
-	{{end}}
-{{end}}
-</code></pre></div><p>This code is similar to the code I used to get each project unique tags and count. But for this I mapped each tag to a slice of pages instead of counting variable.</p>
-<p>So with this I think I am going to need to make a new partial or something cause having the titles I am using now makes for a lot of text. So maybe use the Date format title I like to use and a hover effect or something. Once this complete I guess I just list all the tags in the boiler plate way</p>
-<p><em>_1355</em></p>
-<p><img src=https://i.imgur.com/9GSu6LP.png alt="Gussed up"></p>
-<p>So I think this good enough to call done for now.</p>
-<p>I just want to note that I not doing Taxonomies Index page correctly cause when you click on a tag it takes you to this page instead of the list of pages for that tag it self. I don&rsquo;t think it worth doing for this. One should be able to still find what they are looking for so it&rsquo;ll be something left for now.</p>
-<p><img src=https://i.imgur.com/J518JC1.png alt=meh></p>
-<h2 id=90-of-this-project-is-complete-another-90-is-needed>90% of this project is complete another 90% is needed</h2>
-<p><em>_1410</em></p>
-<blockquote>
-<p><a href=https://en.wikipedia.org/wiki/Ninety%E2%80%93ninety_rule>Ninety–ninety rule | Wikipedia</a>
-<em>&ldquo;The first 90 percent of the code accounts for the first 90 percent of the development time. The remaining 10 percent of the code accounts for the other 90 percent of the development time&rdquo;</em></p>
-</blockquote>
-<p>All my major goals for development for this site are compete. I still have some touch ups I want to do I see some miss match in style and design consistently. The Last remaining big items are importing the rest of my notes then giving them the necessary front matter, and the figuring out how to host this on the cheap(I&rsquo;ve seen a lot on free/cheap hosting for static sites, but didn&rsquo;t retain the how all that much).</p>
-<h3 id=remaining-task>Remaining Task</h3>
-<ul>
-<li><input disabled type=checkbox> Fixing the Design consistently
-<ul>
-<li><input disabled type=checkbox> Homepage
-<ul>
-<li><input disabled type=checkbox> Author Sidebar</li>
-<li><input disabled type=checkbox> Font on Summaries</li>
-<li><input disabled type=checkbox> Font weights</li>
-<li><input disabled type=checkbox> Line Height on .Content (to Big)</li>
-</ul>
-</li>
-<li><input disabled type=checkbox> Notes/Project Index
-<ul>
-<li><input disabled type=checkbox> Github SVG on Notes/Projects (fill colour/hover)</li>
-<li><input disabled type=checkbox> Update Stats Colouring</li>
-<li><input disabled type=checkbox> Stats for Latest and Start Date are fucking backwards kek</li>
-<li><input disabled type=checkbox> Spacing between Project Containers needs to be bigger</li>
-<li><input disabled type=checkbox> On the Notes/Project Index the Projects Tags Hover style</li>
-</ul>
-</li>
-<li><input disabled type=checkbox> Single Pages
-<ul>
-<li><input disabled type=checkbox> The ul &li still needs fixing</li>
-<li><input disabled type=checkbox> h font weight</li>
-<li><input disabled type=checkbox> hover on tags needs underline</li>
-<li><input disabled type=checkbox> The mobile view for single page cuts off a lot(need to play with this. Works on every things else (pic below))</li>
-<li><input disabled type=checkbox> Make sure your happy with the img placement.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><input disabled type=checkbox> Check the .Content
-<ul>
-<li><input disabled type=checkbox> About and Homepage{{.Content}}. Re-read make sure it reads well and try not sound like a fucking retard</li>
-</ul>
-</li>
-<li><input disabled type=checkbox> Edit you bash/zfs profiles to create some short cuts for creating notes</li>
-<li><input disabled type=checkbox> Import notes you want on here and add the necessary front matter</li>
-<li><input disabled type=checkbox> ~~Host it</li>
-</ul>
-<p><img src=https://i.imgur.com/GkOO8GX.png alt="Mobile on single pages"></p>
-<p><em>_1859</em></p>
-<ul>
-<li><input disabled type=checkbox> Fixing the Design consistently
-<ul>
-<li><input checked disabled type=checkbox> Homepage
-<ul>
-<li><input checked disabled type=checkbox> Author Sidebar</li>
-<li><input checked disabled type=checkbox> Font on Summaries</li>
-<li><input checked disabled type=checkbox> Font weights</li>
-<li><input checked disabled type=checkbox> Line Height on .Content (to Big)</li>
-</ul>
-</li>
-<li><input disabled type=checkbox> Notes/Project Index
-&mldr;</li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</body>
-<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
-</html>
+<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Tags Page & 90 - 90 Rule | 221003</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
+<a href=/notes>Notes</a>
+<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Tags Page & 90 - 90 Rule | 221003</h2><time>Mon, Oct 3, 2022</time><div class=single-page-project><h3><a href=/notes/projects/ed-m>Project - Ed m</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/hugo>Hugo</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h1 id=221003>221003</h1><blockquote><p>Lost a day of planned development due some guy named &lsquo;Ian&rsquo; came in messing up my local infrastructure</p></blockquote><h2 id=tags>Tags</h2><h3 id=tags-per-project>Tags Per Project</h3><p><em>_1226</em></p><p>Initial logic and comments for this have been completed. Making it pretty is pending.</p><p><img src=https://i.imgur.com/ifPs0sv.png alt="enter image description here"></p><p>In the photo above I have the projects then each tag for that project then with a collection of its pages where it was found.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{{range  where  .Site.Pages  &#34;Params.type&#34;  &#34;project&#34;}}
+</span></span><span style=display:flex><span>	{{with  .Param  &#34;projectName&#34;  }}
+</span></span><span style=display:flex><span>		&lt;<span style=color:#6ab825;font-weight:700>h2</span>&gt;&lt;<span style=color:#6ab825;font-weight:700>a</span>  <span style=color:#bbb>href</span>=<span style=color:#ed9d13>&#34;{{&#34;</span><span style=color:#a61717;background-color:#e3d2d2>/</span><span style=color:#bbb>notes</span><span style=color:#a61717;background-color:#e3d2d2>/</span><span style=color:#bbb>projects</span><span style=color:#a61717;background-color:#e3d2d2>/&#34;</span>  <span style=color:#a61717;background-color:#e3d2d2>|</span>  <span style=color:#bbb>relLangURL</span>  <span style=color:#a61717;background-color:#e3d2d2>}}{{</span>  <span style=color:#a61717;background-color:#e3d2d2>.</span>  <span style=color:#a61717;background-color:#e3d2d2>|</span>  <span style=color:#bbb>urlize</span>  <span style=color:#a61717;background-color:#e3d2d2>}}&#34;</span>&gt;  {{humanize  .}}&lt;/<span style=color:#6ab825;font-weight:700>a</span>&gt;&lt;/<span style=color:#6ab825;font-weight:700>h2</span>&gt;
+</span></span><span style=display:flex><span>		{{$projectname := .}}
+</span></span><span style=display:flex><span>		<span style=color:#999;font-style:italic>&lt;!-- Intilize an empty slice to collect the tags of every page of the given project --&gt;</span>
+</span></span><span style=display:flex><span>		{{$projectTagsCollection:= newScratch}}
+</span></span><span style=display:flex><span>		<span style=color:#999;font-style:italic>&lt;!--This needs to be Intilized and set or you&#39;ll get some nil errors--&gt;</span>
+</span></span><span style=display:flex><span>		<span style=color:#999;font-style:italic>&lt;!--&#34;ProjectName - Tag Name - Slice(ofPagesThatContainThatTag)&#34; --&gt;</span>
+</span></span><span style=display:flex><span>		{{$projectTagsCollection.SetInMap  $projectname  &#34;DELETE-ME&#34;  slice  }}
+</span></span><span style=display:flex><span>		<span style=color:#999;font-style:italic>&lt;!-- Flag is used to the Delete the intilizer var--&gt;</span>
+</span></span><span style=display:flex><span>		{{$fristTagFlag := false}}
+</span></span><span style=display:flex><span>		<span style=color:#999;font-style:italic>&lt;!-- Range over all the sites pages with param of the current project name--&gt;</span>
+</span></span><span style=display:flex><span>		{{range  where site.Pages  &#34;Params.project&#34;  $projectname}}
+</span></span><span style=display:flex><span>			<span style=color:#999;font-style:italic>&lt;!-- While in this scope set to var to the current page to added to the slice of pages--&gt;</span>
+</span></span><span style=display:flex><span>			{{$currentPage := .}}
+</span></span><span style=display:flex><span>			<span style=color:#999;font-style:italic>&lt;!--Var is used to save some time in call it--&gt;</span>
+</span></span><span style=display:flex><span>			{{$mapOfCurrentProjectTags := $projectTagsCollection.Get  $projectname}}
+</span></span><span style=display:flex><span>			<span style=color:#999;font-style:italic>&lt;!-- Iterates over the current pages Tags--&gt;</span>
+</span></span><span style=display:flex><span>			{{  range  .Params.tags  }}
+</span></span><span style=display:flex><span>				<span style=color:#999;font-style:italic>&lt;!-- Checks to see if the Tag has been added yet --&gt;</span>
+</span></span><span style=display:flex><span>				{{if  index  $mapOfCurrentProjectTags  .}}
+</span></span><span style=display:flex><span>				<span style=color:#999;font-style:italic>&lt;!-- IF Yes the tag has been added then we need to add the current page to that tag --&gt;</span>
+</span></span><span style=display:flex><span>					<span style=color:#999;font-style:italic>&lt;!-- Set a var at the current Tag which gets us the slice of pages for it --&gt;</span>
+</span></span><span style=display:flex><span>					{{$tagPagesSlice := index  $mapOfCurrentProjectTags  .  }}
+</span></span><span style=display:flex><span>					<span style=color:#999;font-style:italic>&lt;!-- append the slice of pages with the curretn pages --&gt;</span>
+</span></span><span style=display:flex><span>					{{$tagPagesSlice = append  $currentPage  $tagPagesSlice}}
+</span></span><span style=display:flex><span>					<span style=color:#999;font-style:italic>&lt;!-- Write the new slice over the current slice --&gt;</span>
+</span></span><span style=display:flex><span>					{{$projectTagsCollection.SetInMap  $projectname  .  $tagPagesSlice}}
+</span></span><span style=display:flex><span>				{{else}}
+</span></span><span style=display:flex><span>				<span style=color:#999;font-style:italic>&lt;!-- IF NO the tag has Not been added, then we add it with the current page to the new tag --&gt;</span>
+</span></span><span style=display:flex><span>					<span style=color:#999;font-style:italic>&lt;!-- It&#39;s expecting a slice, so add the current page to a new slice --&gt;</span>
+</span></span><span style=display:flex><span>					{{$tempSlice := slice  $currentPage}}
+</span></span><span style=display:flex><span>					<span style=color:#999;font-style:italic>&lt;!--add the new tag and its page to the collection --&gt;</span>
+</span></span><span style=display:flex><span>					{{$projectTagsCollection.SetInMap  $projectname  .  $tempSlice}}
+</span></span><span style=display:flex><span>					
+</span></span><span style=display:flex><span>					<span style=color:#999;font-style:italic>&lt;!-- Since a tag has been added we can flag for the temp intilzer to be deleted --&gt;</span>
+</span></span><span style=display:flex><span>					{{$fristTagFlag = true}}
+</span></span><span style=display:flex><span>				{{end}}
+</span></span><span style=display:flex><span>				{{if  $fristTagFlag}}
+</span></span><span style=display:flex><span>					<span style=color:#999;font-style:italic>&lt;!-- Removeal of the intailizer var--&gt;</span>
+</span></span><span style=display:flex><span>					{{$projectTagsCollection.DeleteInMap  $projectname  &#34;DELETE-ME&#34;}}
+</span></span><span style=display:flex><span>				{{end}}
+</span></span><span style=display:flex><span>			{{end}}		
+</span></span><span style=display:flex><span>		{{end}}
+</span></span><span style=display:flex><span>		<span style=color:#999;font-style:italic>&lt;!-- Output of our tags and its collection of Pages--&gt;</span>
+</span></span><span style=display:flex><span>		{{$OutputMap := $projectTagsCollection.Get  $projectname}}
+</span></span><span style=display:flex><span>		{{range  $tagName, $sliceOfPages := $OutputMap}}
+</span></span><span style=display:flex><span>			{{  $tagName  }}
+</span></span><span style=display:flex><span>			&lt;<span style=color:#6ab825;font-weight:700>br</span>/&gt;
+</span></span><span style=display:flex><span>			{{range  $sliceOfPages  }}
+</span></span><span style=display:flex><span>				&lt;<span style=color:#6ab825;font-weight:700>a</span>  <span style=color:#bbb>href</span>=<span style=color:#ed9d13>{{.RelPermalink}}</span>&gt;{{  partial  &#34;title.html&#34;  .}}&lt;/<span style=color:#6ab825;font-weight:700>a</span>&gt; |
+</span></span><span style=display:flex><span>			{{end}}
+</span></span><span style=display:flex><span>			&lt;<span style=color:#6ab825;font-weight:700>br</span>/&gt;
+</span></span><span style=display:flex><span>		{{end}}
+</span></span><span style=display:flex><span>	{{end}}
+</span></span><span style=display:flex><span>{{end}}
+</span></span></code></pre></div><p>This code is similar to the code I used to get each project unique tags and count. But for this I mapped each tag to a slice of pages instead of counting variable.</p><p>So with this I think I am going to need to make a new partial or something cause having the titles I am using now makes for a lot of text. So maybe use the Date format title I like to use and a hover effect or something. Once this complete I guess I just list all the tags in the boiler plate way</p><p><em>_1355</em></p><p><img src=https://i.imgur.com/9GSu6LP.png alt="Gussed up"></p><p>So I think this good enough to call done for now.</p><p>I just want to note that I not doing Taxonomies Index page correctly cause when you click on a tag it takes you to this page instead of the list of pages for that tag it self. I don&rsquo;t think it worth doing for this. One should be able to still find what they are looking for so it&rsquo;ll be something left for now.</p><p><img src=https://i.imgur.com/J518JC1.png alt=meh></p><h2 id=90-of-this-project-is-complete-another-90-is-needed>90% of this project is complete another 90% is needed</h2><p><em>_1410</em></p><blockquote><p><a href=https://en.wikipedia.org/wiki/Ninety%E2%80%93ninety_rule>Ninety–ninety rule | Wikipedia</a>
+<em>&ldquo;The first 90 percent of the code accounts for the first 90 percent of the development time. The remaining 10 percent of the code accounts for the other 90 percent of the development time&rdquo;</em></p></blockquote><p>All my major goals for development for this site are compete. I still have some touch ups I want to do I see some miss match in style and design consistently. The Last remaining big items are importing the rest of my notes then giving them the necessary front matter, and the figuring out how to host this on the cheap(I&rsquo;ve seen a lot on free/cheap hosting for static sites, but didn&rsquo;t retain the how all that much).</p><h3 id=remaining-task>Remaining Task</h3><ul><li><input disabled type=checkbox> Fixing the Design consistently<ul><li><input disabled type=checkbox> Homepage<ul><li><input disabled type=checkbox> Author Sidebar</li><li><input disabled type=checkbox> Font on Summaries</li><li><input disabled type=checkbox> Font weights</li><li><input disabled type=checkbox> Line Height on .Content (to Big)</li></ul></li><li><input disabled type=checkbox> Notes/Project Index<ul><li><input disabled type=checkbox> Github SVG on Notes/Projects (fill colour/hover)</li><li><input disabled type=checkbox> Update Stats Colouring</li><li><input disabled type=checkbox> Stats for Latest and Start Date are fucking backwards kek</li><li><input disabled type=checkbox> Spacing between Project Containers needs to be bigger</li><li><input disabled type=checkbox> On the Notes/Project Index the Projects Tags Hover style</li></ul></li><li><input disabled type=checkbox> Single Pages<ul><li><input disabled type=checkbox> The ul &li still needs fixing</li><li><input disabled type=checkbox> h font weight</li><li><input disabled type=checkbox> hover on tags needs underline</li><li><input disabled type=checkbox> The mobile view for single page cuts off a lot(need to play with this. Works on every things else (pic below))</li><li><input disabled type=checkbox> Make sure your happy with the img placement.</li></ul></li></ul></li><li><input disabled type=checkbox> Check the .Content<ul><li><input disabled type=checkbox> About and Homepage{{.Content}}. Re-read make sure it reads well and try not sound like a fucking retard</li></ul></li><li><input disabled type=checkbox> Edit you bash/zfs profiles to create some short cuts for creating notes</li><li><input disabled type=checkbox> Import notes you want on here and add the necessary front matter</li><li><input disabled type=checkbox> ~~Host it</li></ul><p><img src=https://i.imgur.com/GkOO8GX.png alt="Mobile on single pages"></p><p><em>_1859</em></p><ul><li><input disabled type=checkbox> Fixing the Design consistently<ul><li><input checked disabled type=checkbox> Homepage<ul><li><input checked disabled type=checkbox> Author Sidebar</li><li><input checked disabled type=checkbox> Font on Summaries</li><li><input checked disabled type=checkbox> Font weights</li><li><input checked disabled type=checkbox> Line Height on .Content (to Big)</li></ul></li><li><input disabled type=checkbox> Notes/Project Index
+&mldr;</li></ul></li></ul></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>

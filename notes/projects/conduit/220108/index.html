@@ -1,169 +1,19 @@
-<!doctype html><head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<meta http-equiv=x-ua-compatible content="ie=edge">
-<link rel=stylesheet href=https://ed-m.dev/css/style.css>
-<link rel=stylesheet href=https://ed-m.dev/css/single-page.css>
-<title>PGX Implementation | 220108</title>
-</head>
-<body>
-<nav class=navBar>
-<ul>
-<a href=/>
-Ed-M.Dev
-</a>
-<a href=/notes>
-Notes
-</a>
-<a href=/about>
-About
-</a>
-</ul>
-</nav>
-<div class="main container single">
-<div class=single-page-content-container>
-<div class=single-page-header>
-<h2>PGX Implementation | 220108</h2>
-<time>Sat, Jan 8, 2022</time>
-<div class=single-page-project>
-<h3><a href=/notes/projects/conduit> Project - Conduit</a></h3>
-</div>
-<div class=tags-container>
-<div class=tag-list-item>
-<a href=/tags/pgx>Pgx</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/go>Go</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/devblog>Devblog</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/uuid>UUID</a>
-</div>
-<div class=tag-list-item>
-<a href=/tags/soft-delete>Soft delete</a>
-</div>
-</div>
-</div>
-<br>
-<div class=single-page-content>
-<h1 id=210108--210122>210108 ~ 210122</h1>
-<blockquote>
-<p>Had wood to cut and snow to clear, plus trying to dev on generator power and LTE got old. Granted it suppose to snow again tomorrow(today)&mldr;</p>
-</blockquote>
-<h2 id=pgx-server-crud-is-in-a-working-state>PGX Server Crud is in a working state.</h2>
-<p>that code has been pushed to <a href=https://github.com/Ed-Mar/appalachian-bastion/tree/master/conduit>Conduit - Github</a></p>
-<p>For the Server service the CRUD operation is in working in some form testing is still needed, but its there. GORM has been replaced with pgx database interface.</p>
-<p>It has some growing pain cause I am not sure where to put the sql that I am calling.</p>
-<h3 id=pgx-if-sohow-to>pgx, If so?How to?</h3>
-<blockquote>
-<p>also link to pgx <a href=https://github.com/jackc/pgx>https://github.com/jackc/pgx</a></p>
-</blockquote>
-<p>There are few new things</p>
-<p><img src=https://i.imgur.com/qdNkr1e.png alt=Example></p>
-<p>Okay there are a few ways to connect to the database &lsquo;ConnPool&rsquo; was what I used was cause it is concurrency-safe. Granted I haven&rsquo;t added anything that needs thread safety, but I don&rsquo;t this to mess with that when and if I get to it (docs: <a href=https://pkg.go.dev/github.com/jackc/pgx/v4/pgxpool>Link to Go Docs)</a></p>
-<p>Okay there are a few ways to connect to the database &lsquo;ConnPool&rsquo; was what I used was cause it is concurrency-safe. Granted I haven&rsquo;t added anything that needs thread safety, but I don&rsquo;t this to mess with that when and if I get to it (docs: <a href=https://pkg.go.dev/github.com/jackc/pgx/v4/pgxpool>Link to Go Docs)</a></p>
-<p><img src=https://i.imgur.com/4kyou1c.png alt="pgx pool"></p>
-<p>Each service will have it own DBConnPool cause each them will have their own db user
+<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>PGX Implementation | 220108</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
+<a href=/notes>Notes</a>
+<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>PGX Implementation | 220108</h2><time>Sat, Jan 8, 2022</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/pgx>Pgx</a></div><div class=tag-list-item><a href=/tags/go>Go</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div><div class=tag-list-item><a href=/tags/uuid>UUID</a></div><div class=tag-list-item><a href=/tags/soft-delete>Soft delete</a></div></div></div><br><div class=single-page-content><h1 id=210108--210122>210108 ~ 210122</h1><blockquote><p>Had wood to cut and snow to clear, plus trying to dev on generator power and LTE got old. Granted it suppose to snow again tomorrow(today)&mldr;</p></blockquote><h2 id=pgx-server-crud-is-in-a-working-state>PGX Server Crud is in a working state.</h2><p>that code has been pushed to <a href=https://github.com/Ed-Mar/appalachian-bastion/tree/master/conduit>Conduit - Github</a></p><p>For the Server service the CRUD operation is in working in some form testing is still needed, but its there. GORM has been replaced with pgx database interface.</p><p>It has some growing pain cause I am not sure where to put the sql that I am calling.</p><h3 id=pgx-if-sohow-to>pgx, If so?How to?</h3><blockquote><p>also link to pgx <a href=https://github.com/jackc/pgx>https://github.com/jackc/pgx</a></p></blockquote><p>There are few new things</p><p><img src=https://i.imgur.com/qdNkr1e.png alt=Example></p><p>Okay there are a few ways to connect to the database &lsquo;ConnPool&rsquo; was what I used was cause it is concurrency-safe. Granted I haven&rsquo;t added anything that needs thread safety, but I don&rsquo;t this to mess with that when and if I get to it (docs: <a href=https://pkg.go.dev/github.com/jackc/pgx/v4/pgxpool>Link to Go Docs)</a></p><p>Okay there are a few ways to connect to the database &lsquo;ConnPool&rsquo; was what I used was cause it is concurrency-safe. Granted I haven&rsquo;t added anything that needs thread safety, but I don&rsquo;t this to mess with that when and if I get to it (docs: <a href=https://pkg.go.dev/github.com/jackc/pgx/v4/pgxpool>Link to Go Docs)</a></p><p><img src=https://i.imgur.com/4kyou1c.png alt="pgx pool"></p><p>Each service will have it own DBConnPool cause each them will have their own db user
 _
 Each service will have it own DBConnPool cause each them will have their own db user
-_</p>
-<p><img src=https://i.imgur.com/T5AkJny.png alt=ServerServiceSetup></p>
-<p>On the topic that each service will have it own database and user I am keeping that in code as well for init setup of each of them. I have not set any way to have this created yet, but will be use full later.</p>
-<p>I plan on have a db user that creates database users for each of the necessary services with there associated databases. Then each of those service users would check and create any missing table or add missing fields, add necessary db extension</p>
-<p>Its complicated and you could argue that its not necessary, but this adds some flexibility and keeps it so each of the services can&rsquo;t access any other service database(With the necessary perms in place.(<a href=https://www.postgresql.org/docs/current/sql-revoke.html>Postgres: Revoke Doc)</a></p>
-<p>_
+_</p><p><img src=https://i.imgur.com/T5AkJny.png alt=ServerServiceSetup></p><p>On the topic that each service will have it own database and user I am keeping that in code as well for init setup of each of them. I have not set any way to have this created yet, but will be use full later.</p><p>I plan on have a db user that creates database users for each of the necessary services with there associated databases. Then each of those service users would check and create any missing table or add missing fields, add necessary db extension</p><p>Its complicated and you could argue that its not necessary, but this adds some flexibility and keeps it so each of the services can&rsquo;t access any other service database(With the necessary perms in place.(<a href=https://www.postgresql.org/docs/current/sql-revoke.html>Postgres: Revoke Doc)</a></p><p>_
 Okay back to the code above
-On the topic that each service will have it own database and user I am keeping that in code as well for init setup of each of them. I have not set any way to have this created yet, but will be use full later.</p>
-<p>I plan on have a db user that creates database users for each of the necessary services with there associated databases. Then each of those service users would check and create any missing table or add missing fields, add necessary db extension</p>
-<p>Its complicated and you could argue that its not necessary, but this adds some flexibility and keeps it so each of the services can&rsquo;t access any other service database(With the necessary perms in place.(<a href=https://www.postgresql.org/docs/current/sql-revoke.html>Postgres: Revoke Doc)</a></p>
-<p>_
+On the topic that each service will have it own database and user I am keeping that in code as well for init setup of each of them. I have not set any way to have this created yet, but will be use full later.</p><p>I plan on have a db user that creates database users for each of the necessary services with there associated databases. Then each of those service users would check and create any missing table or add missing fields, add necessary db extension</p><p>Its complicated and you could argue that its not necessary, but this adds some flexibility and keeps it so each of the services can&rsquo;t access any other service database(With the necessary perms in place.(<a href=https://www.postgresql.org/docs/current/sql-revoke.html>Postgres: Revoke Doc)</a></p><p>_
 Okay back to the code above
-<img src=https://i.imgur.com/M9nlMm5.png alt=Scany></p>
-<blockquote>
-<p>scany package: <a href=https://github.com/georgysavva/scany>https://github.com/georgysavva/scany</a></p>
-</blockquote>
-<p>So this allows mapping of the database response to a go struct. Just make sure you sent it the address of a pointer like seen above so it can handle nils for other structs.</p>
-<p>Scany with the use of tags knows with is what is mapped where. (image below)</p>
-<blockquote>
-<p>scany package: <a href=https://github.com/georgysavva/scany>https://github.com/georgysavva/scany</a></p>
-</blockquote>
-<p>So this allows mapping of the database response to a go struct. Just make sure you sent it the address of a pointer like seen above so it can handle nils for other structs.</p>
-<p>Scany with the use of tags knows with is what is mapped where. (image below)</p>
-<p><img src=https://i.imgur.com/xs2iCbX.png alt="db tag useage. "></p>
-<h3 id=model-updates>Model Updates</h3>
-<p>Looking at the model changes I wanted to point out some things</p>
-<h4 id=uuid>UUID</h4>
-<p>What is UUID: big&rsquo;ol slug delimited alphanumeric unique id
+<img src=https://i.imgur.com/M9nlMm5.png alt=Scany></p><blockquote><p>scany package: <a href=https://github.com/georgysavva/scany>https://github.com/georgysavva/scany</a></p></blockquote><p>So this allows mapping of the database response to a go struct. Just make sure you sent it the address of a pointer like seen above so it can handle nils for other structs.</p><p>Scany with the use of tags knows with is what is mapped where. (image below)</p><blockquote><p>scany package: <a href=https://github.com/georgysavva/scany>https://github.com/georgysavva/scany</a></p></blockquote><p>So this allows mapping of the database response to a go struct. Just make sure you sent it the address of a pointer like seen above so it can handle nils for other structs.</p><p>Scany with the use of tags knows with is what is mapped where. (image below)</p><p><img src=https://i.imgur.com/xs2iCbX.png alt="db tag useage. "></p><h3 id=model-updates>Model Updates</h3><p>Looking at the model changes I wanted to point out some things</p><h4 id=uuid>UUID</h4><p>What is UUID: big&rsquo;ol slug delimited alphanumeric unique id
 There are a few different version of it, but they should work each other for the most part, I am using a v4 which is just determined by a random number. I will be using this for all non trivial models with in this project.
-I am letting the database create these upon insertion.</p>
-<h3 id=model-updates-1>Model Updates</h3>
-<p>Looking at the model changes I wanted to point out some things</p>
-<h4 id=uuid-1>UUID</h4>
-<p>What is UUID: big&rsquo;ol slug delimited alphanumeric unique id
+I am letting the database create these upon insertion.</p><h3 id=model-updates-1>Model Updates</h3><p>Looking at the model changes I wanted to point out some things</p><h4 id=uuid-1>UUID</h4><p>What is UUID: big&rsquo;ol slug delimited alphanumeric unique id
 There are a few different version of it, but they should work each other for the most part, I am using a v4 which is just determined by a random number. I will be using this for all non trivial models with in this project.
-I am letting the database create these upon insertion.</p>
-<p><img src=https://i.imgur.com/xWZC6FN.png alt="Server Model Schema"></p>
-<p>There were two places in the REST code that need to change to accommodate this change. For the Delete and Get Singleton cause the ID is passed in the URI</p>
-<ul>
-<li>
-<p>The Router part to accepted the long boi of an id
-There were two places in the REST code that need to change to accommodate this change. For the Delete and Get Singleton cause the ID is passed in the URI</p>
-</li>
-<li>
-<p>The Router part to accepted the long boi of an id
-<img src=https://i.imgur.com/07i2cjO.png alt=getRouter></p>
-</li>
-<li>
-<p>Then grabbing the UUID from the URL <img src=https://i.imgur.com/Q6FxKAC.png alt="string to UUID conversion "></p>
-</li>
-</ul>
-<p>Currently I am using the &ldquo;github.com/gofrs/uuid&rdquo; pakage for the UUID it seems to work and has those conversion helper functions.</p>
-<p>Currently I am using the &ldquo;github.com/gofrs/uuid&rdquo; pakage for the UUID it seems to work and has those conversion helper functions.</p>
-<p><img src=https://i.imgur.com/CSH2Aof.png alt="Postman Example"></p>
-<h4 id=softdelete>SoftDelete</h4>
-<p>SoftDelete: To not really delete, but just mark deleted and hide it</p>
-<p>If look back in the model you&rsquo;ll see i have time fields for create,update, and delete.</p>
-<h4 id=softdelete-1>SoftDelete</h4>
-<p>SoftDelete: To not really delete, but just mark deleted and hide it</p>
-<p>If look back in the model you&rsquo;ll see i have time fields for create,update, and delete.</p>
-<p><img src=https://i.imgur.com/8hTwwxR.png alt="Server Table"></p>
-<p>Instead of deleting the row I am updating the time of the transaction on the code side</p>
-<p>Instead of deleting the row I am updating the time of the transaction on the code side</p>
-<p><img src=https://i.imgur.com/XUKougc.png alt="Delete Function"></p>
-<p>So this a fairly easy to do it just like the update function. Where some challenge comes in is with retrieval</p>
-<p>So this a fairly easy to do it just like the update function. Where some challenge comes in is with retrieval</p>
-<p><img src=https://i.imgur.com/hFrCSTU.png alt="Get all Servers"></p>
-<p>The way I am hiding the &ldquo;deleted&rdquo; images is removing any server that has a populated &lsquo;deleted_at&rsquo; field once the all server(s) are returned in code with a function called &ldquo;removeSoftDeletedItems()&rdquo; which just iterates over the array and removes the servers with said popped field and returns the clean array.</p>
-<p>I know I can do with a better sql select statement, but I will look at timings later cause the only reason I would pick one over the other would be speed or security. Plus replacing it with a sql statement would quick.</p>
-<p>So instead of getting all seven servers in this you only get the five that are not &ldquo;deleted&rdquo;
-The way I am hiding the &ldquo;deleted&rdquo; images is removing any server that has a populated &lsquo;deleted_at&rsquo; field once the all server(s) are returned in code with a function called &ldquo;removeSoftDeletedItems()&rdquo; which just iterates over the array and removes the servers with said popped field and returns the clean array.</p>
-<p>I know I can do with a better sql select statement, but I will look at timings later cause the only reason I would pick one over the other would be speed or security. Plus replacing it with a sql statement would quick.</p>
-<p>So instead of getting all seven servers in this you only get the five that are not &ldquo;deleted&rdquo;
+I am letting the database create these upon insertion.</p><p><img src=https://i.imgur.com/xWZC6FN.png alt="Server Model Schema"></p><p>There were two places in the REST code that need to change to accommodate this change. For the Delete and Get Singleton cause the ID is passed in the URI</p><ul><li><p>The Router part to accepted the long boi of an id
+There were two places in the REST code that need to change to accommodate this change. For the Delete and Get Singleton cause the ID is passed in the URI</p></li><li><p>The Router part to accepted the long boi of an id
+<img src=https://i.imgur.com/07i2cjO.png alt=getRouter></p></li><li><p>Then grabbing the UUID from the URL <img src=https://i.imgur.com/Q6FxKAC.png alt="string to UUID conversion "></p></li></ul><p>Currently I am using the &ldquo;github.com/gofrs/uuid&rdquo; pakage for the UUID it seems to work and has those conversion helper functions.</p><p>Currently I am using the &ldquo;github.com/gofrs/uuid&rdquo; pakage for the UUID it seems to work and has those conversion helper functions.</p><p><img src=https://i.imgur.com/CSH2Aof.png alt="Postman Example"></p><h4 id=softdelete>SoftDelete</h4><p>SoftDelete: To not really delete, but just mark deleted and hide it</p><p>If look back in the model you&rsquo;ll see i have time fields for create,update, and delete.</p><h4 id=softdelete-1>SoftDelete</h4><p>SoftDelete: To not really delete, but just mark deleted and hide it</p><p>If look back in the model you&rsquo;ll see i have time fields for create,update, and delete.</p><p><img src=https://i.imgur.com/8hTwwxR.png alt="Server Table"></p><p>Instead of deleting the row I am updating the time of the transaction on the code side</p><p>Instead of deleting the row I am updating the time of the transaction on the code side</p><p><img src=https://i.imgur.com/XUKougc.png alt="Delete Function"></p><p>So this a fairly easy to do it just like the update function. Where some challenge comes in is with retrieval</p><p>So this a fairly easy to do it just like the update function. Where some challenge comes in is with retrieval</p><p><img src=https://i.imgur.com/hFrCSTU.png alt="Get all Servers"></p><p>The way I am hiding the &ldquo;deleted&rdquo; images is removing any server that has a populated &lsquo;deleted_at&rsquo; field once the all server(s) are returned in code with a function called &ldquo;removeSoftDeletedItems()&rdquo; which just iterates over the array and removes the servers with said popped field and returns the clean array.</p><p>I know I can do with a better sql select statement, but I will look at timings later cause the only reason I would pick one over the other would be speed or security. Plus replacing it with a sql statement would quick.</p><p>So instead of getting all seven servers in this you only get the five that are not &ldquo;deleted&rdquo;
+The way I am hiding the &ldquo;deleted&rdquo; images is removing any server that has a populated &lsquo;deleted_at&rsquo; field once the all server(s) are returned in code with a function called &ldquo;removeSoftDeletedItems()&rdquo; which just iterates over the array and removes the servers with said popped field and returns the clean array.</p><p>I know I can do with a better sql select statement, but I will look at timings later cause the only reason I would pick one over the other would be speed or security. Plus replacing it with a sql statement would quick.</p><p>So instead of getting all seven servers in this you only get the five that are not &ldquo;deleted&rdquo;
 <img src=https://i.imgur.com/a8DeKLw.png alt="postman get all servers">
-<img src=https://i.imgur.com/8hTwwxR.png alt="Server Table"></p>
-<h4 id=status-field>&ldquo;Status&rdquo; Field</h4>
-<p>So this field will be for the Saga micro service pattern implementation the saga pattern can lacks isolation when you have more than one moving and grooving about. So that status field will be <strong>Semantic lock</strong> used like a flag for other sages to notice that a transaction is being perform on this obj and to handle it(waiting or whatever).</p>
-<p>So I know I need one of these, but still not positive all the details for implementation for my use case. I don' think it will really be used all much at the server or channel lvl, but messages and user seem like they need to further explored and will get to that when arrive at that bridge</p>
-<h4 id=status-field-1>&ldquo;Status&rdquo; Field</h4>
-<p>So this field will be for the Saga micro service pattern implementation the saga pattern can lacks isolation when you have more than one moving and grooving about. So that status field will be <strong>Semantic lock</strong> used like a flag for other sages to notice that a transaction is being perform on this obj and to handle it(waiting or whatever).</p>
-<p>So I know I need one of these, but still not positive all the details for implementation for my use case. I don' think it will really be used all much at the server or channel lvl, but messages and user seem like they need to further explored and will get to that when arrive at that bridge</p>
-<p><img src=https://i.imgur.com/kwqLbth.png alt=Status></p>
-<h2 id=whats-next>Whats Next</h2>
-<p>I have a few options here.</p>
-<ul>
-<li>I can just copy pasta why thur channel and messages to rip out and replace the existing gorm</li>
-<li>Figure out where I am going to put the Servers_Users Table</li>
-<li>Get Users to some state existing</li>
-<li>State the Sage process</li>
-</ul>
-<p>Not positive what the next play is, but should one or two of these.</p>
-<hr>
-<p><em>Forward</em>, Stay warm.</p>
-</div>
-</div>
-</div>
-</body>
-<footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer>
-</html>
+<img src=https://i.imgur.com/8hTwwxR.png alt="Server Table"></p><h4 id=status-field>&ldquo;Status&rdquo; Field</h4><p>So this field will be for the Saga micro service pattern implementation the saga pattern can lacks isolation when you have more than one moving and grooving about. So that status field will be <strong>Semantic lock</strong> used like a flag for other sages to notice that a transaction is being perform on this obj and to handle it(waiting or whatever).</p><p>So I know I need one of these, but still not positive all the details for implementation for my use case. I don&rsquo; think it will really be used all much at the server or channel lvl, but messages and user seem like they need to further explored and will get to that when arrive at that bridge</p><h4 id=status-field-1>&ldquo;Status&rdquo; Field</h4><p>So this field will be for the Saga micro service pattern implementation the saga pattern can lacks isolation when you have more than one moving and grooving about. So that status field will be <strong>Semantic lock</strong> used like a flag for other sages to notice that a transaction is being perform on this obj and to handle it(waiting or whatever).</p><p>So I know I need one of these, but still not positive all the details for implementation for my use case. I don&rsquo; think it will really be used all much at the server or channel lvl, but messages and user seem like they need to further explored and will get to that when arrive at that bridge</p><p><img src=https://i.imgur.com/kwqLbth.png alt=Status></p><h2 id=whats-next>Whats Next</h2><p>I have a few options here.</p><ul><li>I can just copy pasta why thur channel and messages to rip out and replace the existing gorm</li><li>Figure out where I am going to put the Servers_Users Table</li><li>Get Users to some state existing</li><li>State the Sage process</li></ul><p>Not positive what the next play is, but should one or two of these.</p><hr><p><em>Forward</em>, Stay warm.</p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
