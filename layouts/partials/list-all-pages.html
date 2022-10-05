@@ -1,0 +1,25 @@
+
+       <div class="notes listing container">        
+        {{$paginator := .Paginate site.RegularPages.ByDate.Reverse  }}               
+        {{ range $paginator.Pages }}
+            <div class="post preview">
+                <h3><a class="title-link" href="{{ .Permalink }}">{{ partial "title.html" .}}</a></h3>
+                <time>{{ .Date.Format "Mon, Jan 2, 2006" }}</time>
+                {{with .Param "project"}}
+                    <h4><a class="project-link" href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> Project - {{humanize .}}</a></h4>
+                {{end}}
+                <div class="tags-container">                            
+                    {{ range .Params.tags }}                                    
+                        <div class="tag-list-item">
+                            <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>                                  
+                        </div>
+                    {{ end }}                            
+                </div>                
+                <span class="summary">{{.Summary}} </span>
+                {{ if .Truncated }}                                        
+                    <a id="read-more" href="{{ .RelPermalink }}">Read More…</a>                        
+                {{end}}
+            </div>      
+        {{end}}
+        {{ template "_internal/pagination.html" . }}                
+    </div> 

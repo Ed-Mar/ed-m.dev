@@ -1,0 +1,54 @@
+<div class="projects main-container">        
+    <!-- Loop all thur all pages with "type:project" in its Parms --> 
+    {{range where .Site.Pages "Params.type" "project"}}    
+        <div class="individual-project-container">
+            <!-- If projectName is set then use it Link to that project's List Page -->
+            <!-- Note that the Project name and directory name need to be same -->
+            {{with .Param "projectName" }}                        
+                    <h2><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h2>                        
+            {{end}}
+            <!-- If there is a "projectAltName: <Anything>" then display it -->
+            {{with .Param "projectAltName"}}
+                <div class="subtitle">
+                    {{.}}
+                </div>
+            {{end}}
+            {{with .Param "github"}}                
+                <div class="github-icon-container">
+                    <a class="svg" href={{.}}> 
+                        <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
+                        {{ partial "github-svg.html" (dict "width" 38 "height" 38 ) }}                            
+                    </a>
+                    <a href={{.}}>Github</a>
+                </div>
+            {{end}}  
+            <br/>
+            <div class="project-information-panel-container">
+                <div class="project-information-panel-1" >
+                    <!--If there is github in the project index front matter then makes pull the github svg and put in the link to the projects base github-->                                             
+                    <div class="project-item-project-info">
+                        {{.Content}}
+                    </div>
+                </div>
+                <div class="project-information-panel-2">                            
+                    <div class="question">Number of post: <span class="question answer">{{partial "num-post-for-project.html" .}}</span></div>
+                    {{with .Param "status"}}
+                        <div class="question">Project Status: <span class="question answer">{{.}}</span></div>
+                    {{end}}                            
+                    <div class="question">Number Unque Tags: <span class="question answer">{{ partial "count-unique-for-projects.html" . }}</span></div>                            
+                    <div class="question">Last Post:  <span class="question answer">{{partial "last-date-of-post-for-project" .}}</span></div>                            
+                    <div class="question">Project Start Date: <span class="question answer">{{partial "frist-post-date-for-project.html" .}}</span></div>                           
+                </div>
+                <div class="project-information-panel-3">
+                        <h3>Projects Latest Post</h3>
+                    {{partial "notes-index-projects-latest-post.html" .}}      
+                </div>
+            </div>
+            
+            
+        </div>    
+        {{partial "project-all-tags.html" . }}           
+    {{end}}
+</div>
+
+</div>

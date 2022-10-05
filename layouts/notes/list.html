@@ -24,14 +24,14 @@
             {{end}}
         {{else }}
         <!-- If a sub-section of "notes/_index.md" -->
-            {{block "notesIndexLayout" .}}                
+            {{block "notesProjectIndexLayout" .}}                
             {{end}}
         {{end}}        
     {{end}} 
 {{end}}
 
 
-{{define "notesIndexLayout"}}
+{{define "notesProjectIndexLayout"}}
     <div class="main container">
     <div class="header">
         <h2 class="header title"> Notes & Projects </h2>
@@ -41,197 +41,20 @@
         </div>
     </div>
 
-    <h2 class="header content-divider">Projects </h2>            
+    <h2 class="header content-divider">Projects </h2>  
     
-    <div class="projects main-container">
-        
-        <!-- Loop all thur all pages with "type:project" in its Parms --> 
-        {{range where .Site.Pages "Params.type" "project"}}
-        
-            <div class="individual-project-container">
-                <!-- If projectName is set then use it Link to that project's List Page -->
-                <!-- Note that the Project name and directory name need to be same -->
-                {{with .Param "projectName" }}                        
-                        <h2><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h2>                        
-                {{end}}
-                <!-- If there is a "projectAltName: <Anything>" then display it -->
-                {{with .Param "projectAltName"}}
-                    <div class="subtitle">
-                        {{.}}
-                    </div>
-                {{end}}
-                {{with .Param "github"}}                
-                    <div class="github-icon-container">
-                        <a class="svg" href={{.}}> 
-                            <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
-                            {{ partial "github-svg.html" (dict "width" 38 "height" 38 ) }}                            
-                        </a>
-                        <a href={{.}}>Github</a>
-                    </div>
-                {{end}}  
-                <br/>
-                <div class="project-information-panel-container">
+    {{partial "list-project-panels.html" .}}
 
-                    <div class="project-information-panel-1" >
-                        <!--If there is github in the project index front matter then makes pull the github svg and put in the link to the projects base github--> 
-                                                
-                        <div class="project-item-project-info">
-                            {{.Content}}
-                        </div>
-                    </div>
-                    <div class="project-information-panel-2">                            
-                        <div class="question">Number of post: <span class="question answer">{{partial "num-post-for-project.html" .}}</span></div>
-                        {{with .Param "status"}}
-                            <div class="question">Project Status: <span class="question answer">{{.}}</span></div>
-                        {{end}}                            
-                        <div class="question">Number Unque Tags: <span class="question answer">{{ partial "count-unique-for-projects.html" . }}</span></div>                            
-                        <div class="question">Last Post:  <span class="question answer">{{partial "last-date-of-post-for-project" .}}</span></div>                            
-                        <div class="question">Project Start Date: <span class="question answer">{{partial "frist-post-date-for-project.html" .}}</span></div>                           
-                    </div>
-                    <div class="project-information-panel-3">
-                            <h3>Projects Latest Post</h3>
-                        {{partial "notes-index-projects-latest-post.html" .}}      
-                    </div>
-                </div>
-                <br/>
-                <!-- Just a check to make sure the project name of the project is set before use I really don't think needed but I just had to -->
-                {{with .Param "projectName" }}
-                    <!-- Set the Current Project Name that we will looking for it's Pages--> 
-                    {{$projectname := .}}
-                    <!-- Intilize an empty slice to collect the tags of every page of the given project -->  
-                    {{$listOfCurrentTags := slice}}
-                    <!-- Loop over each of the Pages matching the given projectname --> 
-                    {{range where site.Pages "Params.project" $projectname}}
-                        <!-- Loop over each of the tags for a given Page --> 
-                        {{ range .Params.tags }}
-                            {{$currentTag := upper .}}
-                            <!-- Check to see if the tag is already in the slice of tags for whole project and if not add it to the slice --> 
-                            {{ if in $listOfCurrentTags $currentTag}}
-                            <!-- Note: this was quicker than trying to learn how to NOT in this funky lang -->
-                            <!-- Do nothing if tag is already in the slice  --> 
-                            {{else}}
-                                <!-- Add the non-included tag to the list of the Tags for the given project --> 
-                                {{$listOfCurrentTags = append $currentTag $listOfCurrentTags}}
-                            {{end}}
-                        {{end}}                            
-                    {{end}}
-                    <!-- Once all the pages have been iterated aswell as all the tags of each of them for a given project 
-                        iterate over the slice of tags for the given project and put them in a link and display them. --> 
-                    <div class="notes-index-project-tag-container">
-                        <hr/>
-                        <div class="tags-container">
-                            <span>Project Tags:</span>                                                       
-                            {{range $listOfCurrentTags}}
-                                <div class="tag-list-item">
-                                    <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>
-                                </div>
-                            {{end}}
-                        </div> 
-                    </div>
-                {{end}} 
-            </div>
-        
-        {{end}}
-    </div>
     <div class="notes-index-non-project-container">
         <h2 class="header content-divider">Non-Project Notes</h2>
         {{partial "notes-index-get-unrelated.html" . }}
     </div>
-    </div>
+    
 {{end}}
 {{define "projectIndexLayout"}}
 <div class="main container">    
-    <h2 class="header content-divider">Projects </h2>            
-    
-    <div class="projects main-container">
-        
-        <!-- Loop all thur all pages with "type:project" in its Parms --> 
-        {{range where .Site.Pages "Params.type" "project"}}
-        
-            <div class="individual-project-container">
-                <!-- If projectName is set then use it Link to that project's List Page -->
-                <!-- Note that the Project name and directory name need to be same -->
-                {{with .Param "projectName" }}                        
-                        <h2><a href="{{"/notes/projects/" | relLangURL }}{{ . | urlize }}"> {{humanize .}}</a></h2>                        
-                {{end}}
-                <!-- If there is a "projectAltName: <Anything>" then display it -->
-                {{with .Param "projectAltName"}}
-                    <div class="subtitle">
-                        {{.}}
-                    </div>
-                {{end}}
-                {{with .Param "github"}}                
-                    <div class="github-icon-container">
-                        <a class="svg" href={{.}}> 
-                            <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
-                            {{ partial "github-svg.html" (dict "width" 38 "height" 38 ) }}                            
-                        </a>
-                        <a href={{.}}>Github</a>
-                    </div>
-                {{end}}  
-                <br/>
-                <div class="project-information-panel-container">
-
-                    <div class="project-information-panel-1" >
-                        <!--If there is github in the project index front matter then makes pull the github svg and put in the link to the projects base github--> 
-                                                
-                        <div class="project-item-project-info">
-                            {{.Content}}
-                        </div>
-                    </div>
-                    <div class="project-information-panel-2">                            
-                        <div class="question">Number of post: {{partial "num-post-for-project.html" .}}</div>
-                        {{with .Param "status"}}
-                            <div class="question">Project Status: {{.}}</div>
-                        {{end}}                            
-                        <div class="question">Number Unque Tags:{{ partial "count-unique-for-projects.html" . }}</div>                            
-                        <div class="question">Last Post:  {{partial "last-date-of-post-for-project" .}}</div>                            
-                        <div class="question">Project Start Date: {{partial "frist-post-date-for-project.html" .}}</div>                           
-                    </div>
-                    <div class="project-information-panel-3">
-                            <h3>Projects Latest Post</h3>
-                        {{partial "notes-index-projects-latest-post.html" .}}      
-                    </div>
-                </div>
-                <br/>
-                <!-- Just a check to make sure the project name of the project is set before use I really don't think needed but I just had to -->
-                {{with .Param "projectName" }}
-                    <!-- Set the Current Project Name that we will looking for it's Pages--> 
-                    {{$projectname := .}}
-                    <!-- Intilize an empty slice to collect the tags of every page of the given project -->  
-                    {{$listOfCurrentTags := slice}}
-                    <!-- Loop over each of the Pages matching the given projectname --> 
-                    {{range where site.Pages "Params.project" $projectname}}
-                        <!-- Loop over each of the tags for a given Page --> 
-                        {{ range .Params.tags }}
-                            <!-- Check to see if the tag is already in the slice of tags for whole project and if not add it to the slice --> 
-                            {{ if in $listOfCurrentTags .}}
-                            <!-- Note: this was quicker than trying to learn how to NOT in this funky lang -->
-                            <!-- Do nothing if tag is already in the slice  --> 
-                            {{else}}
-                                <!-- Add the non-included tag to the list of the Tags for the given project --> 
-                                {{$listOfCurrentTags = append . $listOfCurrentTags}}
-                            {{end}}
-                        {{end}}                            
-                    {{end}}
-                    <!-- Once all the pages have been iterated aswell as all the tags of each of them for a given project 
-                        iterate over the slice of tags for the given project and put them in a link and display them. --> 
-                    <div class="notes-index-project-tag-container">
-                        <hr/>
-                        <div class="tags-container">
-                            <span>Project Tags:</span>                                                       
-                            {{range $listOfCurrentTags}}
-                                <div class="tag-list-item">
-                                    <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">{{ . | humanize}}</a>
-                                </div>
-                            {{end}}
-                        </div> 
-                    </div>
-                {{end}} 
-            </div>
-        
-        {{end}}
-    </div>
+    <h2 class="header content-divider">Projects </h2>
+    {{partial "list-project-panels.html" .}}   
 </div>
 {{end}}
 {{define "individualProjectIndexLayout"}}
@@ -247,78 +70,8 @@
                     {{.}}
                 </div>
             {{end}}         
-        </div> 
-            
-        <div class="individual-project panels container">       
-            <div class="project panel info">               
-                {{.Content}}
-                {{with .Param "github"}}                
-                    <div class="github-icon-container">
-                        <a class="svg" href={{.}}> 
-                            <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
-                            {{ partial "github-svg.html" (dict "width" 38 "height" 38 ) }}                            
-                        </a>
-                        <a href={{.}}>{{$projectName}}'s Github</a>
-                    </div>
-                {{end}}
-            </div>
-             <div class="project panel stats">
-                <div class="question">Number of post: <span class="question answer">{{ partial "num-post-for-project.html" .}}</span></div>
-                {{with .Param "status"}}
-                    <div class="question">Project Status: <span class="question answer">{{.}}</span></div>
-                {{end}}                            
-                <div class="question">Number Unque Tags: <span class="question answer">{{ partial "count-unique-for-projects.html" . }}</span></div>                            
-                <div class="question">Last Post:   <span class="question answer">{{partial "last-date-of-post-for-project" .}}</span></div>                            
-                <div class="question">Project Start Date:  <span class="question answer">{{partial "frist-post-date-for-project.html" .}}</span></div>                           
-            </div>
         </div>
-        <div class="project all-tags container">
-            {{with .Param "projectName" }}
-            <!-- Set the Current Project Name that we will looking for it's Pages--> 
-            {{$projectname := .}}            
-            <!-- Intilize a newScratch to hold the collections of maps of tags them self and number of times they appear in the project's notes -->  
-            {{$projectTagsCollection:= newScratch}}
-            <!--These 2 need to be Intilized and set or you'll get some nil errors--> 
-            {{$projectTagsCollection.SetInMap  "projectTags" "DELETE-ME"  "Once Done - Use me and throw me away" }}
-            {{$tempMap := dict "Just-Need-To-Initialize-This" 666 }}
-
-            <!-- Loop over each of the Pages matching the given projectname --> 
-            {{range where site.Pages "Params.project" $projectname}}
-                <!-- Loop over each of the tags for a given Page --> 
-                {{ range .Params.tags }}
-                    <!--To account for case issues -->
-                    {{$currentTag := upper . }}
-                    <!--Set tempMap to the "projectTags" from inside projectTagsCollection-->
-                    {{$tempMap = $projectTagsCollection.Get "projectTags"}}                    
-                    <!-- Check to see if Tag is in the collection of maps--> 
-                    
-                    {{if (index $tempMap $currentTag )}}
-                        <!-- If the current Tag is already in the Collection of maps Key-->
-                        <!-- We take the value at that tag and add one to it and set it to a temp-->                        
-                        {{$plusOne := add (index $tempMap $currentTag) 1}}
-                        <!-- Then the new couter value is overwritten at the current tags key value in the collection of project tags  --> 
-                        {{$projectTagsCollection.SetInMap "projectTags" $currentTag $plusOne}}
-                    {{else}}
-                        <!-- If the current Tag is NOT in the Collection of maps Key-->
-                        <!-- Then we add to the collection with value of 1 -->
-                        {{$projectTagsCollection.SetInMap "projectTags" $currentTag 1}}
-                        <!-- I want to limit the exposer place holder DeleteMe so I delete it as soon as there is another key inserted -->
-                        <!-- Yes I am aware that its a waste to keep this here for every new tag-->
-                        {{$projectTagsCollection.DeleteInMap "projectTags" "DELETE-ME"}}
-
-                    {{end}}                               
-                {{end}}                                            
-            {{end}}            
-            {{range $key, $value := ($projectTagsCollection.Get "projectTags")}}                    
-                <a href="{{ "/tags/" | relLangURL }}{{ $key | urlize }}">{{ $key | humanize}}
-                    <!-- If the Tags Occures more than once it get the super script-->
-                    {{if gt $value 1}}               
-                        <sup>{{$value}}</sup>                        
-                    {{end}}                        
-                </a>                                         
-            {{end}}
-            {{end}} <!-- end of with Param "projectName" -->
-        </div><!--End project.all-tags.container div--> 
+        {{partial "individual-project-panel.html" .}}
         <div class="notes listing container">
             {{$paginator := .Paginate (where site.Pages.ByDate.Reverse "Params.project" ($.Param "projectName")) }}               
             {{ range $paginator.Pages }}
@@ -338,9 +91,8 @@
                     {{end}}
                 </div>      
             {{end}}
-            {{ template "_internal/pagination.html" . }}
-                
+            {{ template "_internal/pagination.html" . }}                
         </div>
-              
+        
     </div> <!--end of main container -->
 {{end}}

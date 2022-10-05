@@ -1,0 +1,31 @@
+
+ {{$projectName := .Param "projectName" | humanize}}
+
+<div class="individual-project panels container">       
+    <div class="project panel info">               
+        {{.Content}}
+        {{with .Param "github"}}                
+            <div class="github-icon-container">
+                <a class="svg" href={{.}}> 
+                    <!-- Simple Dictonary insert for the nessary values for for the SVG size -->                                   
+                    {{ partial "github-svg.html" (dict "width" 38 "height" 38 ) }}                            
+                </a>
+                <a href={{.}}>{{$projectName}}'s Github</a>
+            </div>
+        {{end}}
+    </div>
+     <div class="project panel stats">
+        <div class="question">Number of post: <span class="question answer">{{ partial "num-post-for-project.html" .}}</span></div>
+        {{with .Param "status"}}
+            <div class="question">Project Status: <span class="question answer">{{.}}</span></div>
+        {{end}}                            
+        <div class="question">Number Unque Tags: <span class="question answer">{{ partial "count-unique-for-projects.html" . }}</span></div>                            
+        <div class="question">Last Post:   <span class="question answer">{{partial "last-date-of-post-for-project" .}}</span></div>                            
+        <div class="question">Project Start Date:  <span class="question answer">{{partial "frist-post-date-for-project.html" .}}</span></div>                           
+    </div>
+    
+</div>
+{{partial "project-all-tags.html" . }}
+
+
+ 
