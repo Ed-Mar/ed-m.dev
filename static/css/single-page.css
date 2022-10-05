@@ -1,7 +1,7 @@
 /*--Starts Single Page--*/
 
 
-.main.container{
+.main.container.single{
     display: flex;
     
     justify-content: center;
@@ -11,6 +11,7 @@
 }
 .single-page-content-container{
     max-width: 900px;
+    margin: auto;
 }
 
 .single-page-header{
