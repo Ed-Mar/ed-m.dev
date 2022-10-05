@@ -63,7 +63,7 @@
             <h2 class="header title"> {{.Param "projectName" | humanize}} </h2>
             {{$projectName := .Param "projectName" | humanize}}
             {{with .Param "website"}}
-                <h4 class="header subtitle"><a href={{.}}>{{.}}</a></h4>
+                <h4 class="header website"><a href={{. | absLangURL}}>{{.}}</a></h4>
             {{end}}
             {{with .Param "shortDescription"}}
                 <div class="header info">
