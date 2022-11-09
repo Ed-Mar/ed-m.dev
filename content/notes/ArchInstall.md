@@ -1,6 +1,7 @@
 ---
-title: Arch Install | UEFI GRUB NVIDIA SLIM KDE
-date: 2022-08-27T8:58:18-04:00
+title: 221107
+subtitle: Arch Install | UEFI GRUB NVIDIA SLIM KDE
+date: 2022-11-09T01:30:18-04:00
 tags: 
   - arch
   - kde
