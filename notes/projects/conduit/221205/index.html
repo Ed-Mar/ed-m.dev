@@ -1,0 +1,99 @@
+<!doctype html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=https://ed-m.dev/css/style.css><link rel=stylesheet href=https://ed-m.dev/css/single-page.css><title>Authorization and Authentication for backend services | 221205</title></head><body><nav class=navBar><ul><a href=/>Ed-M.Dev</a>
+<a href=/notes>Notes</a>
+<a href=/about>About</a></ul></nav><div class="main container single"><div class=single-page-content-container><div class=single-page-header><h2>Authorization and Authentication for backend services | 221205</h2><time>Mon, Dec 5, 2022</time><div class=single-page-project><h3><a href=/notes/projects/conduit>Project - Conduit</a></h3></div><div class=tags-container><div class=tag-list-item><a href=/tags/golang>Golang</a></div><div class=tag-list-item><a href=/tags/oauth2>Oauth2</a></div><div class=tag-list-item><a href=/tags/jwt>JWT</a></div><div class=tag-list-item><a href=/tags/devblog>Devblog</a></div></div></div><br><div class=single-page-content><h1 id=221205>221205</h1><h2 id=authorization-and-authentication-for-backend-services>Authorization and Authentication for backend services</h2><p>I have got the Authorization to state of reasonable operation and broken down into proper middlewares for Token Verification and Token Introspective. I did introduce a sub handler that I will need to propagate to all existing services and future.</p><h3 id=sub-handler--generic-handler->Sub Handler ( Generic Handler )</h3><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> ServiceHandler <span style=color:#6ab825;font-weight:700>struct</span> {  
+</span></span><span style=display:flex><span>  ServiceName   <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>  ServiceLogger *log.Logger  
+</span></span><span style=display:flex><span>  validator     *internal.Validation  
+</span></span><span style=display:flex><span>}  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewHandler</span>(serviceName <span style=color:#6ab825;font-weight:700>string</span>, serviceLogger *log.Logger, validator *internal.Validation) *ServiceHandler {  
+</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>return</span> &amp;ServiceHandler{serviceName, serviceLogger, validator}  
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This is similar to my existing handler, but each service has there own, which will still exist but those individual handler will now wrap this new Handler.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> DevTest <span style=color:#6ab825;font-weight:700>struct</span> {  
+</span></span><span style=display:flex><span>   GenericHandler *handlers.ServiceHandler  
+</span></span><span style=display:flex><span>}  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>NewDevTestHandler</span>(h *handlers.ServiceHandler) *DevTest {  
+</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>return</span> &amp;DevTest{h}  
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><em>example use.</em></p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>const</span> serviceName = <span style=color:#ed9d13>&#34;test-dev-service&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>APILogger := log.<span style=color:#447fcf>New</span>(os.Stdout, <span style=color:#ed9d13>&#34;test-dev-service | &#34;</span>, log.LstdFlags)  
+</span></span><span style=display:flex><span>validation := internal.<span style=color:#447fcf>NewValidation</span>()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>gHandler := auth.<span style=color:#447fcf>NewHandler</span>(serviceName, APILogger, validation)  
+</span></span><span style=display:flex><span>devTestHandler := handlers.<span style=color:#447fcf>NewDevTestHandler</span>(gHandler)  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>router := mux.<span style=color:#447fcf>NewRouter</span>()  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>router.<span style=color:#447fcf>Use</span>(devTestHandler.GenericHandler.AuthenticationMiddlewareViaTokenIntrospective)  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>postRouter := router.<span style=color:#447fcf>Methods</span>(http.MethodPost).<span style=color:#447fcf>Subrouter</span>()  
+</span></span><span style=display:flex><span><span style=color:#999;font-style:italic>//postRouter.Use(devTestHandler.GenericHandler.AuthenticationMiddlewareViaLocalVerification)  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>postRouter.<span style=color:#447fcf>HandleFunc</span>(<span style=color:#ed9d13>&#34;/&#34;</span>, devTestHandler.PostTest)
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> (ha *ServiceHandler) <span style=color:#447fcf>AuthenticationMiddlewareViaTokenIntrospective</span>(next http.Handler) http.Handler {
+</span></span><span style=display:flex><span>...
+</span></span></code></pre></div><p>This new generic handler is where the new Authentication middleware is accessed. It was done this way that each service can still have it own separate handler while still have in access to it parent function ie the new Auth functions.</p><p>With both individuals service and generic handler both being handlers you can chain them together using the standard way. This allows for you insert the Authentication middleware anywhere in the chain or call all of then(there are only two currently)</p><p>Here is an example. You want to check all every request to a service with the Local token verification, then on certain REST operations you want to do the token introspection.</p><blockquote><p>This is a common way to do things just use the local jwt verification the majority of the time, but on deletes or any other sensitive operations do the token introspective just make sure.</p></blockquote><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span>gHandler := auth.<span style=color:#447fcf>NewHandler</span>(serviceName, APILogger, validation)  
+</span></span><span style=display:flex><span>devTestHandler := handlers.<span style=color:#447fcf>NewDevTestHandler</span>(gHandler)  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>router := mux.<span style=color:#447fcf>NewRouter</span>()  
+</span></span><span style=display:flex><span>router.<span style=color:#447fcf>Use</span>(devTestHandler.GenericHandler.AuthenticationMiddlewareViaLocalVerification)  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>postRouter := router.<span style=color:#447fcf>Methods</span>(http.MethodPost).<span style=color:#447fcf>Subrouter</span>()  
+</span></span><span style=display:flex><span>postRouter.<span style=color:#447fcf>Use</span>(devTestHandler.GenericHandler.  AuthenticationMiddlewareViaTokenIntrospective)  
+</span></span><span style=display:flex><span>postRouter.<span style=color:#447fcf>HandleFunc</span>(<span style=color:#ed9d13>&#34;/&#34;</span>, devTestHandler.PostTest)
+</span></span></code></pre></div><h3 id=setting-auth-to-context>Setting Auth to Context</h3><p>I created a struct that inserts the Authentication information into the context of the request</p><p><em>I am not happiest on the naming of these fields, so these mite change</em></p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> authentication <span style=color:#6ab825;font-weight:700>struct</span> {  
+</span></span><span style=display:flex><span>   <span style=color:#999;font-style:italic>//newAuthentication.ExternalID the &#39;sid&#39; in the JWT this will be used to id the user in this Application and the external SSO  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  ExternalID uuid.UUID  
+</span></span><span style=display:flex><span>  <span style=color:#999;font-style:italic>//newAuthentication.UserPrincipalName the &#39;upn&#39; in the JWT  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  UserPrincipalName <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>  <span style=color:#999;font-style:italic>//newAuthentication.JWTIssuer the &#39;iss&#39; in the JWT  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  JWTIssuer <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>  <span style=color:#999;font-style:italic>//newAuthentication.JWTAuthorizationParty the &#39;azp&#39; in the JWT  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  JWTAuthorizationParty <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>  <span style=color:#999;font-style:italic>//newAuthentication.JWTIssuerGroups the &#39;groups&#39; in teh JWT  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  JWTIssuerGroups []<span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>  <span style=color:#999;font-style:italic>//newAuthentication.JWTAuthorizationTime the &#39;auth_time&#39; in the JWT  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  JWTAuthorizationTime *time.Time  
+</span></span><span style=display:flex><span>  <span style=color:#999;font-style:italic>//newAuthentication.JWTExpiration the &#39;exp&#39; in the JWT  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  JWTExpiration *time.Time  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#999;font-style:italic>//newAuthentication.LastTokenLocalVerification The time of the last local Verification of the token  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  LastVerificationTime          *time.Time  
+</span></span><span style=display:flex><span>  LastVerificationOperationType authenticationVerificationType  
+</span></span><span style=display:flex><span>}  
+</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> authenticationVerificationType <span style=color:#6ab825;font-weight:700>interface</span> {  
+</span></span><span style=display:flex><span>   <span style=color:#447fcf>GetAuthenticationVerificationType</span>() <span style=color:#6ab825;font-weight:700>string</span>  
+</span></span><span style=display:flex><span>}  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> localAuthenticationVerificationType <span style=color:#6ab825;font-weight:700>struct</span> {  
+</span></span><span style=display:flex><span>   authenticationVerificationType  
+</span></span><span style=display:flex><span>}  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> (t *localAuthenticationVerificationType) <span style=color:#447fcf>GetAuthenticationVerificationType</span>() <span style=color:#6ab825;font-weight:700>string</span> {  
+</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#ed9d13>&#34;Local-Token-Verification&#34;</span>  
+</span></span><span style=display:flex><span>}  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>type</span> tokenIntrospectionAuthenticationVerificationType <span style=color:#6ab825;font-weight:700>struct</span> {  
+</span></span><span style=display:flex><span>   authenticationVerificationType  
+</span></span><span style=display:flex><span>}  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> (t *tokenIntrospectionAuthenticationVerificationType) <span style=color:#447fcf>GetAuthenticationVerificationType</span>() <span style=color:#6ab825;font-weight:700>string</span> {  
+</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>return</span> <span style=color:#ed9d13>&#34;Token-Introspective-Verification&#34;</span>  
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Upon a successful Introspective or Verification the information from the token is transfer into the struct above with the addition of the time of check and type of check.</p><p>If you have worked with JWTs before you will know that is not all the fields of a standard token, but I really could think of use case for all the fields in a standard token and claim. I selected just few I have plans to use or think they could be potentially useful.</p><p>I was thinking if couldn&rsquo;t think use case for the data then there is no need to replicate it again into this struct cause technically this information just copied from the token itself, but just in a fetchable from.</p><p>Currently this struct is being set into context of the dealing with that request.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> <span style=color:#447fcf>SetAuthenticationInContext</span>(ctx context.Context, a *authentication) context.Context {  
+</span></span><span style=display:flex><span>   ctx = context.<span style=color:#447fcf>WithValue</span>(ctx, KeyAuthentication{}, a)  
+</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>return</span> ctx  
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>I do for see this possible being an issue with saga pattern implementation when they do a transaction with REST call as there action due it no passing the context. I am some ideas to deal with that I will either have to make all services use POST and attach this struct to the the request, PUT the struct in the header, or just pass token in the header to the new request and let the existing system deal with it.</p><p>That last option makes the most sense, but I would like some way to keep track when a request be sent via another service on behalf of a user. I am going to have think on this some more.</p><h4 id=context-authentication-retrieval>Context Authentication Retrieval</h4><p>Some may have noticed that or if you have look on the github for this. That the Authentication struct is private and thus not accessible outside of it package. This was done to give the services the availability to easily edit the current authentication. To get access to each of the fields I created getters to grab the desired fields from the context it self.</p><div class=highlight><pre tabindex=0 style=color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#6ab825;font-weight:700>func</span> (DevObj *DevTest) <span style=color:#447fcf>PostTest</span>(rw http.ResponseWriter, r *http.Request) {  
+</span></span><span style=display:flex><span>   <span style=color:#999;font-style:italic>// fetch the servers from the uuid  
+</span></span></span><span style=display:flex><span><span style=color:#999;font-style:italic></span>  rw.<span style=color:#447fcf>Header</span>().<span style=color:#447fcf>Add</span>(<span style=color:#ed9d13>&#34;Content-Type&#34;</span>, <span style=color:#ed9d13>&#34;application/json&#34;</span>)  
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>   uuid, err := handlers.<span style=color:#447fcf>AuthGetExternalIDFromContext</span>(r.<span style=color:#447fcf>Context</span>())  
+</span></span><span style=display:flex><span>   <span style=color:#6ab825;font-weight:700>if</span> err != <span style=color:#6ab825;font-weight:700>nil</span> {  
+</span></span><span style=display:flex><span>      http.<span style=color:#447fcf>Error</span>(rw, err.<span style=color:#447fcf>Error</span>(), http.StatusInternalServerError)  
+</span></span><span style=display:flex><span>      <span style=color:#6ab825;font-weight:700>return</span>  
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  ...
+</span></span></code></pre></div><p>so if one of the services wants use the sid or any other field they just need to call it and check for errors( I put in a error to catch for null, cause getting a value from context can just return a null)</p><hr><p>I am going to implement these changes to the existing services, then I&rsquo;ll be on to Users.</p><p><em>Forward&mldr;</em></p></div></div></div></body><footer><hr>Author <a href=https://ed-m.dev/about>Edward M- </a>| Framework <a href=https://gohugo.io/>Hugo</a></footer></html>
